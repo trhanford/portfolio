@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tristan Hanford — Mechanical Engineer</title>
+  <meta name="description" content="Mechanical engineering portfolio — classic Bronco restorations, CAD, systems integration, and product development.">
+  <meta property="og:title" content="Tristan Hanford — Mechanical Engineer">
+  <meta property="og:description" content="Classic Bronco restorations, CAD, systems integration, product development.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1 class="brand">Tristan Hanford</h1>
+    <nav class="nav">
+      <a href="#work">Work</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <h2>Mechanical Engineer • Systems Integrator • Builder</h2>
+      <p>Founder & Lead Engineer at Hanford Restorations. I design and build fully integrated classic Broncos — CAD to road-ready — spanning powertrain, electrical, cooling, and suspension.</p>
+      <a class="btn" href="#work">See my work</a>
+    </div>
+  </section>
+
+  <section id="work" class="work">
+    <div class="container">
+      <h3>Selected Work</h3>
+      <div class="cards">
+        <article class="card">
+          <h4>'68 Ford Bronco — Pilot Build</h4>
+          <ul>
+            <li>EFI fuel delivery, CAN-triggered cooling, custom electrical harness.</li>
+            <li>CAD in Creo/NX; packaging for serviceability & aesthetics.</li>
+            <li>Supplier coordination and end-to-end build management.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h4>'74 Jeep CJ5 — Show Vehicle</h4>
+          <ul>
+            <li>Electrical system redesign (HEI distributor, dual-battery isolator).</li>
+            <li>Noise mitigation and gauge stability via grounding strategy.</li>
+            <li>Chicago Auto Show — 2nd Place (2022).</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h4>Custom Cooling System</h4>
+          <ul>
+            <li>4000 CFM fan system integrated with ECU temperature sensing.</li>
+            <li>Reliability under off-road loads; risk of overheating reduced.</li>
+            <li>Service-friendly wiring, relay logic, and documentation.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="gallery">
+    <div class="container">
+      <h3>Photo Gallery</h3>
+      <p>Add images to the <code>/images</code> folder and list them in <code>gallery.json</code>.</p>
+      <div id="grid" class="grid"></div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="container">
+      <h3>About</h3>
+      <p>Final-year Mechanical Engineering student at Purdue (’26). I build vehicles and systems the way products are built: requirements → CAD → prototype → test → iterate → deliver. I like crisp wiring, tidy packaging, and documentation.</p>
+      <div class="cols">
+        <div>
+          <h4>Technical</h4>
+          <ul>
+            <li>CAD: Siemens NX, Creo Parametric</li>
+            <li>Programming/Analysis: MATLAB, Python, C++, LTspice</li>
+            <li>Systems: EFI, power distribution, cooling control, CAN</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Highlights</h4>
+          <ul>
+            <li>Founder & Lead Engineer — Hanford Restorations (2022–Present)</li>
+            <li>Chicago Auto Show — 2nd Place (’74 CJ5)</li>
+            <li>Purdue ASME • OSHA Certified</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container">
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:tristan@example.com">tristan@example.com</a> • LinkedIn: <a href="#" target="_blank" rel="noopener">linkedin.com/in/yourhandle</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
+  </div>
+</footer>
+
+<dialog id="lightbox" class="lightbox">
+  <button id="close" aria-label="Close">&times;</button>
+  <img id="lightbox-img" alt="">
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>
