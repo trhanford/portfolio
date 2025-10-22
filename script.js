@@ -110,8 +110,12 @@
     });
 
     // -------------------- Background Particles (hero) --------------------
-    const bg=$('#introField');
-    if (bg){
+    ['introField','portfolioField']
+      .map(id=>document.getElementById(id))
+      .filter(Boolean)
+      .forEach(initFieldBackground);
+
+    function initFieldBackground(bg){
       const ctx=bg.getContext('2d');
       let W=0,H=0,DPR=1, pts=[], t=0;
 
@@ -121,7 +125,6 @@
         ctx.setTransform(DPR,0,0,DPR,0,0);
         const taupe = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
         document.documentElement.style.setProperty('--_bgTaupe', taupe);
-        // Subtle but present density
         const count = Math.max(120, Math.min(320, Math.round((W*H)/14000)));
         pts = Array.from({length:count}, ()=>({
           x: Math.random()*W,
