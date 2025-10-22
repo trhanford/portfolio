@@ -11,7 +11,6 @@
   <!-- Styles/JS -->
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
-
 </head>
 <body>
   <!-- ===================== STICKY NAV (appears after intro) ===================== -->
@@ -44,7 +43,7 @@
       <canvas id="introField" class="magnetic-field"></canvas>
     </div>
 
-    <!-- NEW: Connections bar (centered, with lines and dot dividers) -->
+    <!-- Connections bar -->
     <div class="hero-connections" aria-label="Connections">
       <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <span class="dot" aria-hidden="true">•</span>
@@ -69,11 +68,11 @@
         <div class="panel">
           <h2 class="panel-title">Explore</h2>
           <div class="panel-links" id="panelLinks">
-            <a class="panel-link" href="#about" data-scroll data-refract="true">About Me</a>
-            <a class="panel-link" href="/portfolio.html" data-refract="true">Portfolio</a>
-            <a class="panel-link" href="/resume.html" data-refract="true">Digital Résumé</a>
+            <a class="panel-link" href="#about" data-scroll>About Me</a>
+            <a class="panel-link" href="/portfolio.html">Portfolio</a>
+            <a class="panel-link" href="/resume.html">Digital Résumé</a>
           </div>
-          <!-- SVG filter for refractive hover -->
+          <!-- (Optional) SVG filter kept for future effects -->
           <svg class="refract-filter" width="0" height="0" aria-hidden="true">
             <defs>
               <filter id="refract">
@@ -90,58 +89,107 @@
   <!-- ===================== ABOUT ME (same page) ===================== -->
   <main class="section about" role="region" aria-label="About Me">
     <section id="about" class="section about">
-      
-    <div class="section-band">
-      <div class="band-inner">
-        <h2>About Me</h2>
-      </div>
-    </div>
-      
-    <div class="container">
-      <header class="section-header">
-        <p>Hands-on mechanical + electrical builder focused on tidy, serviceable systems and clear documentation.</p>
-      </header>
-
-      <div class="about-grid">
-        <!-- Portrait moved here; CSS makes it smaller & rounder -->
-        <figure class="portrait">
-          <img id="profilePhoto" src="assets/tristan_profile.jpg" alt="Portrait of Tristan Hanford" />
-        </figure>
-
-        <div class="about-body">
-          <p>
-            I design and build integrated mechanical and electrical systems: CAD packaging, harness design, cooling,
-            controls integration (ECU/CAN), and validation. I like neat looms, serviceability, and a well-named netlist.
-          </p>
-
-          <div class="about-cards">
-            <article class="about-card">
-              <h3>Core Skills</h3>
-              <ul>
-                <li>Siemens NX / Creo Parametric</li>
-                <li>Harness design, PDM, sensors & relays</li>
-                <li>MATLAB, Python, LTspice</li>
-                <li>Thermals: fan/shroud, ECU temp triggers</li>
-              </ul>
-            </article>
-            <article class="about-card">
-              <h3>How I work</h3>
-              <ul>
-                <li>Plan → build → instrument → test → iterate</li>
-                <li>Write test plans and capture results</li>
-                <li>Document for handoff (prints, schematics, BOMs)</li>
-              </ul>
-            </article>
-          </div>
-
-          <!-- Button role swap: Portfolio = filled taupe, Résumé = outlined grey -->
-          <div class="about-cta">
-            <a class="btn-primary is-taupe" href="/portfolio.html">View Portfolio</a>
-            <a class="btn-outline" href="/resume.html">Digital Résumé</a>
-          </div>
+      <!-- Banner -->
+      <div class="section-band">
+        <div class="band-inner">
+          <h2>About Me</h2>
         </div>
       </div>
-    </div>
+
+      <div class="container">
+        <!-- Top row: Portrait + Blurb -->
+        <div class="about-grid">
+          <figure class="portrait">
+            <img id="profilePhoto" src="assets/tristan_profile.jpg" alt="Portrait of Tristan Hanford" />
+          </figure>
+
+          <div class="about-body">
+            <h3 class="about-subtitle">A quick intro</h3>
+            <p class="about-blurb">
+              I’m an engineer who likes to make ideas real. I grew up taking things apart to understand how they worked,
+              and that curiosity never left. I’m happiest when I’m balancing practical build work with thoughtful design:
+              clean packaging, clear documentation, and systems that people enjoy servicing and using.
+              I studied at Purdue, I’m deeply into automotive, and I still love the feeling of flow—whether it’s dialing a
+              CAD model, learning a new tool, or carving a snowboard line. I’m quick to listen, direct when needed, and
+              obsessive about leaving the work cleaner than I found it.
+            </p>
+            <p class="about-blurb">
+              Outside the shop, I’m a pet person and a tinkerer. I like approachable teams, honest constraints, and projects
+              where the outcome is something we’re proud to put our names on.
+            </p>
+
+            <!-- CTA lives here (inside the blurb column) -->
+            <div class="about-cta">
+              <a class="btn-primary is-taupe" href="/portfolio.html">View Portfolio</a>
+              <a class="btn-outline" href="/resume.html">Digital Résumé</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lower row: Workflow (left) + Bubble Network (right) -->
+        <div class="about-lower">
+          <!-- How I work -->
+          <section class="workflow">
+            <h3 class="block-title">How I Work</h3>
+            <ol class="workflow-steps" role="list">
+              <li class="step">
+                <div class="badge" aria-hidden="true">1</div>
+                <div class="step-body">
+                  <h4>Frame the problem</h4>
+                  <p>Clarify goals, success criteria, constraints, and interfaces. Align early so work is decisive.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="badge" aria-hidden="true">2</div>
+                <div class="step-body">
+                  <h4>Design deliberately</h4>
+                  <p>Package for serviceability, safety, and future changes. Prefer clear, modular choices over clever ones.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="badge" aria-hidden="true">3</div>
+                <div class="step-body">
+                  <h4>Build and instrument</h4>
+                  <p>Prototype quickly, wire cleanly, measure thoughtfully. Make the system observable from day one.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="badge" aria-hidden="true">4</div>
+                <div class="step-body">
+                  <h4>Test and iterate</h4>
+                  <p>Validate under realistic load, capture issues, and shorten the loop. Improve reliability without drama.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="badge" aria-hidden="true">5</div>
+                <div class="step-body">
+                  <h4>Document for handoff</h4>
+                  <p>Produce prints, notes, and procedures that future teammates will thank us for.</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+
+          <!-- Bubble Network -->
+          <section class="bubble-panel">
+            <h3 class="block-title">Core Skills & Interests</h3>
+            <canvas id="skillsGraph" width="600" height="420" aria-label="Skills bubble network"></canvas>
+            <!-- Fallback list for no-canvas browsers -->
+            <ul class="bubble-fallback">
+              <li>CAD (NX / Creo)</li>
+              <li>Automotive</li>
+              <li>Wiring & PDM</li>
+              <li>Cooling & Thermals</li>
+              <li>Testing & Docs</li>
+              <li>MATLAB / Python</li>
+              <li>Snowboarding</li>
+              <li>Pets</li>
+              <li>Tinkering</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ===================== FOOTER ===================== -->
