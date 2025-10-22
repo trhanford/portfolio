@@ -11,6 +11,168 @@
   else init();
 
   function init(){
+    // -------------------- Bubble Network (skills/interests) --------------------
+(function skillsNetwork(){
+  const cvs = document.getElementById('skillsGraph'); if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+
+  // Center node + satellites (you can tweak labels anytime)
+  const center = { label:'Tristan', r: 56 };
+  const nodes = [
+    { label:'CAD (NX / Creo)', r: 34 },
+    { label:'Automotive', r: 32 },
+    { label:'Wiring & PDM', r: 30 },
+    { label:'Cooling & Thermals', r: 30 },
+    { label:'Testing & Docs', r: 30 },
+    { label:'MATLAB / Python', r: 30 },
+    { label:'Snowboarding', r: 28 },
+    { label:'Pets', r: 26 },
+    { label:'Tinkering', r: 28 },
+  ];
+
+  let DPR=1, W=0, H=0, CX=0, CY=0, hoverIndex=-1;
+
+  // Node state
+  const P = [{...center, x:0,y:0,vx:0,vy:0, center:true}].concat(
+    nodes.map(n=>({ ...n, x:0,y:0,vx:0,vy:0, center:false }))
+  );
+
+  function fit(){
+    DPR = Math.min(2, window.devicePixelRatio||1);
+    const cssW = cvs.clientWidth, cssH = cvs.clientHeight;
+    cvs.width = Math.floor(cssW*DPR); cvs.height = Math.floor(cssH*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    W = cssW; H = cssH; CX = W*0.52; CY = H*0.5;
+
+    // place center
+    P[0].x = CX; P[0].y = CY;
+
+    // place satellites on a ring
+    const R = Math.min(W,H)*0.28;
+    for(let i=1;i<P.length;i++){
+      const a = (i-1)/ (P.length-1) * Math.PI*2 + Math.PI/6;
+      P[i].x = CX + Math.cos(a)*R * (0.9 + Math.random()*0.2);
+      P[i].y = CY + Math.sin(a)*R * (0.9 + Math.random()*0.2);
+    }
+  }
+
+  function step(){
+    // basic springs to center + slight attraction to ring
+    const R = Math.min(W,H)*0.28;
+    for(let i=1;i<P.length;i++){
+      const p = P[i];
+      const dx = p.x - CX, dy = p.y - CY;
+      const dist = Math.hypot(dx,dy) || 1;
+      const target = R;
+      const pull = (target - dist)*0.0025;      // ring spring
+      const fx = (dx/dist) * pull;
+      const fy = (dy/dist) * pull;
+
+      // mild attraction to center (keeps it tidy)
+      const kCenter = 0.002;
+      p.vx -= dx*kCenter; p.vy -= dy*kCenter;
+
+      // apply ring force
+      p.vx += fx; p.vy += fy;
+
+      // gentle repulsion between satellites
+      for(let j=i+1;j<P.length;j++){
+        const q = P[j];
+        const rx = p.x - q.x, ry = p.y - q.y;
+        const d2 = rx*rx + ry*ry;
+        if (d2 === 0) continue;
+        const d = Math.sqrt(d2);
+        const min = (p.r + q.r) + 12;  // desired separation
+        if (d < min){
+          const push = (min - d)*0.003;
+          const ux = rx/d, uy = ry/d;
+          p.vx += ux*push; p.vy += uy*push;
+          q.vx -= ux*push; q.vy -= uy*push;
+        }
+      }
+
+      // damping & move
+      p.vx *= 0.93; p.vy *= 0.93;
+      p.x += p.vx; p.y += p.vy;
+    }
+    // center floats slightly for life
+    P[0].x = CX + Math.sin(perfNow()*0.0007)*4;
+    P[0].y = CY + Math.cos(perfNow()*0.0009)*3;
+  }
+
+  function draw(){
+    // panel bg
+    ctx.clearRect(0,0,W,H);
+    // edges
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(43,47,51,.22)';
+    for(let i=1;i<P.length;i++){
+      line(P[0], P[i]);
+      // occasional cross-links
+      if (i < P.length-1 && i%2===0) line(P[i], P[i+1]);
+    }
+
+    // nodes
+    for(let i=0;i<P.length;i++){
+      const p = P[i];
+      const isHover = (i===hoverIndex);
+      const fill = p.center ? '#e9e4d7' : '#ffffff';
+      const stroke = 'rgba(43,47,51,.28)';
+      circle(p.x, p.y, p.r, fill, stroke, isHover ? 1.0 : 0.9);
+      label(p.x, p.y, p.label, p.center ? '600' : '700', isHover);
+    }
+  }
+
+  function line(a,b){
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+  function circle(x,y,r,fill,stroke,alpha){
+    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.strokeStyle = stroke;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+  function label(x,y,text,weight,isHover){
+    ctx.save();
+    ctx.fillStyle = isHover ? '#1f2327' : '#2b2f33';
+    ctx.font = `${isHover? '700':'600'} 13px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    wrapText(text, x, y, 120, 15);
+    ctx.restore();
+  }
+  function wrapText(t, x, y, maxW, lh){
+    const words = t.split(' ');
+    let line = '', yy = y, lines=[];
+    for (let w of words){
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxW){ lines.push(line); line = w; }
+      else line = test;
+    }
+    if (line) lines.push(line);
+    const total = (lines.length-1)*lh;
+    yy -= total/2;
+    for (const ln of lines){ ctx.fillText(ln, x, yy); yy += lh; }
+  }
+  const perfNow = ()=> (performance && performance.now ? performance.now() : Date.now());
+
+  function pointer(e){
+    const r = cvs.getBoundingClientRect();
+    const mx = (e.clientX - r.left);
+    const my = (e.clientY - r.top);
+    hoverIndex = -1;
+    for(let i=0;i<P.length;i++){
+      const p = P[i];
+      if (Math.hypot(mx - p.x, my - p.y) <= p.r) { hoverIndex = i; break; }
+    }
+    cvs.style.cursor = (hoverIndex>0 ? 'pointer' : 'default');
+  }
+
+  function loop(){
+    step(); draw(); requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', fit);
+  cvs.addEventListener('pointermove', pointer);
+  fit(); loop();
+})();
+
     // -------------------- Footer year --------------------
     const y=$('#year'); if (y) y.textContent = new Date().getFullYear();
 
