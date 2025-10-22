@@ -1,36 +1,905 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tristan Hanford — Home</title>
-  <link rel="icon" href="assets/favicon.png" />
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
+  <title>Hanford Luxury</title>
+
+  <!-- Typography -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* =====================
+       Design Tokens — Sharp, Bold, Elegant
+    ====================== */
+    :root {
+      /* Neutrals */
+      --paper: #ffffff;
+      /* crisp white */
+      --ivory: #f6f7f6;
+      /* subtle warm background */
+      --ink: #0c0d0e;
+      /* near‑black text */
+      --slate: #303336;
+      /* headings/secondary */
+      --muted: #595d62;
+      /* body muted */
+      --line: rgba(12, 13, 14, .12);
+      /* hairline borders */
+
+      /* Accents (Aston‑adjacent, not derivative) */
+      --racing: #0f3b2e;
+      /* deep green */
+      --racing-2: #145a43;
+      /* brighter green */
+      --champagne: #c7a34b;
+      /* warm metallic */
+
+      /* Effects */
+      --radius: 16px;
+      --radius-sm: 12px;
+      --shadow-1: 0 6px 22px rgba(0, 0, 0, .08);
+      --shadow-2: 0 10px 28px rgba(0, 0, 0, .12);
+      --focus: #0a6cff;
+      --maxw: 1200px;
+    }
+
+    /* =====================
+       Base
+    ====================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img,
+    video {
+      max-width: 100%;
+      display: block
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0 0 .5rem;
+      line-height: 1.15
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      color: var(--slate)
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 24px
+    }
+
+    /* =====================
+       Navbar — crisp white, hairline rule, bold CTAs
+    ====================== */
+    .navbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 84px;
+      z-index: 60;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: saturate(1.2) blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 20px
+    }
+
+    .brand img {
+      height: 52px;
+      width: auto
+    }
+
+    .brand .title {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      color: var(--ink)
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .92rem
+    }
+
+    .nav-links a {
+      position: relative;
+      padding: 10px 2px;
+      color: var(--ink)
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, var(--racing), var(--racing-2));
+      transition: width .22s ease
+    }
+
+    .nav-links a:hover::after {
+      width: 100%
+    }
+
+    .nav-cta {
+      justify-self: end;
+      padding-right: 20px
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--racing), var(--racing-2));
+      color: #fff;
+      font-weight: 700;
+      border: 1px solid rgba(12, 13, 14, .18);
+      box-shadow: var(--shadow-1);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-2);
+      filter: brightness(1.05)
+    }
+
+    .btn-primary:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px
+    }
+
+    /* Mobile */
+    .menu-toggle {
+      display: none;
+      margin-left: 10px
+    }
+
+    .menu-toggle button {
+      background: transparent;
+      border: 0;
+      color: var(--ink);
+      font-size: 1.6rem;
+      padding: 8px
+    }
+
+    @media (max-width:980px) {
+      .navbar {
+        grid-template-columns: auto auto auto;
+        height: 76px
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      .nav-cta {
+        display: none
+      }
+
+      .menu-toggle {
+        display: block
+      }
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      inset: 76px 0 auto 0;
+      background: #fff;
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--line);
+      display: none;
+      z-index: 55
+    }
+
+    .mobile-drawer.open {
+      display: block
+    }
+
+    .mobile-drawer ul {
+      list-style: none;
+      padding: 12px 16px 24px;
+      margin: 0
+    }
+
+    .mobile-drawer li {
+      border-bottom: 1px solid var(--line)
+    }
+
+    .mobile-drawer a {
+      display: block;
+      padding: 14px 8px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .96rem;
+      color: var(--ink)
+    }
+
+    .mobile-drawer .drawer-cta {
+      padding: 16px
+    }
+
+    /* =====================
+       Hero — dark video for drama, bright type for contrast
+    ====================== */
+    header.hero {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fff
+    }
+
+    .hero video.bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -2;
+      opacity: .7;
+      filter: saturate(1.05) contrast(1.05)
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, .35), rgba(0, 0, 0, .65) 55%, rgba(246, 247, 246, 1) 90%)
+    }
+
+    .hero-content {
+      max-width: 960px;
+      padding: 140px 24px 90px
+    }
+
+    .eyebrow {
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: .85rem;
+      color: #e8f3ee;
+      opacity: .95
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6.2vw, 4.6rem);
+      color: #ffffff
+    }
+
+    .hero p {
+      color: #e3e7ea;
+      font-size: clamp(1rem, 2.2vw, 1.18rem);
+      margin: 14px 0 28px
+    }
+
+    .hero-actions {
+      display: inline-flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, .85);
+      color: #fff;
+      font-weight: 700;
+      background: transparent;
+      transition: background .18s ease, color .18s ease
+    }
+
+    .btn-outline:hover {
+      background: #fff;
+      color: var(--ink)
+    }
+
+    /* =====================
+       Sections
+    ====================== */
+    section {
+      position: relative
+    }
+
+    .section {
+      padding: 96px 0
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4.2vw, 3rem)
+    }
+
+    .section-header p {
+      color: var(--muted);
+      max-width: 760px;
+      margin: 12px auto 0
+    }
+
+    /* =====================
+       Process Cards — crisp borders, minimal shadow, gold headings
+    ====================== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-2);
+      border-color: rgba(12, 13, 14, .2)
+    }
+
+    .card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover
+    }
+
+    .card-body {
+      padding: 18px 18px 22px
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--slate)
+    }
+
+    .card p {
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    @media (max-width:1024px) {
+      .cards {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media (max-width:680px) {
+      .cards {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* =====================
+       Features / Packages — bright surface with subtle video texture
+    ====================== */
+    .features {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--paper)
+    }
+
+    .features video.bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .18;
+      z-index: -1;
+      filter: grayscale(.2) contrast(1.05)
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0 36px
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .92rem;
+      letter-spacing: .04em;
+      background: #eef3f1;
+      color: var(--racing);
+      border: 1px solid rgba(20, 90, 67, .25)
+    }
+
+    .accordions {
+      max-width: 980px;
+      margin: 0 auto
+    }
+
+    details.accordion {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin: 14px 0;
+      overflow: hidden;
+      transition: border-color .22s ease, background .22s ease, box-shadow .22s ease;
+      box-shadow: var(--shadow-1)
+    }
+
+    details.accordion[open] {
+      border-color: rgba(20, 90, 67, .28);
+      box-shadow: var(--shadow-2)
+    }
+
+    summary.accordion__summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 18px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: .95rem;
+      color: var(--ink)
+    }
+
+    summary.accordion__summary::-webkit-details-marker {
+      display: none
+    }
+
+    .chev {
+      margin-left: auto;
+      width: 18px;
+      height: 18px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(-45deg);
+      transition: transform .2s ease
+    }
+
+    details[open] .chev {
+      transform: rotate(45deg)
+    }
+
+    .accordion__content {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      padding: 0 18px 18px 18px;
+      align-items: start
+    }
+
+    .accordion__content img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--line)
+    }
+
+    .feature-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted)
+    }
+
+    .feature-list li {
+      margin: 6px 0
+    }
+
+    @media (max-width:760px) {
+      .accordion__content {
+        grid-template-columns: 1fr
+      }
+
+      .accordion__content img {
+        height: 200px
+      }
+    }
+
+    /* =====================
+       Services — tidy and strong
+    ====================== */
+    .services {
+      background: var(--ivory)
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px
+    }
+
+    .service {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      box-shadow: var(--shadow-1)
+    }
+
+    .service h3 {
+      font-size: 1rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--slate)
+    }
+
+    .service p {
+      color: var(--muted)
+    }
+
+    @media (max-width:980px) {
+      .service-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media (max-width:640px) {
+      .service-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* =====================
+       Footer / Contact — white, crisp fields, strong CTA
+    ====================== */
+    footer.footer {
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+      padding: 64px 0 32px
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 28px
+    }
+
+    .contact-grid h2 {
+      font-size: clamp(1.8rem, 3.6vw, 2.4rem)
+    }
+
+    .contact-grid p {
+      color: var(--muted)
+    }
+
+    form.contact {
+      display: grid;
+      gap: 12px
+    }
+
+    .field {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      width: 100%
+    }
+
+    textarea.field {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    .field::placeholder {
+      color: #8a8f95
+    }
+
+    .field:focus {
+      outline: none;
+      border-color: rgba(20, 90, 67, .5);
+      box-shadow: 0 0 0 4px rgba(20, 90, 67, .12)
+    }
+
+    .footer-bottom {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #7a8086;
+      font-size: .95rem
+    }
+
+    @media (max-width:900px) {
+      .contact-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Motion respect */
+    @media (prefers-reduced-motion:reduce) {
+
+      .btn-primary,
+      .btn-outline,
+      .card,
+      .nav-links a::after {
+        transition: none !important
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <!-- Reactive background (controlled via CSS variables from JS) -->
-  <div class="bg"></div>
+  <!-- NAVBAR -->
+  <nav class="navbar" aria-label="Primary">
+    <div class="container" style="display:contents">
+      <a class="brand" href="#home" aria-label="Hanford Luxury Home">
+        <img src="file.png" alt="Hanford Luxury logo" />
+        <span class="title">Hanford Luxury</span>
+      </a>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="hero__left">
-        <h1 class="hi">Hey There! I’m Tristan</h1>
+      <ul class="nav-links" role="list">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#process">Our Process</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="available-now.html">Available Now</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
 
-        <p class="subline">
-          I am a
-          <span class="typewrap">
-            <span id="type-target" aria-live="polite"></span>
-            <span class="caret" aria-hidden="true"></span>
-          </span>
-        </p>
+      <div class="nav-cta">
+        <a class="btn-primary" href="bronco-customizer.html">Start Building</a>
       </div>
 
-      <div class="hero__right">
-        <!-- Replace the src with your real image path -->
-        <img class="portrait" src="images/profile.jpg" alt="Portrait of Tristan Hanford" />
+      <div class="menu-toggle">
+        <button aria-label="Toggle menu" id="menuBtn">☰</button>
       </div>
-    </section>
-  </main>
+    </div>
+    <div id="drawer" class="mobile-drawer" aria-hidden="true">
+      <ul role="list">
+        <li><a href="#home" onclick="closeDrawer()">Home</a></li>
+        <li><a href="#process" onclick="closeDrawer()">Our Process</a></li>
+        <li><a href="about.html" onclick="closeDrawer()">About</a></li>
+        <li><a href="#features" onclick="closeDrawer()">Features</a></li>
+        <li><a href="available-now.html" onclick="closeDrawer()">Available Now</a></li>
+        <li><a href="#contact" onclick="closeDrawer()">Contact</a></li>
+      </ul>
+      <div class="drawer-cta">
+        <a class="btn-primary" href="bronco-customizer.html" onclick="closeDrawer()">Start Building</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="home" class="hero" role="banner">
+    <video class="bg" autoplay muted loop playsinline preload="auto">
+      <source src="background-video.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-content container">
+      <div class="eyebrow">Bespoke • Hand‑Built • Commissioned</div>
+      <h1>Experience True Performance</h1>
+      <p>Presence and precision for drivers who expect more—engineered to excel on any road, in any season.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="bronco-customizer.html">Start Building</a>
+        <a class="btn-outline" href="#process">Explore Our Process</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROCESS -->
+  <section id="process" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Process</h2>
+        <p>From bare frame to final road test, each stage is executed to exacting standards.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <img src="truck2.png" alt="Chassis and powertrain assembly" />
+          <div class="card-body">
+            <h3>Step 1 · Foundation</h3>
+            <p>Frame, powertrain, suspension, and core systems—blueprinted, balanced, and meticulously assembled.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="truck3.png" alt="Bodywork and paint preparation" />
+          <div class="card-body">
+            <h3>Step 2 · Coachwork</h3>
+            <p>Panels aligned, interiors tailored, paint laid for depth and clarity worthy of a concours lawn.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="truck1.png" alt="Final assembly and inspection" />
+          <div class="card-body">
+            <h3>Step 3 · Commission</h3>
+            <p>Final assembly, calibration, and comprehensive evaluation—delivering a truly turnkey icon.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section features">
+    <video class="bg" autoplay muted loop playsinline>
+      <source src="features-bg1.mp4" type="video/mp4" />
+    </video>
+    <div class="container">
+      <div class="section-header">
+        <h2>Standard Options</h2>
+        <p>Every build includes a curated suite of performance, safety, and comfort features.</p>
+      </div>
+      <div class="pills" aria-label="Included features">
+        <span class="pill">5.0 Coyote V8</span>
+        <span class="pill">≈460 HP</span>
+        <span class="pill">10‑Speed Automatic</span>
+        <span class="pill">Premium Audio</span>
+      </div>
+
+      <div class="accordions" role="list">
+        <details class="accordion">
+          <summary class="accordion__summary">Sport Package <span class="chev" aria-hidden="true"></span></summary>
+          <div class="accordion__content">
+            <img src="sport-package.jpg" alt="Sport package detail" />
+            <ul class="feature-list">
+              <li>Sport‑tuned suspension for confident response</li>
+              <li>Performance exhaust with a refined, assertive tone</li>
+              <li>Discrete aero accents for a planted stance</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary class="accordion__summary">Driver Assist Package <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion__content">
+            <img src="driver-assist-package.jpg" alt="Driver assist package detail" />
+            <ul class="feature-list">
+              <li>Adaptive cruise with smooth real‑time adjustments</li>
+              <li>Lane keeping & forward safety alerts</li>
+              <li>Integrated assist tech for long‑distance ease</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary class="accordion__summary">Cold Weather Package <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion__content">
+            <img src="cold-weather-package.jpg" alt="Cold weather package detail" />
+            <ul class="feature-list">
+              <li>Heated seats & steering for effortless mornings</li>
+              <li>Remote start with cabin pre‑conditioning</li>
+              <li>Enhanced insulation & rapid defrost</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="section services">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Services</h2>
+        <p>From faithful restorations to contemporary performance commissions.</p>
+      </div>
+      <div class="service-grid">
+        <div class="service">
+          <h3>Restoration</h3>
+          <p>Period‑correct details, concours‑level finish, and uncompromising craftsmanship throughout.</p>
+        </div>
+        <div class="service">
+          <h3>Customization</h3>
+          <p>Tailored paint, interiors, and performance—harmonized to your vision and driving style.</p>
+        </div>
+        <div class="service">
+          <h3>Maintenance</h3>
+          <p>Expert care to keep your icon reliable, responsive, and ready for the open road.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <footer id="contact" class="footer">
+    <div class="container contact-grid">
+      <div>
+        <h2>Contact Us</h2>
+        <p>Ready to commission your build? Share a few details and our team will be in touch.</p>
+      </div>
+      <form class="contact" action="#" method="post">
+        <label>
+          <span class="sr-only">Your Name</span>
+          <input class="field" type="text" name="name" placeholder="Your Name" required>
+        </label>
+        <label>
+          <span class="sr-only">Your Email</span>
+          <input class="field" type="email" name="email" placeholder="Your Email" required>
+        </label>
+        <label>
+          <span class="sr-only">Your Message</span>
+          <textarea class="field" name="message" placeholder="Your Message" required></textarea>
+        </label>
+        <button class="btn-primary" type="submit">Send Message</button>
+      </form>
+    </div>
+    <div class="container footer-bottom">© 2025 Hanford Luxury. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const drawer = document.getElementById('drawer');
+    const btn = document.getElementById('menuBtn');
+    const closeDrawer = () => {drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true');};
+    btn?.addEventListener('click', () => {
+      const isOpen = drawer.classList.toggle('open');
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+    });
+    window.closeDrawer = closeDrawer;
+  </script>
 </body>
+
 </html>
