@@ -1,5 +1,4 @@
-// script.js — full site logic (typewriter, nav fade-in, smooth scroll, particles, drawer)
-// Replace your current script.js with this file.
+// script.js — full site logic (typewriter, nav fade-in, smooth scroll, particles, drawer, skills bubbles)
 
 (function(){
   const $  = (s, r=document)=>r.querySelector(s);
@@ -11,175 +10,23 @@
   else init();
 
   function init(){
-    // -------------------- Bubble Network (skills/interests) --------------------
-(function skillsNetwork(){
-  const cvs = document.getElementById('skillsGraph'); if (!cvs) return;
-  const ctx = cvs.getContext('2d');
-
-  // Center node + satellites (you can tweak labels anytime)
-  const center = { label:'Tristan', r: 56 };
-  const nodes = [
-    { label:'CAD (NX / Creo)', r: 34 },
-    { label:'Automotive', r: 32 },
-    { label:'Wiring & PDM', r: 30 },
-    { label:'Cooling & Thermals', r: 30 },
-    { label:'Testing & Docs', r: 30 },
-    { label:'MATLAB / Python', r: 30 },
-    { label:'Snowboarding', r: 28 },
-    { label:'Pets', r: 26 },
-    { label:'Tinkering', r: 28 },
-  ];
-
-  let DPR=1, W=0, H=0, CX=0, CY=0, hoverIndex=-1;
-
-  // Node state
-  const P = [{...center, x:0,y:0,vx:0,vy:0, center:true}].concat(
-    nodes.map(n=>({ ...n, x:0,y:0,vx:0,vy:0, center:false }))
-  );
-
-  function fit(){
-    DPR = Math.min(2, window.devicePixelRatio||1);
-    const cssW = cvs.clientWidth, cssH = cvs.clientHeight;
-    cvs.width = Math.floor(cssW*DPR); cvs.height = Math.floor(cssH*DPR);
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-    W = cssW; H = cssH; CX = W*0.52; CY = H*0.5;
-
-    // place center
-    P[0].x = CX; P[0].y = CY;
-
-    // place satellites on a ring
-    const R = Math.min(W,H)*0.28;
-    for(let i=1;i<P.length;i++){
-      const a = (i-1)/ (P.length-1) * Math.PI*2 + Math.PI/6;
-      P[i].x = CX + Math.cos(a)*R * (0.9 + Math.random()*0.2);
-      P[i].y = CY + Math.sin(a)*R * (0.9 + Math.random()*0.2);
-    }
-  }
-
-  function step(){
-    // basic springs to center + slight attraction to ring
-    const R = Math.min(W,H)*0.28;
-    for(let i=1;i<P.length;i++){
-      const p = P[i];
-      const dx = p.x - CX, dy = p.y - CY;
-      const dist = Math.hypot(dx,dy) || 1;
-      const target = R;
-      const pull = (target - dist)*0.0025;      // ring spring
-      const fx = (dx/dist) * pull;
-      const fy = (dy/dist) * pull;
-
-      // mild attraction to center (keeps it tidy)
-      const kCenter = 0.002;
-      p.vx -= dx*kCenter; p.vy -= dy*kCenter;
-
-      // apply ring force
-      p.vx += fx; p.vy += fy;
-
-      // gentle repulsion between satellites
-      for(let j=i+1;j<P.length;j++){
-        const q = P[j];
-        const rx = p.x - q.x, ry = p.y - q.y;
-        const d2 = rx*rx + ry*ry;
-        if (d2 === 0) continue;
-        const d = Math.sqrt(d2);
-        const min = (p.r + q.r) + 12;  // desired separation
-        if (d < min){
-          const push = (min - d)*0.003;
-          const ux = rx/d, uy = ry/d;
-          p.vx += ux*push; p.vy += uy*push;
-          q.vx -= ux*push; q.vy -= uy*push;
-        }
-      }
-
-      // damping & move
-      p.vx *= 0.93; p.vy *= 0.93;
-      p.x += p.vx; p.y += p.vy;
-    }
-    // center floats slightly for life
-    P[0].x = CX + Math.sin(perfNow()*0.0007)*4;
-    P[0].y = CY + Math.cos(perfNow()*0.0009)*3;
-  }
-
-  function draw(){
-    // panel bg
-    ctx.clearRect(0,0,W,H);
-    // edges
-    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(43,47,51,.22)';
-    for(let i=1;i<P.length;i++){
-      line(P[0], P[i]);
-      // occasional cross-links
-      if (i < P.length-1 && i%2===0) line(P[i], P[i+1]);
-    }
-
-    // nodes
-    for(let i=0;i<P.length;i++){
-      const p = P[i];
-      const isHover = (i===hoverIndex);
-      const fill = p.center ? '#e9e4d7' : '#ffffff';
-      const stroke = 'rgba(43,47,51,.28)';
-      circle(p.x, p.y, p.r, fill, stroke, isHover ? 1.0 : 0.9);
-      label(p.x, p.y, p.label, p.center ? '600' : '700', isHover);
-    }
-  }
-
-  function line(a,b){
-    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-  }
-  function circle(x,y,r,fill,stroke,alpha){
-    ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.strokeStyle = stroke;
-    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
-  }
-  function label(x,y,text,weight,isHover){
-    ctx.save();
-    ctx.fillStyle = isHover ? '#1f2327' : '#2b2f33';
-    ctx.font = `${isHover? '700':'600'} 13px Inter, system-ui, sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    wrapText(text, x, y, 120, 15);
-    ctx.restore();
-  }
-  function wrapText(t, x, y, maxW, lh){
-    const words = t.split(' ');
-    let line = '', yy = y, lines=[];
-    for (let w of words){
-      const test = line ? line + ' ' + w : w;
-      if (ctx.measureText(test).width > maxW){ lines.push(line); line = w; }
-      else line = test;
-    }
-    if (line) lines.push(line);
-    const total = (lines.length-1)*lh;
-    yy -= total/2;
-    for (const ln of lines){ ctx.fillText(ln, x, yy); yy += lh; }
-  }
-  const perfNow = ()=> (performance && performance.now ? performance.now() : Date.now());
-
-  function pointer(e){
-    const r = cvs.getBoundingClientRect();
-    const mx = (e.clientX - r.left);
-    const my = (e.clientY - r.top);
-    hoverIndex = -1;
-    for(let i=0;i<P.length;i++){
-      const p = P[i];
-      if (Math.hypot(mx - p.x, my - p.y) <= p.r) { hoverIndex = i; break; }
-    }
-    cvs.style.cursor = (hoverIndex>0 ? 'pointer' : 'default');
-  }
-
-  function loop(){
-    step(); draw(); requestAnimationFrame(loop);
-  }
-
-  window.addEventListener('resize', fit);
-  cvs.addEventListener('pointermove', pointer);
-  fit(); loop();
-})();
-
     // -------------------- Footer year --------------------
     const y=$('#year'); if (y) y.textContent = new Date().getFullYear();
 
     // -------------------- Typewriter (robust) --------------------
     (function typewriter(){
       const el = $('#typed'); if (!el) return;
-      const words = ['Mechanical Engineer', 'Team Player', 'Car enthusiast','CAD Specialist', 'Leader', 'Design Engineer', 'Innovator', 'Problem Solver', 'Curious Mind', 'Doer'];
+      const words = [
+        'Mechanical Engineer',
+        'Team Player',
+        'Car enthusiast',
+        'CAD Specialist',
+        'Design Engineer',
+        'Innovator',
+        'Problem Solver',
+        'Curious Mind',
+        'Doer'
+      ];
       const TYPE=70, ERASE=45, HOLD=1100;
 
       async function typeOne(word){
@@ -212,25 +59,23 @@
     // -------------------- Navbar fade-in on scroll (fixed at top) --------------------
     const nav = $('#mainNav');
     if (nav){
-      nav.removeAttribute('hidden');           // make sure CSS can't force display:none
+      nav.removeAttribute('hidden');           // prevent display:none from HTML attr
       nav.style.willChange = 'opacity';
 
       let ticking = false;
-      let revealStart = 0;
       let revealEnd   = calcRevealEnd();       // responsive to viewport
 
       function calcRevealEnd(){
-        // ~28% of viewport height; clamp so it works on small/large screens
+        // ~28% of viewport height; clamp for small/large screens
         return clamp(Math.round(window.innerHeight * 0.28), 120, 260);
       }
 
       function updateNavFade(){
         ticking=false;
         const y = window.scrollY || 0;
-        let t = (y - revealStart) / Math.max(1, (revealEnd - revealStart));
+        let t = (y) / Math.max(1, revealEnd);
         t = clamp(t, 0, 1);
-        const minHint = (y > 1 ? 0.06 : 0.0);  // subtle visibility after 1px scroll
-        const op = Math.max(minHint, t);
+        const op = Math.max(0.0, t); // start from 0 and ramp to 1
         nav.style.opacity = op.toFixed(3);
         if (op > 0.2) nav.classList.add('nav-active'); else nav.classList.remove('nav-active');
       }
@@ -259,19 +104,19 @@
     });
 
     // -------------------- Background Particles (hero) --------------------
-    const cvs=$('#introField');
-    if (cvs){
-      const ctx=cvs.getContext('2d');
+    const bg=$('#introField');
+    if (bg){
+      const ctx=bg.getContext('2d');
       let W=0,H=0,DPR=1, pts=[], t=0;
 
       function resize(){
-        W=cvs.clientWidth; H=cvs.clientHeight; DPR=Math.min(2, window.devicePixelRatio||1);
-        cvs.width=Math.floor(W*DPR); cvs.height=Math.floor(H*DPR);
+        W=bg.clientWidth; H=bg.clientHeight; DPR=Math.min(2, window.devicePixelRatio||1);
+        bg.width=Math.floor(W*DPR); bg.height=Math.floor(H*DPR);
         ctx.setTransform(DPR,0,0,DPR,0,0);
         const taupe = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
         document.documentElement.style.setProperty('--_bgTaupe', taupe);
         // Subtle but present density
-        const count = Math.max(110, Math.min(300, Math.round((W*H)/14000)));
+        const count = Math.max(120, Math.min(320, Math.round((W*H)/14000)));
         pts = Array.from({length:count}, ()=>({
           x: Math.random()*W,
           y: Math.random()*H,
@@ -315,8 +160,173 @@
       requestAnimationFrame(()=>{ resize(); tick(); });
     }
 
+    // -------------------- Bubble Network (skills/interests) --------------------
+    (function skillsNetwork(){
+      const cvs = document.getElementById('skillsGraph'); if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+
+      // Labels + radii (bigger for readability)
+      const center = { label:'Tristan', r: 60 };
+      const nodes = [
+        { label:'CAD (NX / Creo)', r: 40 },
+        { label:'Automotive', r: 36 },
+        { label:'Wiring & PDM', r: 34 },
+        { label:'Cooling & Thermals', r: 36 },
+        { label:'Testing & Docs', r: 34 },
+        { label:'MATLAB / Python', r: 36 },
+        { label:'Snowboarding', r: 32 },
+        { label:'Pets', r: 30 },
+        { label:'Tinkering', r: 32 },
+      ];
+
+      let DPR=1, W=0, H=0, CX=0, CY=0, hoverIndex=-1;
+      const P = [{...center, x:0,y:0, baseX:0, baseY:0, center:true, wobX:0, wobY:0, seedX:Math.random()*1000, seedY:Math.random()*1000}]
+        .concat(nodes.map(n=>({ ...n, x:0,y:0, baseX:0, baseY:0, center:false, wobX:0, wobY:0, seedX:Math.random()*1000, seedY:Math.random()*1000 })));
+
+      function fit(){
+        DPR = Math.min(2, window.devicePixelRatio||1);
+        const cssW = cvs.clientWidth, cssH = cvs.clientHeight;
+        cvs.width = Math.floor(cssW*DPR); cvs.height = Math.floor(cssH*DPR);
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+        W = cssW; H = cssH;
+        CX = W*0.5; CY = H*0.5;
+
+        // place center
+        P[0].baseX = CX; P[0].baseY = CY;
+
+        // satellites: random non-overlapping-ish positions (relax if too close)
+        const pad = 26;
+        for(let i=1;i<P.length;i++){
+          let placed=false, tries=0;
+          while(!placed && tries<500){
+            const x = pad + Math.random()*(W - pad*2);
+            const y = pad + Math.random()*(H - pad*2);
+            const r = P[i].r;
+            let ok = true;
+            for(let j=0;j<i;j++){
+              const dx = x - (P[j].baseX||P[j].x), dy = y - (P[j].baseY||P[j].y);
+              const min = r + (P[j].r) + 20;
+              if (dx*dx + dy*dy < min*min){ ok=false; break; }
+            }
+            if (ok){ P[i].baseX = x; P[i].baseY = y; placed=true; }
+            tries++;
+          }
+          // fallback if too many tries
+          if (!placed){ P[i].baseX = pad + Math.random()*(W - pad*2); P[i].baseY = pad + Math.random()*(H - pad*2); }
+        }
+      }
+
+      const perfNow = ()=> (performance && performance.now ? performance.now() : Date.now());
+
+      function step(){
+        const t = perfNow()*0.001;
+
+        // gentle wobble around base positions (do NOT reorganize into a ring)
+        for(let i=0;i<P.length;i++){
+          const p = P[i];
+          const amp = p.center ? 4 : 8;        // wobble amplitude
+          const spdX = 0.5 + (p.seedX % 0.6);  // slight variation
+          const spdY = 0.5 + (p.seedY % 0.6);
+          p.wobX = Math.sin(t * (1.0 + spdX) + p.seedX) * amp;
+          p.wobY = Math.cos(t * (0.9 + spdY) + p.seedY) * amp;
+          p.x = p.baseX + p.wobX;
+          p.y = p.baseY + p.wobY;
+        }
+
+        // light repulsion to keep separation if they drift too close
+        for(let i=0;i<P.length;i++){
+          for(let j=i+1;j<P.length;j++){
+            const a = P[i], b = P[j];
+            const rx = a.x - b.x, ry = a.y - b.y;
+            const d2 = rx*rx + ry*ry;
+            const min = (a.r + b.r) + 16;
+            if (d2 > 0 && d2 < (min*min)){
+              const d = Math.sqrt(d2) || 1;
+              const push = (min - d) * 0.02;
+              const ux = rx/d, uy = ry/d;
+              a.baseX += ux * push; a.baseY += uy * push;
+              b.baseX -= ux * push; b.baseY -= uy * push;
+            }
+          }
+        }
+
+        // clamp bases to canvas (keep padding)
+        const pad = 20;
+        for(const p of P){
+          p.baseX = clamp(p.baseX, pad, W - pad);
+          p.baseY = clamp(p.baseY, pad, H - pad);
+        }
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(43,47,51,.22)';
+
+        // edges from center to satellites (branch-like)
+        for(let i=1;i<P.length;i++) line(P[0], P[i]);
+
+        // nodes
+        for(let i=0;i<P.length;i++){
+          const p = P[i];
+          const isHover = (i===hoverIndex);
+          const fill = p.center ? '#e9e4d7' : '#ffffff';
+          const stroke = 'rgba(43,47,51,.28)';
+          circle(p.x, p.y, p.r, fill, stroke, isHover ? 1.0 : 0.95);
+          label(p.x, p.y, p.label, p.center ? '600' : '700', isHover);
+        }
+      }
+
+      function line(a,b){
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+      function circle(x,y,r,fill,stroke,alpha){
+        ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.strokeStyle = stroke;
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
+      }
+      function label(x,y,text,weight,isHover){
+        ctx.save();
+        ctx.fillStyle = isHover ? '#1f2327' : '#2b2f33';
+        ctx.font = `${isHover? '700':'600'} 13px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        wrapText(text, x, y, 125, 15);
+        ctx.restore();
+      }
+      function wrapText(t, x, y, maxW, lh){
+        const words = t.split(' ');
+        let line = '', yy = y, lines=[];
+        for (let w of words){
+          const test = line ? line + ' ' + w : w;
+          if (ctx.measureText(test).width > maxW){ lines.push(line); line = w; }
+          else line = test;
+        }
+        if (line) lines.push(line);
+        const total = (lines.length-1)*lh;
+        yy -= total/2;
+        for (const ln of lines){ ctx.fillText(ln, x, yy); yy += lh; }
+      }
+
+      function pointer(e){
+        const r = cvs.getBoundingClientRect();
+        const mx = (e.clientX - r.left);
+        const my = (e.clientY - r.top);
+        hoverIndex = -1;
+        for(let i=0;i<P.length;i++){
+          const p = P[i];
+          if (Math.hypot(mx - p.x, my - p.y) <= p.r) { hoverIndex = i; break; }
+        }
+        cvs.style.cursor = (hoverIndex>0 ? 'pointer' : 'default');
+      }
+
+      function loop(){
+        step(); draw(); requestAnimationFrame(loop);
+      }
+
+      window.addEventListener('resize', fit);
+      cvs.addEventListener('pointermove', pointer);
+      fit(); loop();
+    })();
+
     // -------------------- (Optional) Refractive hover  --------------------
-    // Disabled by default since you’re switching to the CSS radial-fill effect.
-    // If you want it back, add the 'refract-armed' class to <body> and include the filter in your HTML.
+    // Disabled for panel links since you’re using the subtle fade effect via CSS.
   }
 })();
