@@ -39,6 +39,9 @@
     // Behavior: Hidden on load (opacity 0, pointer-events none). As user scrolls
     // from 0px to revealEnd, opacity ramps 0 -> 1. Nav is position:fixed so no layout shift.
     const nav = $('#mainNav');
+
+    nav?.removeAttribute('hidden'); // <<< ONE-LINE FIX so CSS can't force display:none
+
     let ticking=false;
     const revealStart = 0;     // start fading immediately when leaving top
     const revealEnd   = 220;   // px scrolled where nav is fully opaque (tweak to taste)
