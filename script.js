@@ -5,7 +5,6 @@
    • Hero gets more side padding so text isn’t on the edge
    • (keeps v3 dropdown CTA styles)
    ===================== */
-
 :root{
   --paper:#ffffff;
   --slate:#2b2f33;          /* base text */
