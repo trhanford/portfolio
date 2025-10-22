@@ -60,31 +60,37 @@
     const nav = $('#mainNav');
     if (nav){
       nav.removeAttribute('hidden');           // prevent display:none from HTML attr
-      nav.style.willChange = 'opacity';
+       
+    if (nav.hasAttribute('data-instant')){
+        nav.style.opacity = '1';
+        nav.classList.add('nav-active');
+      } else {
+        nav.style.willChange = 'opacity';
 
       let ticking = false;
       let revealEnd   = calcRevealEnd();       // responsive to viewport
 
       function calcRevealEnd(){
-        // ~28% of viewport height; clamp for small/large screens
-        return clamp(Math.round(window.innerHeight * 0.28), 120, 260);
-      }
+          // ~28% of viewport height; clamp for small/large screens
+          return clamp(Math.round(window.innerHeight * 0.28), 120, 260);
+        }
 
-      function updateNavFade(){
-        ticking=false;
-        const y = window.scrollY || 0;
-        let t = (y) / Math.max(1, revealEnd);
-        t = clamp(t, 0, 1);
-        const op = Math.max(0.0, t); // start from 0 and ramp to 1
-        nav.style.opacity = op.toFixed(3);
-        if (op > 0.2) nav.classList.add('nav-active'); else nav.classList.remove('nav-active');
-      }
+        function updateNavFade(){
+          ticking=false;
+          const y = window.scrollY || 0;
+          let t = (y) / Math.max(1, revealEnd);
+          t = clamp(t, 0, 1);
+          const op = Math.max(0.0, t); // start from 0 and ramp to 1
+          nav.style.opacity = op.toFixed(3);
+          if (op > 0.2) nav.classList.add('nav-active'); else nav.classList.remove('nav-active');
+        }
 
       function onScroll(){ if (!ticking){ ticking=true; requestAnimationFrame(updateNavFade); } }
-      function onResize(){ revealEnd = calcRevealEnd(); updateNavFade(); }
-      requestAnimationFrame(updateNavFade);
-      window.addEventListener('scroll', onScroll, {passive:true});
-      window.addEventListener('resize', onResize);
+        function onResize(){ revealEnd = calcRevealEnd(); updateNavFade(); }
+        requestAnimationFrame(updateNavFade);
+        window.addEventListener('scroll', onScroll, {passive:true});
+        window.addEventListener('resize', onResize);
+      }
     }
 
     // -------------------- Mobile Drawer --------------------
@@ -196,6 +202,7 @@
 
         // satellites: random non-overlapping-ish positions (relax if too close)
         const pad = 26;
+        measureNodes();
         for(let i=1;i<P.length;i++){
           let placed=false, tries=0;
           while(!placed && tries<500){
@@ -224,11 +231,11 @@
         // gentle wobble around base positions (do NOT reorganize into a ring)
         for(let i=0;i<P.length;i++){
           const p = P[i];
-          const amp = p.center ? 4 : 8;        // wobble amplitude
-          const spdX = 0.5 + (p.seedX % 0.6);  // slight variation
-          const spdY = 0.5 + (p.seedY % 0.6);
-          p.wobX = Math.sin(t * (1.0 + spdX) + p.seedX) * amp;
-          p.wobY = Math.cos(t * (0.9 + spdY) + p.seedY) * amp;
+          const amp = p.center ? 2.5 : 4.5;        // wobble amplitude
+          const spdX = 0.25 + (p.seedX % 0.35);     // slower variation
+          const spdY = 0.25 + (p.seedY % 0.35);
+          p.wobX = Math.sin(t * (0.6 + spdX) + p.seedX) * amp;
+          p.wobY = Math.cos(t * (0.55 + spdY) + p.seedY) * amp;
           p.x = p.baseX + p.wobX;
           p.y = p.baseY + p.wobY;
         }
@@ -271,38 +278,102 @@
           const isHover = (i===hoverIndex);
           const fill = p.center ? '#e9e4d7' : '#ffffff';
           const stroke = 'rgba(43,47,51,.28)';
-          circle(p.x, p.y, p.r, fill, stroke, isHover ? 1.0 : 0.95);
-          label(p.x, p.y, p.label, p.center ? '600' : '700', isHover);
+          const weight = isHover ? 700 : (p.center ? 600 : 700);
+          const metrics = measureLabel(p, weight);
+          const boxX = p.x - metrics.boxW/2;
+          const boxY = p.y - metrics.boxH/2;
+          roundedRect(boxX, boxY, metrics.boxW, metrics.boxH, 18, fill, stroke, isHover ? 1.0 : 0.95);
+          drawLabel(p, metrics.lines, weight, isHover);
         }
       }
 
       function line(a,b){
         ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
       }
-      function circle(x,y,r,fill,stroke,alpha){
+      function roundedRect(x,y,width,height,radius,fill,stroke,alpha){
+        const r = Math.min(radius, width/2, height/2);
         ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.strokeStyle = stroke;
-        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke(); ctx.restore();
       }
-      function label(x,y,text,weight,isHover){
+
+      function measureLabel(p, weight){
+        const MAX_WIDTH = 140;
+        const LINE_HEIGHT = 16;
+        const PAD_X = 18;
+        const PAD_Y = 12;
+        const baseFont = `${weight} 13px Inter, system-ui, sans-serif`;
+        ctx.save();
+        ctx.setTransform(1,0,0,1,0,0);
+        ctx.font = baseFont;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const lines = wrapLines(p.label, MAX_WIDTH);
+        let maxWidth = 0;
+        for (const line of lines){
+          maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
+        }
+        const minWidth = p.center ? 170 : 150;
+        const boxW = Math.max(minWidth, maxWidth + PAD_X*2);
+        const boxH = lines.length * LINE_HEIGHT + PAD_Y*2;
+        ctx.restore();
+        p.boxW = boxW;
+        p.boxH = boxH;
+        p.r = Math.max(boxW, boxH) * 0.5;
+        return { lines, boxW, boxH, lineHeight: LINE_HEIGHT, font: baseFont };
+      }
+      
+      function drawLabel(p, lines, weight, isHover){
+        const LINE_HEIGHT = 16;
         ctx.save();
         ctx.fillStyle = isHover ? '#1f2327' : '#2b2f33';
-        ctx.font = `${isHover? '700':'600'} 13px Inter, system-ui, sans-serif`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        wrapText(text, x, y, 125, 15);
+        ctx.font = `${weight} 13px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const totalHeight = (lines.length - 1) * LINE_HEIGHT;
+        let yy = p.y - totalHeight / 2;
+        for (const line of lines){
+          ctx.fillText(line, p.x, yy);
+          yy += LINE_HEIGHT;
+        }
         ctx.restore();
       }
-      function wrapText(t, x, y, maxW, lh){
-        const words = t.split(' ');
-        let line = '', yy = y, lines=[];
-        for (let w of words){
-          const test = line ? line + ' ' + w : w;
-          if (ctx.measureText(test).width > maxW){ lines.push(line); line = w; }
-          else line = test;
+      
+      function wrapLines(text, maxWidth){
+        const words = text.split(' ');
+        const lines = [];
+        let line = '';
+        for (const word of words){
+          const test = line ? `${line} ${word}` : word;
+          if (line && ctx.measureText(test).width > maxWidth){
+            lines.push(line);
+            line = word;
+          } else {
+            line = test;
+          }
         }
         if (line) lines.push(line);
-        const total = (lines.length-1)*lh;
-        yy -= total/2;
-        for (const ln of lines){ ctx.fillText(ln, x, yy); yy += lh; }
+          return lines;
+      }
+
+      function measureNodes(){
+        for(const p of P){
+          const weight = p.center ? 600 : 700;
+          const metrics = measureLabel(p, weight);
+          p.boxW = metrics.boxW;
+          p.boxH = metrics.boxH;
+          p.r = Math.max(metrics.boxW, metrics.boxH) * 0.5;
+        }
       }
 
       function pointer(e){
@@ -312,7 +383,12 @@
         hoverIndex = -1;
         for(let i=0;i<P.length;i++){
           const p = P[i];
-          if (Math.hypot(mx - p.x, my - p.y) <= p.r) { hoverIndex = i; break; }
+          const halfW = (p.boxW || (p.r*2)) / 2;
+          const halfH = (p.boxH || (p.r*2)) / 2;
+          if (mx >= p.x - halfW && mx <= p.x + halfW && my >= p.y - halfH && my <= p.y + halfH) {
+            hoverIndex = i;
+            break;
+          }
         }
         cvs.style.cursor = (hoverIndex>0 ? 'pointer' : 'default');
       }
