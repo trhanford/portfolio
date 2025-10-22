@@ -4,17 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Home — Tristan Hanford</title>
-  
+
   <!-- Fonts (optional) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 
-  <!-- Styles/JS will be added after we lock structure -->
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <!-- Styles/JS -->
+  <link rel="stylesheet" href="styles/site.css" />
 </head>
 <body>
   <!-- ===================== STICKY NAV (appears after intro) ===================== -->
-  <!-- Hidden during the hero. JS will reveal and stick once the About section is in view -->
   <nav id="mainNav" class="navbar" aria-label="Primary" hidden>
     <div class="nav-inner container">
       <div id="navTitle" class="nav-title" aria-current="page">About Me</div>
@@ -39,9 +37,18 @@
 
   <!-- ===================== INTRO / LANDING ===================== -->
   <header id="intro" class="hero" role="banner" aria-label="Landing">
-    <!-- Background canvas for subtle particles (will be repurposed later, no car) -->
+    <!-- Subtle background canvas -->
     <div class="hero-bg" aria-hidden="true">
       <canvas id="introField" class="magnetic-field"></canvas>
+    </div>
+
+    <!-- NEW: Connections bar (centered, with lines and dot dividers) -->
+    <div class="hero-connections" aria-label="Connections">
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <span class="dot" aria-hidden="true">•</span>
+      <a href="mailto:tristan@example.com">Email</a>
+      <span class="dot" aria-hidden="true">•</span>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
     </div>
 
     <div class="hero-inner container">
@@ -53,26 +60,23 @@
           <span class="prefix">I’m a&nbsp;</span>
           <span id="typed" class="typed" aria-live="polite" aria-label="Typewriter"></span>
         </p>
-        <!-- Anchor button that scrolls to About section -->
         <div class="hero-cta">
           <a class="btn-primary" href="#about" data-scroll id="ctaAbout">Learn about me</a>
         </div>
       </div>
 
-      <!-- Right: interactive quick-nav panel (responsive menu, no global navbar yet) -->
+      <!-- Right: interactive quick-nav panel -->
       <aside class="hero-col hero-col--panel" aria-label="Quick navigation">
         <div class="panel">
           <h2 class="panel-title">Explore</h2>
           <div class="panel-links" id="panelLinks">
-            <!-- These mirror the main nav, but live in the hero at right -->
             <a class="panel-link" href="#about" data-scroll data-refract="true">About Me</a>
             <a class="panel-link" href="/portfolio.html" data-refract="true">Portfolio</a>
             <a class="panel-link" href="/resume.html" data-refract="true">Digital Résumé</a>
           </div>
-          <!-- Decorative/interactive layer for refractive hover (SVG filter target) -->
+          <!-- SVG filter for refractive hover -->
           <svg class="refract-filter" width="0" height="0" aria-hidden="true">
             <defs>
-              <!-- JS will animate the seed/scale for a subtle glassy displacement on hover -->
               <filter id="refract">
                 <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="2" result="noise"/>
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
@@ -93,7 +97,7 @@
       </header>
 
       <div class="about-grid">
-        <!-- Moved portrait here, smaller & more rounded in CSS -->
+        <!-- Portrait moved here; CSS makes it smaller & rounder -->
         <figure class="portrait">
           <img id="profilePhoto" src="assets/tristan.jpg" alt="Portrait of Tristan Hanford" />
         </figure>
@@ -103,6 +107,7 @@
             I design and build integrated mechanical and electrical systems: CAD packaging, harness design, cooling,
             controls integration (ECU/CAN), and validation. I like neat looms, serviceability, and a well-named netlist.
           </p>
+
           <div class="about-cards">
             <article class="about-card">
               <h3>Core Skills</h3>
@@ -123,9 +128,10 @@
             </article>
           </div>
 
+          <!-- Button role swap: Portfolio = filled taupe, Résumé = outlined grey -->
           <div class="about-cta">
-            <a class="btn-outline" href="/portfolio.html">View Portfolio</a>
-            <a class="btn-primary" href="/resume.html">Digital Résumé</a>
+            <a class="btn-primary is-taupe" href="/portfolio.html">View Portfolio</a>
+            <a class="btn-outline" href="/resume.html">Digital Résumé</a>
           </div>
         </div>
       </div>
@@ -140,24 +146,11 @@
     </div>
   </footer>
 
-  <!-- ===================== NO-SCRIPT ===================== -->
   <noscript>
     <div class="noscript container">This site uses a small amount of JavaScript for scroll effects and interactions. It will still display, but interactive elements are disabled without JavaScript.</div>
   </noscript>
 
-  <!-- Notes for CSS/JS implementation:
-    CSS tasks:
-      - Two-column hero layout with right-side panel styled as a mini-nav; refractive hover via filter: url(#refract)
-      - About grid: portrait on the left (rounded), copy/cards on the right
-      - Color scheme: white / slate grey / taupe; tokens with --paper, --slate, --taupe
-      - Sticky nav hidden by default; revealed when the About section crosses a threshold
-
-    JS tasks:
-      - Typewriter effect on #typed (reuse prior logic)
-      - Smooth-scroll for [data-scroll] links
-      - IntersectionObserver: when #about is sufficiently in view, unhide #mainNav and add sticky behavior; update #navTitle with current section name
-      - Refractive hover: on .panel-link hover/move, toggle filter id="refract" and animate baseFrequency/scale for a glassy ripple near cursor (fallback to simple transform for browsers lacking SVG filters)
-      - Lightweight particle field on #introField (subtle, not dominant)
-  -->
+  <!-- Scripts -->
+  <script src="scripts/site.js" defer></script>
 </body>
 </html>
