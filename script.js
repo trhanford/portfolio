@@ -1,34 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const features = document.querySelectorAll(".feature-item");
+// Baseline JS (we’ll add heavy interactions next)
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("visible");
-            } else {
-                entry.target.classList.remove("visible");
-            }
-        });
-    }, {
-        threshold: 0.1, // Trigger when 10% of the element is visible
-    });
-
-    features.forEach((feature) => {
-        observer.observe(feature);
-    });
-});
-document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const navLinks = document.querySelector(".nav-links");
-
-    menuToggle.addEventListener("click", () => {
-        navLinks.classList.toggle("mobile-active");
-    });
-});
-
- document.addEventListener("DOMContentLoaded", function() {
-    const featuresVideo = document.querySelector("video.features-bg");
-    if (featuresVideo) {
-      featuresVideo.playbackRate = 1; // Change 0.75 to your desired speed (e.g., 0.5 for half speed)
-    }
+// Mobile drawer
+const burger = document.getElementById('burger');
+const drawer = document.getElementById('drawer');
+if (burger && drawer) {
+  burger.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    drawer.setAttribute('aria-hidden', String(!open));
+    burger.setAttribute('aria-expanded', String(open));
   });
+}
+
+// Footer year
+const y = document.getElementById('year');
+if (y) y.textContent = new Date().getFullYear();
+
+// Lightweight reveal-on-scroll (progressive; no deps)
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if ('IntersectionObserver' in window && !prefersReduced) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+}
