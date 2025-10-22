@@ -8,103 +8,156 @@
   <!-- Fonts (optional) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 
-  <!-- Styles & Scripts will be provided later -->
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <!-- Styles/JS will be added after we lock structure -->
+  <!-- <link rel="stylesheet" href="styles/site.css"> -->
+  <!-- <script src="scripts/site.js" defer></script> -->
 </head>
 <body>
-  <!-- ===================== NAVBAR ===================== -->
-  <nav class="navbar" aria-label="Primary">
-    <div class="nav-inner">
-      <!-- Left: current page title instead of name/brand -->
-      <div id="navTitle" class="nav-title" aria-current="page">Home</div>
-
-      <!-- Center: primary links -->
+  <!-- ===================== STICKY NAV (appears after intro) ===================== -->
+  <!-- Hidden during the hero. JS will reveal and stick once the About section is in view -->
+  <nav id="mainNav" class="navbar" aria-label="Primary" hidden>
+    <div class="nav-inner container">
+      <div id="navTitle" class="nav-title" aria-current="page">About Me</div>
       <ul class="nav-links" role="list">
-        <li><a href="#/home" data-route aria-current="page">Home</a></li>
-        <li><a href="#/about" data-route>About Me</a></li>
-        <li><a href="#/portfolio" data-route>Portfolio</a></li>
-        <li><a href="#/resume" data-route>Digital Résumé</a></li>
+        <li><a href="#intro" data-scroll>Home</a></li>
+        <li><a href="#about" data-scroll aria-current="page">About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
       </ul>
-
-      <!-- Right: menu button (mobile) -->
       <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">☰</button>
     </div>
-
     <!-- Mobile drawer -->
     <div id="drawer" class="drawer" aria-hidden="true">
       <ul role="list">
-        <li><a href="#/home" data-route>Home</a></li>
-        <li><a href="#/about" data-route>About Me</a></li>
-        <li><a href="#/portfolio" data-route>Portfolio</a></li>
-        <li><a href="#/resume" data-route>Digital Résumé</a></li>
+        <li><a href="#intro" data-scroll>Home</a></li>
+        <li><a href="#about" data-scroll>About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- ===================== MAIN / HERO ===================== -->
-  <main id="main" class="main" tabindex="-1">
-    <!-- Magnetic field background canvas (mouse‑responsive) -->
+  <!-- ===================== INTRO / LANDING ===================== -->
+  <header id="intro" class="hero" role="banner" aria-label="Landing">
+    <!-- Background canvas for subtle particles (will be repurposed later, no car) -->
     <div class="hero-bg" aria-hidden="true">
-      <canvas id="magneticField" class="magnetic-field"></canvas>
+      <canvas id="introField" class="magnetic-field"></canvas>
     </div>
 
-    <section class="hero" aria-label="Landing">
-      <div class="hero-inner">
-        <!-- Two-column hero: left text, right photo -->
-        <div class="hero-col hero-col--text">
-          <div class="eyebrow">Mechanical Engineer • Systems Integrator • Builder</div>
-          <h1 class="hero-title">Hey there, I’m Tristan</h1>
-          <p class="typed-wrap">
-            <span class="prefix">I’m a&nbsp;</span>
-            <span id="typed" class="typed" aria-live="polite" aria-label="Typewriter text area"></span>
+    <div class="hero-inner container">
+      <!-- Left: greeting + typewriter -->
+      <div class="hero-col hero-col--text">
+        <div class="eyebrow">Mechanical Engineer • Systems Integrator • Builder</div>
+        <h1 class="hero-title">Hey there, I’m Tristan</h1>
+        <p class="typed-wrap">
+          <span class="prefix">I’m a&nbsp;</span>
+          <span id="typed" class="typed" aria-live="polite" aria-label="Typewriter"></span>
+        </p>
+        <!-- Anchor button that scrolls to About section -->
+        <div class="hero-cta">
+          <a class="btn-primary" href="#about" data-scroll id="ctaAbout">Learn about me</a>
+        </div>
+      </div>
+
+      <!-- Right: interactive quick-nav panel (responsive menu, no global navbar yet) -->
+      <aside class="hero-col hero-col--panel" aria-label="Quick navigation">
+        <div class="panel">
+          <h2 class="panel-title">Explore</h2>
+          <div class="panel-links" id="panelLinks">
+            <!-- These mirror the main nav, but live in the hero at right -->
+            <a class="panel-link" href="#about" data-scroll data-refract="true">About Me</a>
+            <a class="panel-link" href="/portfolio.html" data-refract="true">Portfolio</a>
+            <a class="panel-link" href="/resume.html" data-refract="true">Digital Résumé</a>
+          </div>
+          <!-- Decorative/interactive layer for refractive hover (SVG filter target) -->
+          <svg class="refract-filter" width="0" height="0" aria-hidden="true">
+            <defs>
+              <!-- JS will animate the seed/scale for a subtle glassy displacement on hover -->
+              <filter id="refract">
+                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="2" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+              </filter>
+            </defs>
+          </svg>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ===================== ABOUT ME (same page) ===================== -->
+  <main id="about" class="section about" role="region" aria-label="About Me">
+    <div class="container">
+      <header class="section-header">
+        <h2>About Me</h2>
+        <p>Hands-on mechanical + electrical builder focused on tidy, serviceable systems and clear documentation.</p>
+      </header>
+
+      <div class="about-grid">
+        <!-- Moved portrait here, smaller & more rounded in CSS -->
+        <figure class="portrait">
+          <img id="profilePhoto" src="assets/tristan.jpg" alt="Portrait of Tristan Hanford" />
+        </figure>
+
+        <div class="about-body">
+          <p>
+            I design and build integrated mechanical and electrical systems: CAD packaging, harness design, cooling,
+            controls integration (ECU/CAN), and validation. I like neat looms, serviceability, and a well-named netlist.
           </p>
-        </div>
+          <div class="about-cards">
+            <article class="about-card">
+              <h3>Core Skills</h3>
+              <ul>
+                <li>Siemens NX / Creo Parametric</li>
+                <li>Harness design, PDM, sensors & relays</li>
+                <li>MATLAB, Python, LTspice</li>
+                <li>Thermals: fan/shroud, ECU temp triggers</li>
+              </ul>
+            </article>
+            <article class="about-card">
+              <h3>How I work</h3>
+              <ul>
+                <li>Plan → build → instrument → test → iterate</li>
+                <li>Write test plans and capture results</li>
+                <li>Document for handoff (prints, schematics, BOMs)</li>
+              </ul>
+            </article>
+          </div>
 
-        <div class="hero-col hero-col--photo">
-          <!-- Replace src with actual photo path -->
-          <figure class="portrait">
-            <img id="profilePhoto" src="assets/tristan_profile.jpg" alt="Portrait of Tristan Hanford" />
-          </figure>
+          <div class="about-cta">
+            <a class="btn-outline" href="/portfolio.html">View Portfolio</a>
+            <a class="btn-primary" href="/resume.html">Digital Résumé</a>
+          </div>
         </div>
       </div>
-
-      <!-- Centered CTA below both columns -->
-      <div class="hero-cta">
-        <!-- On hover: radiating squares. On click: expands horizontally into nav options -->
-        <button id="ctaLearn" class="cta-learn" aria-expanded="false" aria-controls="learnMenu">
-          Learn about me
-        </button>
-
-        <!-- Expanding menu (hidden by default, revealed/animated by JS) -->
-        <div id="learnMenu" class="learn-menu" hidden>
-          <a href="#/about" data-route class="learn-link">About Me</a>
-          <a href="#/portfolio" data-route class="learn-link">Portfolio</a>
-          <a href="#/resume" data-route class="learn-link">Digital Résumé</a>
-        </div>
-      </div>
-    </section>
+    </div>
   </main>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
-    <div class="footer-inner">
+    <div class="footer-inner container">
       <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
       <small class="made">Built with care.</small>
     </div>
   </footer>
 
-  <!-- ===================== ACCESSIBILITY HELPERS / NO SCRIPT ===================== -->
+  <!-- ===================== NO-SCRIPT ===================== -->
   <noscript>
-    <div class="noscript">This site uses a small amount of JavaScript for animations and navigation. It will still display, but interactive features are disabled without JavaScript.</div>
+    <div class="noscript container">This site uses a small amount of JavaScript for scroll effects and interactions. It will still display, but interactive elements are disabled without JavaScript.</div>
   </noscript>
 
-  <!-- Notes for future CSS/JS implementation:
-    - Navbar: sticky top, .nav-title reflects current route text via JS for all pages.
-    - Hero layout: 2-col grid; responsive stack on narrow screens.
-    - #magneticField: canvas sized to hero; JS drives particle physics with mouse attraction to centerline and edge repulsion.
-    - #ctaLearn: hover emits square particles; click toggles aria-expanded and animates #learnMenu expansion into three pill buttons.
-    - #typed: type/erase loop for ["Mechanical Engineer", "Car enthusiast", "Pet lover"].
+  <!-- Notes for CSS/JS implementation:
+    CSS tasks:
+      - Two-column hero layout with right-side panel styled as a mini-nav; refractive hover via filter: url(#refract)
+      - About grid: portrait on the left (rounded), copy/cards on the right
+      - Color scheme: white / slate grey / taupe; tokens with --paper, --slate, --taupe
+      - Sticky nav hidden by default; revealed when the About section crosses a threshold
+
+    JS tasks:
+      - Typewriter effect on #typed (reuse prior logic)
+      - Smooth-scroll for [data-scroll] links
+      - IntersectionObserver: when #about is sufficiently in view, unhide #mainNav and add sticky behavior; update #navTitle with current section name
+      - Refractive hover: on .panel-link hover/move, toggle filter id="refract" and animate baseFrequency/scale for a glassy ripple near cursor (fallback to simple transform for browsers lacking SVG filters)
+      - Lightweight particle field on #introField (subtle, not dominant)
   -->
 </body>
 </html>
