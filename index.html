@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tristan Hanford — Mechanical Engineer</title>
+  <meta name="description" content="Mechanical engineering portfolio — classic Bronco restorations, CAD, systems integration, and product development.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#home">Tristan Hanford</a>
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="home" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Mechanical Engineer • Systems Integrator • Builder</p>
+        <h1>Bronco builds, end‑to‑end — <span class="hi">from CAD to road‑ready.</span></h1>
+        <p class="sub">Founder & Lead Engineer at Hanford Restorations. I design and build fully‑integrated classic Broncos spanning powertrain, electrical, cooling, and suspension.</p>
+        <div class="cta">
+          <a class="btn" href="#projects">See projects</a>
+          <a class="btn ghost" href="#contact">Contact</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="images/placeholder_hero.jpg" alt="Bronco build hero image" />
+      </div>
+    </div>
+  </main>
+
+  <section id="about" class="about">
+    <div class="container">
+      <h2>About</h2>
+      <p>Final‑year Mechanical Engineering student at Purdue (’26). I build vehicles and systems the way products are built: requirements → CAD → prototype → test → iterate → deliver. I like crisp wiring, tidy packaging, and documentation.</p>
+      <div class="about-cols">
+        <div>
+          <h3>Technical</h3>
+          <ul>
+            <li>CAD: Siemens NX, Creo Parametric</li>
+            <li>Programming/Analysis: MATLAB, Python, C++, LTspice</li>
+            <li>Systems: EFI fuel delivery, power distribution, CAN‑based cooling control</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Highlights</h3>
+          <ul>
+            <li>Founder & Lead Engineer — Hanford Restorations (2022–Present)</li>
+            <li>Chicago Auto Show — 2nd Place (’74 CJ5)</li>
+            <li>Purdue ASME • OSHA Certified</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="skills">
+    <div class="container">
+      <h2>Skills</h2>
+      <ul class="chips">
+        <li>Siemens NX</li><li>Creo Parametric</li><li>MATLAB</li><li>Python</li><li>C++</li>
+        <li>LTspice</li><li>Vehicle wiring</li><li>Fabrication</li><li>Excel</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects" class="projects">
+    <div class="container">
+      <h2>Projects</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="images/placeholder_1.jpg" alt="68 Bronco project" />
+          <div class="card-body">
+            <h3>’68 Bronco — Pilot Build</h3>
+            <p>EFI fuel delivery, CAN‑triggered cooling, custom electrical harness. CAD in Creo/NX; packaging for serviceability & aesthetics.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="images/placeholder_2.jpg" alt="CJ5 project" />
+          <div class="card-body">
+            <h3>’74 CJ5 — Show Vehicle</h3>
+            <p>Electrical system redesign (HEI distributor, dual‑battery isolator). Noise mitigation and gauge stability via grounding strategy.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="images/placeholder_3.jpg" alt="Cooling system" />
+          <div class="card-body">
+            <h3>Custom Cooling System</h3>
+            <p>4000 CFM fan system integrated with ECU temperature sensing. Reliability under off‑road loads; service‑friendly wiring.</p>
+          </div>
+        </article>
+      </div>
+      <div class="center">
+        <a class="btn ghost" href="assets/Tristan_Hanford_Resume.pdf" target="_blank" rel="noopener">Download Resume (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="work">
+    <div class="container">
+      <h2>Work</h2>
+      <ul class="links">
+        <li><a href="#" target="_blank" rel="noopener">Hanford Restorations</a></li>
+        <li><a href="#" target="_blank" rel="noopener">Chicago Auto Show — CJ5 Feature</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container contact-grid">
+      <div>
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:tristan@example.com">tristan@example.com</a></p>
+        <p>LinkedIn: <a href="#" target="_blank" rel="noopener">linkedin.com/in/yourhandle</a></p>
+      </div>
+      <form class="contact-form" onsubmit="return false;">
+        <label>Name
+          <input type="text" placeholder="Your name">
+        </label>
+        <label>Email
+          <input type="email" placeholder="you@email.com">
+        </label>
+        <label>Message
+          <textarea rows="4" placeholder="How can I help?"></textarea>
+        </label>
+        <button class="btn" type="submit" disabled>Send (static demo)</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
+    </div>
+  </footer>
+</body>
+</html>
