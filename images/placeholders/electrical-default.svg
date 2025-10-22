@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Electronics project placeholder</title>
+  <desc id="desc">Stylized waveform and circuit traces as placeholder art</desc>
+  <defs>
+    <linearGradient id="waveGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#31274c" />
+      <stop offset="100%" stop-color="#1d1334" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#waveGrad)" rx="32" ry="32" />
+  <g fill="none" stroke="#f5e4ff" stroke-width="4" opacity="0.8">
+    <path d="M60 280c40-160 120-160 160 0s120 160 160 0 120-160 160 0 120 160 160 0" />
+    <path d="M120 380h560" stroke-dasharray="14 10" />
+    <circle cx="180" cy="380" r="16" fill="#f5e4ff" />
+    <circle cx="620" cy="380" r="16" fill="#f5e4ff" />
+  </g>
+  <text x="50%" y="120" fill="#f5e4ff" font-size="44" font-family="'Inter', Arial, sans-serif" text-anchor="middle" font-weight="700">Computer & Electrical</text>
+  <text x="50%" y="170" fill="#f5e4ff" opacity="0.7" font-size="26" font-family="'Inter', Arial, sans-serif" text-anchor="middle">Swap with project imagery when ready</text>
+</svg>
