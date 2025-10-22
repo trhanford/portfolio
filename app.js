@@ -1,5 +1,156 @@
 // app.enhanced.js — adds mouse-parallax background + professional scroll showcase for skill chips
 // Drop-in replacement for app.js. No HTML edits required; this script injects any needed CSS.
+// app.js — externalized scripts for Tristan's single-file SPA
+// Wrap everything to ensure DOM is ready
+
+document.addEventListener('DOMContentLoaded', () => {
+  /* ============== Helpers ============== */
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  // Footer year
+  const year = $('#year');
+  if (year) year.textContent = new Date().getFullYear();
+
+  /* ============== Mobile Drawer ============== */
+  const drawer = $('#drawer');
+  const menuBtn = $('#menuBtn');
+  menuBtn?.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    drawer.setAttribute('aria-hidden', String(!open));
+  });
+  drawer?.addEventListener('click', (e) => {
+    if (e.target.matches('[data-route]')) drawer.classList.remove('open');
+  });
+
+  /* ============== Typed Headline ============== */
+  const typedEl = $('#typed');
+  const words = ['Mechanical Engineer', 'Car enthusiast', 'Pet lover'];
+  const TYPE_DELAY = 70; // ms per char when typing
+  const ERASE_DELAY = 45; // ms per char when erasing
+  const HOLD_DELAY = 1200; // ms to hold full word before erasing
+
+  async function typeWord(word) {
+    for (let i = 1; i <= word.length; i++) {
+      if (!typedEl) return; // guard if node missing
+      typedEl.textContent = word.slice(0, i);
+      await new Promise((r) => setTimeout(r, TYPE_DELAY));
+    }
+    await new Promise((r) => setTimeout(r, HOLD_DELAY));
+    for (let i = word.length; i >= 0; i--) {
+      if (!typedEl) return;
+      typedEl.textContent = word.slice(0, i);
+      await new Promise((r) => setTimeout(r, ERASE_DELAY));
+    }
+  }
+
+  (async function cycle() {
+    if (!typedEl) return; // run only where the element exists
+    while (true) {
+      for (const w of words) {
+        // eslint-disable-next-line no-await-in-loop
+        await typeWord(w);
+      }
+    }
+  })();
+
+  /* ============== Simple Router (hash-based) ============== */
+  const routes = ['home', 'portfolio', 'resume'];
+
+  function setActiveLink(hash) {
+    const path = hash.replace('#/', '') || 'home';
+    $$('.nav-links a').forEach((a) => {
+      a.classList.toggle('active', a.getAttribute('href') === `#/${path}`);
+    });
+  }
+
+  function render() {
+    const path = location.hash.replace('#/', '') || 'home';
+    routes.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('active', id === path);
+    });
+    setActiveLink(location.hash);
+    const active = document.getElementById(path);
+    active?.setAttribute('tabindex', '-1');
+    active?.focus({ preventScroll: true });
+  }
+  window.addEventListener('hashchange', render);
+  if (!location.hash) location.hash = '#/home';
+  render();
+
+  /* ============== Portfolio Cards ============== */
+  const projects = [
+    {
+      title: 'Chassis & Powertrain',
+      img: 'project-chassis.jpg',
+      alt: 'Chassis, powertrain & suspension assembly',
+      copy: 'Blueprinted assembly and systems routing with serviceability in mind.',
+    },
+    {
+      title: 'Body & Interior',
+      img: 'project-bodywork.jpg',
+      alt: 'Bodywork, interior fitting, and paint prep',
+      copy: 'Panel alignment, interior fitment, and finishing workflow.',
+    },
+    {
+      title: 'Final Assembly',
+      img: 'project-commission.jpg',
+      alt: 'Final assembly and inspection',
+      copy: 'Calibration, test procedure, and documentation for delivery.',
+    },
+    {
+      title: 'Harness & PDM',
+      img: 'project-electrical.jpg',
+      alt: 'Harness and power distribution',
+      copy: 'Distribution, grounding, and noise mitigation strategies.',
+    },
+    {
+      title: 'Controls Integration',
+      img: 'project-wiring.jpg',
+      alt: 'ECU/CAN integration',
+      copy: 'Sensors, relays, and CAN-based logic for controls.',
+    },
+    {
+      title: 'Cooling Package',
+      img: 'project-cooling.jpg',
+      alt: 'Cooling system detail',
+      copy: 'Fan selection, shrouds, and ECU temperature triggers.',
+    },
+  ];
+  const grid = document.getElementById('portfolioGrid');
+  if (grid) {
+    grid.innerHTML = projects
+      .map(
+        (p) => `
+      <article class="card">
+        <a href="${p.img}" data-lightbox>
+          <img src="${p.img}" alt="${p.alt}" />
+        </a>
+        <div class="card-body">
+          <h3>${p.title}</h3>
+          <p>${p.copy}</p>
+        </div>
+      </article>`
+      )
+      .join('');
+  }
+
+  /* ============== Lightbox ============== */
+  const lb = $('#lightbox');
+  const lbImg = $('#lightboxImg');
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('[data-lightbox]');
+    if (!a) return;
+    e.preventDefault();
+    if (lb && lbImg) {
+      lbImg.src = a.getAttribute('href');
+      lb.classList.add('open');
+    }
+  });
+  lb?.addEventListener('click', () => lb.classList.remove('open'));
+});
 
 (function(){
   const $ = (s, r=document)=>r.querySelector(s);
