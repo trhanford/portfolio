@@ -35,6 +35,9 @@
 
   <main>
     <header class="portfolio-hero">
+      <div class="portfolio-hero-bg" aria-hidden="true">
+        <canvas id="portfolioField" class="magnetic-field"></canvas>
+      </div>
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow">Selected Work</p>
@@ -42,14 +45,10 @@
           <p class="hero-subtitle">Browse a sampling of automotive restorations, CAD studies, and computer &amp; electrical projects. Each entry links to a richer gallery or interactive viewer.</p>
         </div>
         <div class="hero-note">
-          <div class="note-card">
-            <h2>How to explore</h2>
-            <ol>
-              <li>Pick a category below.</li>
-              <li>Select a project and choose <strong>See more →</strong>.</li>
-              <li>Swipe or scroll through images, or orbit 3D models right in your browser.</li>
-            </ol>
-          </div>
+         <a class="start-exploring-btn" href="#automotive" data-scroll>
+            <span class="label">Start Exploring</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
         </div>
       </div>
     </header>
