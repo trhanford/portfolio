@@ -17,7 +17,7 @@
     // -------------------- Typewriter (robust) --------------------
     (function typewriter(){
       const el = $('#typed'); if (!el) return;
-      const words = ['Mechanical Engineer','Car enthusiast','Pet lover'];
+      const words = ['Mechanical Engineer', 'Team Player', 'Car enthusiast','CAD Specialist', 'Leader', 'Design Engineer', 'Innovator', 'Problem Solver', 'Curious Mind', 'Doer'];
       const TYPE=70, ERASE=45, HOLD=1100;
 
       async function typeOne(word){
