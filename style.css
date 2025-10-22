@@ -178,7 +178,7 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
   max-width: var(--maxw);
   margin: 0 auto;
   padding: 18px 24px;
-  padding-left: max(8vw, 56px); /* pushes the title right */
+  padding-left: max(8vw, 36px); /* pushes the title right */
 }
 
 .section-band h2{
