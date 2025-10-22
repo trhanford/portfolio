@@ -1,0 +1,319 @@
+/* ==================================================================
+   Portfolio Page Styles
+   ================================================================== */
+
+body.portfolio-page{
+  background:var(--paper);
+  color:var(--slate);
+}
+
+body.portfolio-page main{
+  padding-top:calc(var(--nav-h) + 32px);
+}
+
+.portfolio-hero{
+  padding:72px 0 48px;
+  background:linear-gradient(180deg, rgba(228,221,204,0.55) 0%, rgba(228,221,204,0) 100%);
+  border-bottom:1px solid rgba(15,17,19,.08);
+}
+
+.portfolio-hero .hero-inner{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:48px;
+  align-items:start;
+}
+
+@media (max-width:980px){
+  .portfolio-hero .hero-inner{grid-template-columns:1fr;gap:36px;}
+}
+
+.hero-copy .hero-title{
+  font-size:clamp(2.5rem, 5vw, 3.8rem);
+  font-family:'Playfair Display', Georgia, serif;
+  color:var(--slate-strong);
+}
+
+.hero-copy .hero-subtitle{
+  margin-top:14px;
+  font-size:clamp(1.02rem, 2vw, 1.28rem);
+  color:var(--muted);
+  max-width:36ch;
+}
+
+.hero-note{display:flex;align-items:stretch;}
+
+.note-card{
+  background:#fff;
+  border-radius:var(--radius-xl);
+  padding:28px 32px;
+  box-shadow:var(--shadow-1);
+  border:1px solid var(--line);
+}
+
+.note-card h2{
+  margin:0 0 16px;
+  font-size:1.2rem;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.note-card ol{
+  margin:0;
+  padding-left:20px;
+  display:grid;
+  gap:12px;
+  color:var(--slate);
+  font-weight:500;
+}
+
+.portfolio-section{
+  padding:60px 0 40px;
+  border-bottom:1px solid rgba(15,17,19,.06);
+}
+
+.portfolio-section:last-of-type{border-bottom:none;padding-bottom:80px;}
+
+.section-head{
+  max-width:720px;
+  margin-bottom:32px;
+}
+
+.section-head h2{
+  font-size:clamp(1.8rem, 4vw, 2.8rem);
+  font-family:'Playfair Display', Georgia, serif;
+  color:var(--slate-strong);
+}
+
+.section-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+}
+
+.projects-grid{
+  display:grid;
+  gap:28px;
+}
+
+@media (min-width:720px){
+  .projects-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+
+@media (min-width:1180px){
+  .projects-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+
+.project-card{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:20px;
+  padding:22px;
+  background:#fff;
+  border-radius:var(--radius-xl);
+  border:1px solid rgba(15,17,19,.08);
+  box-shadow:var(--shadow-1);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.project-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-2);
+}
+
+@media (max-width:720px){
+  .project-card{grid-template-columns:1fr;}
+}
+
+.project-media{
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  background:var(--taupe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.project-media img{width:100%;height:auto;display:block;object-fit:cover;}
+
+.project-info h3{
+  margin:0 0 8px;
+  font-size:1.25rem;
+  font-weight:800;
+  color:var(--slate-strong);
+}
+
+.project-summary{
+  margin:0 0 16px;
+  color:var(--muted);
+}
+
+.project-more{
+  background:none;
+  border:none;
+  color:var(--accent-soft);
+  font-weight:800;
+  font-size:1rem;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0;
+}
+
+.project-more:hover,.project-more:focus-visible{
+  color:var(--slate-strong);
+}
+
+.projects-grid--cad .project-card{
+  grid-template-columns:200px 1fr;
+}
+
+@media (max-width:920px){
+  .projects-grid--cad .project-card{grid-template-columns:1fr;}
+}
+
+/* -------------------- Modal -------------------- */
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:none;
+}
+
+.modal.open{display:block;}
+
+.modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(20,24,28,.55);
+  backdrop-filter:blur(6px);
+}
+
+.modal-dialog{
+  position:relative;
+  margin:80px auto;
+  max-width:min(960px, calc(100% - 48px));
+  background:#fff;
+  border-radius:var(--radius-xl);
+  padding:32px 32px 40px;
+  box-shadow:0 28px 68px rgba(15,17,19,.35);
+  border:1px solid rgba(15,17,19,.18);
+}
+
+@media (max-width:720px){
+  .modal-dialog{margin:60px auto;padding:24px 20px 32px;}
+}
+
+.modal-close{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:none;
+  background:rgba(228,221,204,.55);
+  font-size:1.6rem;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.modal-close:hover,.modal-close:focus-visible{
+  background:rgba(228,221,204,.85);
+}
+
+.modal-header{
+  margin-bottom:20px;
+}
+
+.modal-header h2{
+  margin:0;
+  font-size:clamp(1.6rem, 3vw, 2.4rem);
+  color:var(--slate-strong);
+}
+
+.modal-subtitle{
+  margin:8px 0 0;
+  color:var(--muted);
+}
+
+.modal-body{
+  display:grid;
+  gap:24px;
+}
+
+.modal-gallery{
+  display:flex;
+  gap:18px;
+  overflow-x:auto;
+  padding-bottom:8px;
+  scroll-snap-type:x mandatory;
+}
+
+.modal-gallery figure{
+  margin:0;
+  min-width:min(320px, 70vw);
+  scroll-snap-align:start;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  border:1px solid rgba(15,17,19,.12);
+  background:var(--taupe);
+  box-shadow:var(--shadow-1);
+}
+
+.modal-gallery img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.modal-note{
+  padding:18px 20px;
+  border-radius:var(--radius-lg);
+  background:rgba(228,221,204,.45);
+  border:1px solid rgba(15,17,19,.12);
+  font-size:.95rem;
+  color:var(--slate);
+}
+
+.modal-note strong{display:block;margin-bottom:6px;}
+
+.modal-viewer{
+  width:100%;
+  height:420px;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  border:1px solid rgba(15,17,19,.14);
+  box-shadow:var(--shadow-1);
+  background:var(--taupe);
+}
+
+.modal-viewer model-viewer{
+  width:100%;
+  height:100%;
+  --poster-color:rgba(43,47,51,.9);
+}
+
+.modal-viewer .viewer-placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  padding:32px;
+  text-align:center;
+  color:var(--muted);
+  font-weight:600;
+  background:rgba(43,47,51,.05);
+}
+
+.modal-viewer .viewer-placeholder strong{
+  display:block;
+  margin-bottom:8px;
+  color:var(--slate-strong);
+}
+
+body.modal-open{overflow:hidden;}
