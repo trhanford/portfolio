@@ -1,201 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tristan Hanford | Mechanical Engineer</title>
+  <title>Tristan Hanford — Home</title>
   <link rel="icon" href="assets/favicon.png" />
   <link rel="stylesheet" href="styles.css" />
   <script defer src="script.js"></script>
 </head>
-
 <body>
+  <!-- Reactive background (controlled via CSS variables from JS) -->
+  <div class="bg"></div>
 
-  <!-- ================= HERO ================= -->
-  <div class="hero" id="hero">
-    <div class="canvas">
-      <!-- Optional background canvas (leave as-is if unused) -->
-      <canvas class="connecting-dots" width="1200" height="800" style="display:block;"></canvas>
-    </div>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero__left">
+        <h1 class="hi">Hey There! I’m Tristan</h1>
 
-    <div class="heading flex">
-      <div class="heading__line-1">
-        <span>Hello, I’m</span><br />
-        <span><strong>Tristan Hanford</strong></span>
-      </div>
-
-      <div class="heading__line-2">
-        Mechanical Engineer &amp; Systems Integrator.
-      </div>
-
-      <div class="heading__cta flex">
-        <a href="#projects" class="heading__link">
-          View my work
-          <svg class="heading__arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M11.293 5.707L12.707 4.293 20 11.586 12.707 18.879 11.293 17.465 16.586 12.172 4 12.172 4 10.172 16.586 10.172z"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Sticky NAV like the reference -->
-    <nav class="navigation-bar flex" aria-label="Primary">
-      <ul class="navigation flex">
-        <li class="navigation__item navigation__item--active" id="nav-hero"><a href="#hero">Home</a></li>
-        <li class="navigation__item" id="nav-about"><a href="#about">About</a></li>
-        <li class="navigation__item" id="nav-skills"><a href="#skills">Skills</a></li>
-        <li class="navigation__item" id="nav-projects"><a href="#projects">Projects</a></li>
-        <li class="navigation__item" id="nav-contact"><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <!-- Decorative background container (optional) -->
-  <div class="main-bg">
-    <div class="canvas"></div>
-  </div>
-
-  <!-- ================= ABOUT ================= -->
-  <section class="about" id="about">
-    <h2 class="about__heading section-heading">About</h2>
-
-    <div class="about__content flex">
-      <div class="profile profile__fade-in flex">
-        <!-- Replace with your headshot -->
-        <img class="profile__picture" src="images/profile.jpg" alt="Tristan Hanford portrait" width="360" height="360" />
-      </div>
-
-      <div class="profile__blurb">
-        <p>
-          Final-year Mechanical Engineering student at Purdue (’26). Founder &amp; Lead Engineer at
-          <strong>Hanford Restorations</strong>, where I design and build fully integrated classic Broncos —
-          from CAD and packaging to wiring, cooling, and final assembly. I focus on reliability, clean execution,
-          and documentation.
-        </p>
-        <p>
-          I enjoy solving end-to-end problems: requirements → CAD → prototype → test → iterate → deliver.
-          Interests include vehicle dynamics, product development, and manufacturing process design.
+        <p class="subline">
+          I am a
+          <span class="typewrap">
+            <span id="type-target" aria-live="polite"></span>
+            <span class="caret" aria-hidden="true"></span>
+          </span>
         </p>
       </div>
-    </div>
-  </section>
 
-  <!-- ================= SKILLS ================= -->
-  <section class="skills" id="skills">
-    <h2 class="skills__heading section-heading">Skills</h2>
-
-    <div class="skills__row flex">
-      <div class="skills__item"><div class="skills__item-name">Siemens NX</div></div>
-      <div class="skills__item"><div class="skills__item-name">Creo Parametric</div></div>
-      <div class="skills__item"><div class="skills__item-name">CAD Packaging</div></div>
-      <div class="skills__item"><div class="skills__item-name">GD&amp;T Basics</div></div>
-    </div>
-
-    <div class="skills__row flex">
-      <div class="skills__item"><div class="skills__item-name">MATLAB</div></div>
-      <div class="skills__item"><div class="skills__item-name">Python</div></div>
-      <div class="skills__item"><div class="skills__item-name">C++</div></div>
-      <div class="skills__item"><div class="skills__item-name">LTspice</div></div>
-    </div>
-
-    <div class="skills__row flex">
-      <div class="skills__item"><div class="skills__item-name">EFI &amp; Fuel Systems</div></div>
-      <div class="skills__item"><div class="skills__item-name">Vehicle Wiring</div></div>
-      <div class="skills__item"><div class="skills__item-name">Cooling Control (ECU/CAN)</div></div>
-      <div class="skills__item"><div class="skills__item-name">Fabrication &amp; Assembly</div></div>
-    </div>
-  </section>
-
-  <!-- ================= PROJECTS ================= -->
-  <section class="projects" id="projects">
-    <h2 class="projects__heading section-heading">Projects</h2>
-
-    <!-- Project A -->
-    <div class="project project-left flex">
-      <a href="images/bronco_pilot.jpg" target="_blank" class="project__image-container weather flex" aria-label="Open image: ’68 Bronco — Pilot Build">
-        <div class="project__image-image">
-          <img src="images/bronco_pilot.jpg" alt="’68 Bronco — pilot build" />
-        </div>
-      </a>
-
-      <div class="project__info">
-        <h3 class="project__title">’68 Bronco — Pilot Build<br /><span>Systems Integration</span></h3>
-        <p class="project__description">
-          EFI fuel delivery, CAN-triggered cooling, custom electrical harness. CAD in NX/Creo; serviceable
-          routing; supplier coordination; 1,200+ labor hours; 150+ unique parts.
-        </p>
-        <a href="#contact" class="project__live-2 flex">inquire</a>
+      <div class="hero__right">
+        <!-- Replace the src with your real image path -->
+        <img class="portrait" src="images/profile.jpg" alt="Portrait of Tristan Hanford" />
       </div>
-    </div>
-
-    <!-- Project B -->
-    <div class="project project-right flex">
-      <div class="project__info">
-        <h3 class="project__title">’74 CJ5 — Show Vehicle<br /><span>Electrical Revamp</span></h3>
-        <p class="project__description">
-          HEI distributor integration, dual-battery isolator, grounding strategy to stabilize gauges and
-          eliminate interference. Chicago Auto Show — 2nd Place.
-        </p>
-        <a href="#contact" class="project__live-2 flex">inquire</a>
-      </div>
-
-      <a href="images/cj5_show.jpg" target="_blank" class="project__image-container todo flex" aria-label="Open image: ’74 CJ5 — Show Vehicle">
-        <div class="project__image-image">
-          <img src="images/cj5_show.jpg" alt="CJ5 show vehicle" />
-        </div>
-      </a>
-    </div>
-
-    <!-- Project C -->
-    <div class="project project-left flex">
-      <a href="images/cooling_system.jpg" target="_blank" class="project__image-container retro flex" aria-label="Open image: Custom Cooling System">
-        <div class="project__image-image">
-          <img src="images/cooling_system.jpg" alt="Custom cooling system" />
-        </div>
-      </a>
-
-      <div class="project__info">
-        <h3 class="project__title">Custom Cooling System<br /><span>4000 CFM w/ ECU Temp Trigger</span></h3>
-        <p class="project__description">
-          Designed fan system and relay logic integrated with ECU temperature sensing; documented wiring;
-          improved reliability under off-road load and idle heat soak.
-        </p>
-        <a href="#contact" class="project__live-2 flex">inquire</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= CONTACT ================= -->
-  <section class="contact" id="contact">
-    <h2 class="contact__heading section-heading">Contact</h2>
-    <p class="contact__text">
-      Want to discuss an engineering role or a build? Email me and I’ll get back to you quickly.
-    </p>
-
-    <!-- Static form shell (no backend) -->
-    <form class="contact__form flex" onsubmit="return false;">
-      <input class="contact__form-name" name="name" placeholder="Name" />
-      <input class="contact__form-email" type="email" name="email" placeholder="Email" />
-      <textarea class="contact__form-message" name="message" rows="4" placeholder="Message"></textarea>
-      <button class="btn" type="submit" disabled>Send (static demo)</button>
-    </form>
-
-    <footer class="footer flex">
-      <a class="return-home" href="#hero" aria-label="Back to top">
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#111" d="M17.707 10.293L12 4.586 6.293 10.293 7.707 11.707 11 8.414 11 20 13 20 13 8.414 16.293 11.707z"></path>
-        </svg>
-      </a>
-
-      <div class="socials flex">
-        <a class="socials__github flex" href="https://github.com/trhanford" target="_blank" rel="noopener">GitHub</a>
-        <a class="socials__email flex" href="mailto:tristan@example.com" target="_blank" rel="noopener">Email</a>
-        <a class="socials__linkedin flex" href="https://www.linkedin.com/in/yourhandle" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-
-      <p class="copyright">© <span id="year"></span> TRISTAN HANFORD</p>
-    </footer>
-  </section>
-
+    </section>
+  </main>
 </body>
 </html>
