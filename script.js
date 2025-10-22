@@ -78,7 +78,7 @@
             if (introRect.top <= 0 && introRect.bottom >= 0) { if (navTitle) navTitle.textContent = 'Home'; highlight('#intro'); }
           }
         });
-      }, { root:null, threshold:0.55 });
+      }, { root:null, threshold:0.8 });
       stickObs.observe(about);
 
       function highlight(id){
