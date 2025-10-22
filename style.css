@@ -96,10 +96,10 @@ h1,h2,h3{margin:0 0 .5rem; line-height:1.15}
 @keyframes burst{0%{opacity:.0; transform:scale(.9)} 35%{opacity:.65} 100%{opacity:0; transform:scale(1.25)}}
 
 /* Expanding menu (JS will toggle hidden & aria-expanded) */
-.learn-menu{display:flex; gap:10px; justify-content:center; margin-top:12px}
-.learn-menu { display: none; }              /* default hidden */
+/* Default: hidden */
+.learn-menu { display: none; gap: 10px; justify-content: center; margin-top: 12px; }
+/* Reveal when expanded */
 #ctaLearn[aria-expanded="true"] + #learnMenu { display: flex; }
-.learn-link{padding:10px 14px; border:1px solid rgba(43,47,51,.18); border-radius:999px; background:var(--paper); box-shadow:var(--shadow-1); font-weight:700}
 
 /* Attribute‑driven open styles (requires JS to remove [hidden]) */
 #ctaLearn[aria-expanded="true"]{border-color:rgba(43,47,51,.28)}
