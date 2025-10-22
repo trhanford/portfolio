@@ -1,150 +1,200 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tristan Hanford — Mechanical Engineer</title>
-  <meta name="description" content="Mechanical engineering portfolio — classic Bronco restorations, CAD, systems integration, and product development.">
+  <title>Tristan Hanford | Mechanical Engineer</title>
   <link rel="icon" href="assets/favicon.png">
-  <link rel="preload" href="styles.css" as="style">
-  <link rel="stylesheet" href="styles.css">
+  <!-- Light CSS to be added next; keep file name if you already linked one -->
+  <link href="styles.css" rel="stylesheet">
   <script defer src="script.js"></script>
 </head>
+
 <body>
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="#home">Tristan Hanford</a>
-      <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Projects</a>
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
 
-  <main id="home" class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Mechanical Engineer • Systems Integrator • Builder</p>
-        <h1>Bronco builds, end‑to‑end — <span class="hi">from CAD to road‑ready.</span></h1>
-        <p class="sub">Founder & Lead Engineer at Hanford Restorations. I design and build fully‑integrated classic Broncos spanning powertrain, electrical, cooling, and suspension.</p>
-        <div class="cta">
-          <a class="btn" href="#projects">See projects</a>
-          <a class="btn ghost" href="#contact">Contact</a>
-        </div>
+  <!-- HERO -->
+  <div class="hero" id="hero">
+    <div class="canvas">
+      <!-- Optional: background canvas/particles; leave empty for now -->
+      <canvas class="connecting-dots" width="1200" height="800" style="display:block;"></canvas>
+    </div>
+
+    <div class="heading flex">
+      <div class="heading__line-1">
+        <span>Hello, I’m</span><br>
+        <span><strong>Tristan Hanford</strong></span>
       </div>
-      <div class="hero-media">
-        <img src="images/placeholder_hero.jpg" alt="Bronco build hero image" />
+
+      <div class="heading__line-2">
+        Mechanical Engineer & Systems Integrator.
+      </div>
+
+      <div class="heading__cta flex">
+        <a href="#projects" class="heading__link">View my work
+          <svg class="heading__arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11.293 5.707L12.707 4.293 20 11.586 12.707 18.879 11.293 17.465 16.586 12.172 4 12.172 4 10.172 16.586 10.172z"></path>
+          </svg>
+        </a>
       </div>
     </div>
-  </main>
 
-  <section id="about" class="about">
-    <div class="container">
-      <h2>About</h2>
-      <p>Final‑year Mechanical Engineering student at Purdue (’26). I build vehicles and systems the way products are built: requirements → CAD → prototype → test → iterate → deliver. I like crisp wiring, tidy packaging, and documentation.</p>
-      <div class="about-cols">
-        <div>
-          <h3>Technical</h3>
-          <ul>
-            <li>CAD: Siemens NX, Creo Parametric</li>
-            <li>Programming/Analysis: MATLAB, Python, C++, LTspice</li>
-            <li>Systems: EFI fuel delivery, power distribution, CAN‑based cooling control</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Highlights</h3>
-          <ul>
-            <li>Founder & Lead Engineer — Hanford Restorations (2022–Present)</li>
-            <li>Chicago Auto Show — 2nd Place (’74 CJ5)</li>
-            <li>Purdue ASME • OSHA Certified</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="skills" class="skills">
-    <div class="container">
-      <h2>Skills</h2>
-      <ul class="chips">
-        <li>Siemens NX</li><li>Creo Parametric</li><li>MATLAB</li><li>Python</li><li>C++</li>
-        <li>LTspice</li><li>Vehicle wiring</li><li>Fabrication</li><li>Excel</li>
+    <!-- NAV -->
+    <nav class="navigation-bar flex" aria-label="Primary">
+      <ul class="navigation flex">
+        <li class="navigation__item navigation__item--active" id="nav-hero"><a href="#hero">Home</a></li>
+        <li class="navigation__item" id="nav-about"><a href="#about">About</a></li>
+        <li class="navigation__item" id="nav-skills"><a href="#skills">Skills</a></li>
+        <li class="navigation__item" id="nav-projects"><a href="#projects">Projects</a></li>
+        <li class="navigation__item" id="nav-contact"><a href="#contact">Contact</a></li>
       </ul>
-    </div>
-  </section>
+    </nav>
+  </div>
 
-  <section id="projects" class="projects">
-    <div class="container">
-      <h2>Projects</h2>
-      <div class="grid">
-        <article class="card">
-          <img src="images/placeholder_1.jpg" alt="68 Bronco project" />
-          <div class="card-body">
-            <h3>’68 Bronco — Pilot Build</h3>
-            <p>EFI fuel delivery, CAN‑triggered cooling, custom electrical harness. CAD in Creo/NX; packaging for serviceability & aesthetics.</p>
-          </div>
-        </article>
-        <article class="card">
-          <img src="images/placeholder_2.jpg" alt="CJ5 project" />
-          <div class="card-body">
-            <h3>’74 CJ5 — Show Vehicle</h3>
-            <p>Electrical system redesign (HEI distributor, dual‑battery isolator). Noise mitigation and gauge stability via grounding strategy.</p>
-          </div>
-        </article>
-        <article class="card">
-          <img src="images/placeholder_3.jpg" alt="Cooling system" />
-          <div class="card-body">
-            <h3>Custom Cooling System</h3>
-            <p>4000 CFM fan system integrated with ECU temperature sensing. Reliability under off‑road loads; service‑friendly wiring.</p>
-          </div>
-        </article>
+  <div class="main-bg">
+    <div class="canvas"></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <h2 class="about__heading section-heading">About</h2>
+
+    <div class="about__content flex">
+      <div class="profile profile__fade-in flex">
+        <!-- Replace with your headshot -->
+        <img class="profile__picture" src="images/profile.jpg" alt="Tristan Hanford portrait" width="360" height="360">
       </div>
-      <div class="center">
-        <a class="btn ghost" href="assets/Tristan_Hanford_Resume.pdf" target="_blank" rel="noopener">Download Resume (PDF)</a>
+
+      <div class="profile__blurb">
+        <p>
+          Final-year Mechanical Engineering student at Purdue (’26). Founder & Lead Engineer at
+          <strong>Hanford Restorations</strong>, where I design and build fully integrated classic Broncos —
+          from CAD and packaging to wiring, cooling, and final assembly. I focus on reliability, clean
+          execution, and documentation.
+        </p>
+        <p>
+          I enjoy solving end-to-end problems: requirements → CAD → prototype → test → iterate → deliver.
+          Interests include vehicle dynamics, product development, and manufacturing process design.
+        </p>
       </div>
     </div>
   </section>
 
-  <section id="work" class="work">
-    <div class="container">
-      <h2>Work</h2>
-      <ul class="links">
-        <li><a href="#" target="_blank" rel="noopener">Hanford Restorations</a></li>
-        <li><a href="#" target="_blank" rel="noopener">Chicago Auto Show — CJ5 Feature</a></li>
-      </ul>
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <h2 class="skills__heading section-heading">Skills</h2>
+
+    <div class="skills__row flex">
+      <div class="skills__item"><div class="skills__item-name">Siemens NX</div></div>
+      <div class="skills__item"><div class="skills__item-name">Creo Parametric</div></div>
+      <div class="skills__item"><div class="skills__item-name">CAD Packaging</div></div>
+      <div class="skills__item"><div class="skills__item-name">GD&T Basics</div></div>
+    </div>
+
+    <div class="skills__row flex">
+      <div class="skills__item"><div class="skills__item-name">MATLAB</div></div>
+      <div class="skills__item"><div class="skills__item-name">Python</div></div>
+      <div class="skills__item"><div class="skills__item-name">C++</div></div>
+      <div class="skills__item"><div class="skills__item-name">LTspice</div></div>
+    </div>
+
+    <div class="skills__row flex">
+      <div class="skills__item"><div class="skills__item-name">EFI & Fuel Systems</div></div>
+      <div class="skills__item"><div class="skills__item-name">Vehicle Wiring</div></div>
+      <div class="skills__item"><div class="skills__item-name">Cooling Control (ECU/CAN)</div></div>
+      <div class="skills__item"><div class="skills__item-name">Fabrication & Assembly</div></div>
     </div>
   </section>
 
-  <section id="contact" class="contact">
-    <div class="container contact-grid">
-      <div>
-        <h2>Contact</h2>
-        <p>Email: <a href="mailto:tristan@example.com">tristan@example.com</a></p>
-        <p>LinkedIn: <a href="#" target="_blank" rel="noopener">linkedin.com/in/yourhandle</a></p>
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <h2 class="projects__heading section-heading">Projects</h2>
+
+    <!-- Project A -->
+    <div class="project project-left flex">
+      <a href="images/bronco_pilot.jpg" target="_blank" class="project__image-container weather flex" aria-label="Open image: ’68 Bronco — Pilot Build">
+        <div class="project__image-image">
+          <img src="images/bronco_pilot.jpg" alt="’68 Bronco — pilot build">
+        </div>
+      </a>
+
+      <div class="project__info">
+        <h3 class="project__title">’68 Bronco — Pilot Build<br><span>Systems Integration</span></h3>
+        <p class="project__description">
+          EFI fuel delivery, CAN-triggered cooling, custom electrical harness. CAD in NX/Creo; serviceable
+          routing; supplier coordination; 1,200+ labor hours; 150+ unique parts.
+        </p>
+        <a href="#contact" class="project__live-2 flex">inquire</a>
       </div>
-      <form class="contact-form" onsubmit="return false;">
-        <label>Name
-          <input type="text" placeholder="Your name">
-        </label>
-        <label>Email
-          <input type="email" placeholder="you@email.com">
-        </label>
-        <label>Message
-          <textarea rows="4" placeholder="How can I help?"></textarea>
-        </label>
-        <button class="btn" type="submit" disabled>Send (static demo)</button>
-      </form>
+    </div>
+
+    <!-- Project B -->
+    <div class="project project-right flex">
+      <div class="project__info">
+        <h3 class="project__title">’74 CJ5 — Show Vehicle<br><span>Electrical Revamp</span></h3>
+        <p class="project__description">
+          HEI distributor integration, dual-battery isolator, grounding strategy to stabilize gauges and
+          eliminate interference. Chicago Auto Show — 2nd Place.
+        </p>
+        <a href="#contact" class="project__live-2 flex">inquire</a>
+      </div>
+
+      <a href="images/cj5_show.jpg" target="_blank" class="project__image-container todo flex" aria-label="Open image: ’74 CJ5 — Show Vehicle">
+        <div class="project__image-image">
+          <img src="images/cj5_show.jpg" alt="CJ5 show vehicle">
+        </div>
+      </a>
+    </div>
+
+    <!-- Project C -->
+    <div class="project project-left flex">
+      <a href="images/cooling_system.jpg" target="_blank" class="project__image-container retro flex" aria-label="Open image: Custom Cooling System">
+        <div class="project__image-image">
+          <img src="images/cooling_system.jpg" alt="Custom cooling system">
+        </div>
+      </a>
+
+      <div class="project__info">
+        <h3 class="project__title">Custom Cooling System<br><span>4000 CFM w/ ECU Temp Trigger</span></h3>
+        <p class="project__description">
+          Designed fan system and relay logic integrated with ECU temperature sensing; documented wiring;
+          improved reliability under off-road load and idle heat soak.
+        </p>
+        <a href="#contact" class="project__live-2 flex">inquire</a>
+      </div>
     </div>
   </section>
 
-  <footer class="site-footer">
-    <div class="container">
-      <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
-    </div>
-  </footer>
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <h2 class="contact__heading section-heading">Contact</h2>
+    <p class="contact__text">
+      Want to discuss an engineering role or a build? Email me and I’ll get back to you quickly.
+    </p>
+
+    <!-- Static form shell (no backend) -->
+    <form class="contact__form flex" onsubmit="return false;">
+      <input class="contact__form-name" name="name" placeholder="Name">
+      <input class="contact__form-email" type="email" name="email" placeholder="Email">
+      <textarea class="contact__form-message" name="message" rows="4" placeholder="Message"></textarea>
+      <button class="btn" type="submit" disabled>Send (static demo)</button>
+    </form>
+
+    <footer class="footer flex">
+      <a class="return-home" href="#hero" aria-label="Back to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#111" d="M17.707 10.293L12 4.586 6.293 10.293 7.707 11.707 11 8.414 11 20 13 20 13 8.414 16.293 11.707z"></path>
+        </svg>
+      </a>
+
+      <div class="socials flex">
+        <a class="socials__github flex" href="https://github.com/trhanford" target="_blank" rel="noopener">GitHub</a>
+        <a class="socials__email flex" href="mailto:tristan@example.com" target="_blank" rel="noopener">Email</a>
+        <a class="socials__linkedin flex" href="https://www.linkedin.com/in/yourhandle" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+
+      <p class="copyright">© <span id="year"></span> TRISTAN HANFORD</p>
+    </footer>
+  </section>
+
 </body>
 </html>
