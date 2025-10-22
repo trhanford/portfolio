@@ -90,4 +90,3 @@ img{max-width:100%;display:block} a{text-decoration:none;color:inherit}
 @media (max-width:980px){.hero-inner{grid-template-columns:1fr}.portrait{max-width:520px;margin:10px auto 0}.learn-menu{flex-wrap:wrap}}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
-
