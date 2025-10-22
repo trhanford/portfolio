@@ -198,7 +198,7 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
 
 /* Buttons below blurb */
 .about-cta{
-  display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;
 }
 
 /* Lower row: workflow (left) + bubble panel (right) */
