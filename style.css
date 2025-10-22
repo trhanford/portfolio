@@ -59,7 +59,6 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
 
 /* -------------------- Sticky Navbar (divider behavior) -------------------- */
 /* Hidden initially; JS removes [hidden] only once About is intersecting. */
-.navbar[hidden]{display:none !important}
 /* Navbar fixed, initially invisible; JS animates opacity */
 .navbar{
   position: fixed;
