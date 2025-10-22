@@ -60,8 +60,19 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
 /* -------------------- Sticky Navbar (divider behavior) -------------------- */
 /* Hidden initially; JS removes [hidden] only once About is intersecting. */
 .navbar[hidden]{display:none !important}
-.navbar{position:sticky;top:0;z-index:60;backdrop-filter:saturate(1.05) blur(8px)}
+/* Navbar fixed, initially invisible; JS animates opacity */
+.navbar{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 60;
+  opacity: 0;                 /* start hidden */
+  pointer-events: none;       /* don't capture clicks while hidden */
+  backdrop-filter: saturate(1.05) blur(8px);
+}
+/* When JS deems it visible enough */
+
 .navbar::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line)}
+.navbar.nav-active{ pointer-events: auto; }
 .nav-inner{position:relative;height:var(--nav-h);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
 .nav-title{justify-self:start;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding-left:8px}
 .nav-links{position:relative;list-style:none;display:flex;gap:18px;margin:0;padding:0}
