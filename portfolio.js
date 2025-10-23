@@ -689,6 +689,30 @@ const gltfInspectionCache = new Map();
     grid.setAttribute('tabindex', '0');
     grid.setAttribute('role', 'group');
     grid.setAttribute('aria-roledescription', '3D carousel of projects');
+    
+    const controls = document.createElement('div');
+    controls.className = 'carousel-controls';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'carousel-control carousel-control--prev';
+    prevBtn.innerHTML = '<span aria-hidden="true">←</span><span class="visually-hidden">Previous project</span>';
+
+    const status = document.createElement('div');
+    status.className = 'carousel-status';
+    status.setAttribute('aria-live', 'polite');
+    status.setAttribute('aria-atomic', 'true');
+
+    const nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'carousel-control carousel-control--next';
+    nextBtn.innerHTML = '<span class="visually-hidden">Next project</span><span aria-hidden="true">→</span>';
+
+    controls.appendChild(prevBtn);
+    controls.appendChild(status);
+    controls.appendChild(nextBtn);
+
+    grid.insertAdjacentElement('afterend', controls);
 
     let state = {
       index: 0,
@@ -748,6 +772,15 @@ const gltfInspectionCache = new Map();
       }
     }
 
+    const updateStatus = () => {
+      const total = state.total;
+      if (!total) return;
+      const activeIndex = ((state.index % total) + total) % total;
+      const label = cards[activeIndex]?.querySelector('h3')?.textContent?.trim();
+      const fallback = `Project ${activeIndex + 1}`;
+      status.textContent = label ? `${label} (${activeIndex + 1} of ${total})` : `${fallback} (${activeIndex + 1} of ${total})`;
+    };
+
     const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(() => {
       applyTransforms();
     }) : null;
@@ -798,6 +831,66 @@ const gltfInspectionCache = new Map();
       if (!mq.matches) pauseAutoRotate();
     });
 
+    const focusGrid = () => {
+      if (typeof grid.focus === 'function'){
+        try {
+          grid.focus({ preventScroll: true });
+        } catch (err){
+          grid.focus();
+        }
+      }
+    };
+
+    prevBtn.addEventListener('click', () => {
+      pauseAutoRotate();
+      goTo(state.index - 1);
+      focusGrid();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      pauseAutoRotate();
+      goTo(state.index + 1);
+      focusGrid();
+    });
+
+    let touchStartX = null;
+    let touchStartY = null;
+    let touchActive = false;
+
+    grid.addEventListener('touchstart', evt => {
+      if (!mq.matches) return;
+      if (evt.touches.length !== 1) return;
+      const touch = evt.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchActive = true;
+    }, { passive: true });
+
+    grid.addEventListener('touchmove', evt => {
+      if (!mq.matches || !touchActive) return;
+      if (evt.touches.length !== 1 || touchStartX === null || touchStartY === null) return;
+      const touch = evt.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      if (Math.abs(deltaX) < 28 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+      evt.preventDefault();
+      touchActive = false;
+      pauseAutoRotate();
+      if (deltaX < 0) goTo(state.index + 1);
+      else if (deltaX > 0) goTo(state.index - 1);
+      touchStartX = null;
+      touchStartY = null;
+    }, { passive: false });
+
+    const resetTouch = () => {
+      touchActive = false;
+      touchStartX = null;
+      touchStartY = null;
+    };
+
+    grid.addEventListener('touchend', resetTouch);
+    grid.addEventListener('touchcancel', resetTouch);
+    
     function goTo(nextIndex, options = {}){
       const total = state.total;
       state.index = (nextIndex % total + total) % total;
@@ -807,23 +900,61 @@ const gltfInspectionCache = new Map();
 
     function applyTransforms(){
       if (mq.matches){
-        grid.classList.remove('carousel-active');
-        cards.forEach(card => {
-          card.style.transform = '';
-          card.style.opacity = '';
-          card.style.zIndex = '';
-          card.style.filter = '';
-          card.style.pointerEvents = '';
-          card.style.width = '';
-          card.style.boxShadow = '';
+        grid.classList.add('carousel-active');
+        grid.classList.add('carousel-mobile');
+        const containerWidth = grid.clientWidth || grid.offsetWidth || 0;
+        const cardWidth = Math.min(Math.max(containerWidth * 0.86, 260), 520);
+        const gap = Math.min(Math.max(containerWidth * 0.06, 16), 48);
+        const heights = [];
+
+        cards.forEach((card, idx) => {
+          let relative = idx - state.index;
+          relative = ((relative % state.total) + state.total) % state.total;
+          if (relative > state.total / 2) relative -= state.total;
+          const distance = Math.abs(relative);
+          const isFront = distance === 0;
+          const isNeighbor = distance === 1;
+          const translateX = relative * (cardWidth + gap);
+
+          card.style.transform = `translate(-50%, 0) translateX(${translateX.toFixed(1)}px)`;
+          card.style.opacity = isFront ? '1' : isNeighbor ? '0.45' : '0';
+          card.style.zIndex = String(isFront ? 900 : isNeighbor ? 600 : 200 - distance);
+          card.style.filter = isFront ? 'brightness(1.03)' : 'brightness(0.78)';
+          card.style.pointerEvents = (isFront || isNeighbor) ? 'auto' : 'none';
+          card.style.width = `${Math.round(cardWidth)}px`;
+          card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
           card.style.height = '';
-          card.removeAttribute('aria-hidden');
-          card.classList.remove('is-front', 'is-side');
+          card.classList.toggle('is-front', isFront);
+          card.classList.toggle('is-side', isNeighbor);
+          if (isFront){
+            card.removeAttribute('aria-hidden');
+          } else {
+            card.setAttribute('aria-hidden', 'true');
+          }
+          heights[idx] = card.scrollHeight;
         });
+        
+        const tallest = Math.max(...heights, 0);
+        if (tallest){
+          const heightPx = `${Math.ceil(tallest)}px`;
+          grid.style.height = heightPx;
+          cards.forEach(card => {
+            card.style.height = heightPx;
+          });
+        } else {
+          grid.style.height = '';
+          cards.forEach(card => {
+            card.style.height = '';
+          });
+        }
+
+        updateStatus();
         return;
       }
 
       grid.classList.add('carousel-active');
+      grid.classList.remove('carousel-mobile');
+      grid.style.height = '';
 
       const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
       const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -878,6 +1009,7 @@ const gltfInspectionCache = new Map();
         card.style.opacity = opacity.toFixed(3);
         card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
         card.style.filter = filter;
+        card.style.pointerEvents = isFront || isSide ? 'auto' : 'none';
         card.style.width = `${Math.round(widthPx)}px`;
         card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
         card.classList.toggle('is-front', isFront);
@@ -901,10 +1033,10 @@ const gltfInspectionCache = new Map();
           card.style.height = `${Math.ceil(tallest)}px`;
         });
       }
+    updateStatus();
     }
-    
-      updateAutoRotationState();
-    }
+
+    updateStatus();
 
     goTo(0, { source: 'auto' });
 
@@ -912,8 +1044,14 @@ const gltfInspectionCache = new Map();
 
     cards.forEach((card, idx) => {
       card.addEventListener('click', evt => {
-        if (mq.matches) return;
         if (evt.target instanceof HTMLElement && evt.target.closest('.project-more')) return;
+        if (mq.matches){
+          if (state.index === idx) return;
+          evt.preventDefault();
+          pauseAutoRotate();
+          goTo(idx);
+          return;
+        }
         if (state.index === idx) return;
         evt.preventDefault();
         pauseAutoRotate();
