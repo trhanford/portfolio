@@ -247,7 +247,8 @@ body.portfolio-page main{
 .projects-grid.carousel-active{
   display:block;
   perspective:1200px;
-  height:clamp(340px, 58vh, 480px);
+  height:auto;
+  min-height:340px;
 }
 
 .projects-grid.carousel-active .project-card{
@@ -262,10 +263,8 @@ body.portfolio-page main{
   opacity:0;
   pointer-events:none;
   will-change:transform, opacity, filter, width;
-  transition:transform .45s cubic-bezier(.4, 0, .2, 1),
-             opacity .35s ease,
-             filter .35s ease,
-             box-shadow .35s ease;
+  transition:none;
+  backface-visibility:hidden;
 }
 
 .projects-grid.carousel-active .project-card .project-info{
@@ -288,19 +287,6 @@ body.portfolio-page main{
 .projects-grid.carousel-active .project-card.is-front{
   box-shadow:var(--shadow-2);
 }
-
-.projects-grid.carousel-active .project-card::after{
-  content:"";
-  position:absolute;
-  inset:auto 18% -42px 18%;
-  height:32px;
-  background:radial-gradient(ellipse at center, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 65%);
-  opacity:0;
-  transform:translateY(50%);
-  pointer-events:none;
-}
-
-.projects-grid.carousel-active .project-card.is-front::after{opacity:0.38;}
 
 .projects-grid.carousel-active .project-card.is-front{
   grid-template-columns:1fr;
