@@ -45,10 +45,15 @@
       category: 'CAD',
       model: {
         src: 'assets/models/horn.gltf',
+        alt: 'Interactive preview of the custom horn assembly placeholder mesh',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Explore the interactive CAD preview of the horn assembly. Drag to orbit, scroll to zoom, and right-click to pan.'
+        message: 'Explore the interactive CAD preview of the horn assembly. Drag to orbit, scroll to zoom, and right-click to pan.',
+        autoRotate: true,
+        rotationPerSecond: '15deg',
+        shadowIntensity: '0.8',
+        exposure: '1.1'
       },
-     note: 'Model exported as GLTF for use with the <model-viewer> component. Additional exploded views can be added as separate entries if needed.'
+      note: 'Model exported as GLTF for use with the <model-viewer> component. Additional exploded views can be added as separate entries if needed.'
     },
     'cad-2': {
       title: 'Placeholder 2',
@@ -262,6 +267,9 @@
         viewer.setAttribute('interaction-prompt', 'auto');
         viewer.setAttribute('reveal', 'auto');
         viewer.setAttribute('camera-orbit', project.model.cameraOrbit || 'auto auto auto');
+        if (project.model.alt) viewer.setAttribute('alt', project.model.alt);
+        if (project.model.autoRotate) viewer.setAttribute('auto-rotate', '');
+        if (project.model.rotationPerSecond) viewer.setAttribute('rotation-per-second', project.model.rotationPerSecond);
         if (project.model.poster) viewer.setAttribute('poster', project.model.poster);
         viewer.addEventListener('error', () => {
           const placeholder = document.createElement('div');
@@ -554,9 +562,9 @@
 
       const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
       const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
-      const frontWidth = clampValue(containerWidth * 0.58, 360, 680);
-      const sideWidth = clampValue(containerWidth * 0.18, 150, frontWidth * 0.55);
-      const gap = clampValue(containerWidth * 0.045, 28, 64);
+      const frontWidth = clampValue(containerWidth * 0.46, 320, 520);
+      const sideWidth = clampValue(containerWidth * 0.24, 200, frontWidth * 0.72);
+      const gap = clampValue(containerWidth * 0.035, 24, 48);
       const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
 
       const heights = [];
@@ -580,27 +588,27 @@
         if (isFront){
           widthPx = frontWidth;
           opacity = 1;
-          filter = 'brightness(1.08) saturate(1.08)';
+          filter = 'brightness(1.04) saturate(1.02)';
           rotateY = 0;
           translateX = 0;
-          scale = 1.04;
+          scale = 1.02;
         } else if (isSide){
           widthPx = sideWidth;
-          opacity = 0.48;
-          filter = 'brightness(0.9) saturate(0.96)';
-          rotateY = direction * -30;
-          translateX = direction * (baseOffset - gap * 0.35);
-          scale = 0.9;
+          opacity = 0.62;
+          filter = 'brightness(0.92) saturate(0.96)';
+          rotateY = direction * -22;
+          translateX = direction * (baseOffset - gap * 0.25);
+          scale = 0.94;
         } else {
-          widthPx = sideWidth * 0.88;
-          opacity = 0.12;
-          rotateY = direction * -42;
-          const extra = baseOffset + (sideWidth + gap * 0.8) * (absRelative - 1);
+          widthPx = sideWidth * 0.82;
+          opacity = 0.18;
+          rotateY = direction * -34;
+          const extra = baseOffset + (sideWidth * 0.72 + gap * 0.65) * (absRelative - 1);
           translateX = direction * extra;
-          scale = 0.84;
+          scale = 0.88;
         }
 
-        const translate = `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
+        const translate = `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) translateZ(0) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
         card.style.transform = translate;
         card.style.opacity = opacity.toFixed(3);
         card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
