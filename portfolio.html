@@ -44,7 +44,7 @@
           <p class="eyebrow">Selected Work</p>
           <h1 class="hero-title">Hands-on builds, digital models, and smart systems</h1>
           <p class="hero-subtitle">Browse a sampling of automotive restorations, CAD studies, and computer &amp; electrical projects. Each entry links to a richer gallery or interactive viewer.</p>
-        <div class="hero-actions">
+          <div class="hero-actions">
             <a class="start-exploring-btn" href="#automotive" data-scroll>
               <span class="label">Start Exploring</span>
               <span class="arrow" aria-hidden="true">→</span>
@@ -60,50 +60,54 @@
           <h2>Automotive</h2>
           <p>Engine swaps, chassis refurbishments, and tailored details. Image galleries open in a horizontal lightbox.</p>
         </div>
-        <div class="projects-grid" data-carousel data-carousel-count="4">
-          <article class="project-card" data-project-id="bronco-289">
-            <div class="project-media">
-              <img src="images/placeholders/Bronco_289.jpg" alt="Illustration placeholder for the 1968 Ford Bronco 289 build" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>1968 Ford Bronco — 289 CID</h3>
-              <p class="project-summary">Baseline restoration with period-correct power, refreshed drivetrain, and safety upgrades.</p>
-              <button class="project-more" type="button" data-project="bronco-289">See more →</button>
-            </div>
-          </article>
+        <div class="project-slider project-slider--automotive" data-slider data-slider-label="Automotive projects">
+          <div class="slider-window">
+            <div class="slider-track">
+              <article class="project-card" data-project-id="bronco-289">
+                <div class="project-media">
+                  <img src="images/placeholders/Bronco_289.jpg" alt="Illustration placeholder for the 1968 Ford Bronco 289 build" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>1968 Ford Bronco — 289 CID</h3>
+                  <p class="project-summary">Baseline restoration with period-correct power, refreshed drivetrain, and safety upgrades.</p>
+                  <button class="project-more" type="button" data-project="bronco-289">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="bronco-coyote">
-            <div class="project-media">
-              <img src="images/placeholders/bronco_coy_1.jpg" alt="Illustration placeholder for the 1968 Ford Bronco Coyote swap" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>1968 Ford Bronco — 5.0L Gen 4x Coyote</h3>
-              <p class="project-summary">Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.</p>
-              <button class="project-more" type="button" data-project="bronco-coyote">See more →</button>
-            </div>
-          </article>
+              <article class="project-card" data-project-id="bronco-coyote">
+                <div class="project-media">
+                  <img src="images/placeholders/bronco_coy_1.jpg" alt="Illustration placeholder for the 1968 Ford Bronco Coyote swap" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>1968 Ford Bronco — 5.0L Gen 4x Coyote</h3>
+                  <p class="project-summary">Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.</p>
+                  <button class="project-more" type="button" data-project="bronco-coyote">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="jeep-cj5">
-            <div class="project-media">
-              <img src="images/placeholders/Jeep_1.jpg" alt="Illustration placeholder for the 1974 Jeep CJ5 build" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>1974 Jeep CJ5 — 304 CID</h3>
-              <p class="project-summary">Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.</p>
-              <button class="project-more" type="button" data-project="jeep-cj5">See more →</button>
-            </div>
-          </article>
+              <article class="project-card" data-project-id="jeep-cj5">
+                <div class="project-media">
+                  <img src="images/placeholders/Jeep_1.jpg" alt="Illustration placeholder for the 1974 Jeep CJ5 build" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>1974 Jeep CJ5 — 304 CID</h3>
+                  <p class="project-summary">Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.</p>
+                  <button class="project-more" type="button" data-project="jeep-cj5">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="nissan-350z">
-            <div class="project-media">
-              <img src="images/placeholders/350z_1.jpg" alt="Illustration placeholder for the 2003 Nissan 350Z project" loading="lazy" />
+              <article class="project-card" data-project-id="nissan-350z">
+                <div class="project-media">
+                  <img src="images/placeholders/350z_1.jpg" alt="Illustration placeholder for the 2003 Nissan 350Z project" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>2003 Nissan 350Z — VQ35</h3>
+                  <p class="project-summary">Street-tuned coupe with aero tweaks, suspension refresh, and track-ready instrumentation.</p>
+                  <button class="project-more" type="button" data-project="nissan-350z">See more →</button>
+                </div>
+              </article>
             </div>
-            <div class="project-info">
-              <h3>2003 Nissan 350Z — VQ35</h3>
-              <p class="project-summary">Street-tuned coupe with aero tweaks, suspension refresh, and track-ready instrumentation.</p>
-              <button class="project-more" type="button" data-project="nissan-350z">See more →</button>
-            </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -114,61 +118,65 @@
           <h2>CAD</h2>
           <p>Interactive viewers let you orbit, zoom, and inspect detailed models. Upload GLB/GLTF assets to replace the placeholders.</p>
         </div>
-       <div class="projects-grid projects-grid--cad" data-carousel data-carousel-count="4">
-          <article class="project-card" data-project-id="cad-1">
-            <div class="project-media project-media--viewer">
-              <model-viewer
-                src="assets/models/horn.glb"
-                poster="images/placeholders/cad-default.svg"
-                alt="Interactive preview of the custom horn assembly"
-                camera-controls
-                shadow-intensity="0.8"
-                reveal="auto"
-                interaction-prompt="none"
-                auto-rotate
-                rotation-per-second="15deg"
-                touch-action="pan-y"
-              ></model-viewer>
-            </div>
-            <div class="project-info">
-             <h3>Custom Horn Assembly</h3>
-              <p class="project-summary">Orbit the in-progress horn assembly concept directly within the carousel.</p>
-              <button class="project-more" type="button" data-project="cad-1">See more →</button>
-            </div>
-          </article>
+        <div class="project-slider project-slider--cad" data-slider data-slider-label="CAD projects">
+          <div class="slider-window">
+            <div class="slider-track">
+              <article class="project-card" data-project-id="cad-1">
+                <div class="project-media project-media--viewer">
+                  <model-viewer
+                    src="assets/models/horn.glb"
+                    poster="images/placeholders/cad-default.svg"
+                    alt="Interactive preview of the custom horn assembly"
+                    camera-controls
+                    shadow-intensity="0.8"
+                    reveal="auto"
+                    interaction-prompt="none"
+                    auto-rotate
+                    rotation-per-second="15deg"
+                    touch-action="pan-y"
+                  ></model-viewer>
+                </div>
+                <div class="project-info">
+                  <h3>Custom Horn Assembly</h3>
+                  <p class="project-summary">Orbit the in-progress horn assembly concept directly within the carousel.</p>
+                  <button class="project-more" type="button" data-project="cad-1">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="cad-2">
-            <div class="project-media">
-              <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>Placeholder 2</h3>
-              <p class="project-summary">Perfect for a fixture, jig, or tooling concept to show detail control.</p>
-              <button class="project-more" type="button" data-project="cad-2">See more →</button>
-            </div>
-          </article>
+              <article class="project-card" data-project-id="cad-2">
+                <div class="project-media">
+                  <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>Placeholder 2</h3>
+                  <p class="project-summary">Perfect for a fixture, jig, or tooling concept to show detail control.</p>
+                  <button class="project-more" type="button" data-project="cad-2">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="cad-3">
-            <div class="project-media">
-              <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>Placeholder 3</h3>
-              <p class="project-summary">Use this slot for a lightweight concept rendered straight from CAD.</p>
-              <button class="project-more" type="button" data-project="cad-3">See more →</button>
-            </div>
-          </article>
+              <article class="project-card" data-project-id="cad-3">
+                <div class="project-media">
+                  <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>Placeholder 3</h3>
+                  <p class="project-summary">Use this slot for a lightweight concept rendered straight from CAD.</p>
+                  <button class="project-more" type="button" data-project="cad-3">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="cad-4">
-            <div class="project-media">
-              <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
+              <article class="project-card" data-project-id="cad-4">
+                <div class="project-media">
+                  <img src="images/placeholders/cad-default.svg" alt="CAD viewer placeholder graphic" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>Placeholder 4</h3>
+                  <p class="project-summary">Ideal for a surface-heavy design or ergonomic study.</p>
+                  <button class="project-more" type="button" data-project="cad-4">See more →</button>
+                </div>
+              </article>
             </div>
-            <div class="project-info">
-              <h3>Placeholder 4</h3>
-              <p class="project-summary">Ideal for a surface-heavy design or ergonomic study.</p>
-              <button class="project-more" type="button" data-project="cad-4">See more →</button>
-            </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -179,39 +187,43 @@
           <h2>Computer &amp; Electrical</h2>
           <p>Embedded builds, audio-reactive lighting, and smart home integrations. Galleries highlight wiring discipline and final behavior.</p>
         </div>
-        <div class="projects-grid" data-carousel data-carousel-count="3">
-          <article class="project-card" data-project-id="timer-police">
-            <div class="project-media">
-              <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the 555 timer police light circuit" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>555 Timer Police Light Circuit</h3>
-              <p class="project-summary">Classic timing IC driving alternating beacons with adjustable pulse widths.</p>
-              <button class="project-more" type="button" data-project="timer-police">See more →</button>
-            </div>
-          </article>
+        <div class="project-slider project-slider--electrical" data-slider data-slider-label="Computer and electrical projects">
+          <div class="slider-window">
+            <div class="slider-track">
+              <article class="project-card" data-project-id="timer-police">
+                <div class="project-media">
+                  <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the 555 timer police light circuit" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>555 Timer Police Light Circuit</h3>
+                  <p class="project-summary">Classic timing IC driving alternating beacons with adjustable pulse widths.</p>
+                  <button class="project-more" type="button" data-project="timer-police">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="smart-mirror">
-            <div class="project-media">
-              <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the Alexa-integrated smart mirror" loading="lazy" />
-            </div>
-            <div class="project-info">
-              <h3>Alexa Integrated Smart Mirror</h3>
-              <p class="project-summary">Voice-enabled display with embedded LEDs, microphone array, and responsive UI.</p>
-              <button class="project-more" type="button" data-project="smart-mirror">See more →</button>
-            </div>
-          </article>
+              <article class="project-card" data-project-id="smart-mirror">
+                <div class="project-media">
+                  <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the Alexa-integrated smart mirror" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>Alexa Integrated Smart Mirror</h3>
+                  <p class="project-summary">Voice-enabled display with embedded LEDs, microphone array, and responsive UI.</p>
+                  <button class="project-more" type="button" data-project="smart-mirror">See more →</button>
+                </div>
+              </article>
 
-          <article class="project-card" data-project-id="led-eq">
-            <div class="project-media">
-              <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the sound reactive LED equalizer" loading="lazy" />
+              <article class="project-card" data-project-id="led-eq">
+                <div class="project-media">
+                  <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the sound reactive LED equalizer" loading="lazy" />
+                </div>
+                <div class="project-info">
+                  <h3>Sound Reactive LED Equalizer</h3>
+                  <p class="project-summary">FFT-driven light bar that maps audio frequencies to cascading color bands.</p>
+                  <button class="project-more" type="button" data-project="led-eq">See more →</button>
+                </div>
+              </article>
             </div>
-            <div class="project-info">
-              <h3>Sound Reactive LED Equalizer</h3>
-              <p class="project-summary">FFT-driven light bar that maps audio frequencies to cascading color bands.</p>
-              <button class="project-more" type="button" data-project="led-eq">See more →</button>
-            </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>
