@@ -136,10 +136,7 @@
     }
   }
 
-  const desktopMq = window.matchMedia('(max-width: 900px)');
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-const gltfInspectionCache = new Map();
+  const gltfInspectionCache = new Map();
 
   function collectGltfUris(manifest){
     const entries = [];
@@ -238,11 +235,10 @@ const gltfInspectionCache = new Map();
       if (!id || btn.dataset.animating === 'true') return;
       btn.dataset.animating = 'true';
       const card = btn.closest('.project-card');
-      const carousel = card?.closest('[data-carousel]');
-      const shouldAnimate = !!card && !!carousel && carousel.classList.contains('carousel-active') && !desktopMq.matches;
+      const slider = card?.closest('[data-slider]');
 
       const summaryText = card?.querySelector('.project-summary')?.textContent?.trim() || '';
-      const collection = carousel ? Array.from(carousel.querySelectorAll('.project-card')).map(projectCard => {
+      const collection = slider ? Array.from(slider.querySelectorAll('.project-card')).map(projectCard => {
         const projectId = projectCard.dataset.projectId || projectCard.querySelector('.project-more')?.dataset.project;
         if (!projectId) return null;
         return {
@@ -250,7 +246,6 @@ const gltfInspectionCache = new Map();
           summary: projectCard.querySelector('.project-summary')?.textContent?.trim() || ''
         };
       }).filter(Boolean) : [];
-
 
       const done = () => {
         delete btn.dataset.animating;
@@ -261,15 +256,8 @@ const gltfInspectionCache = new Map();
         summary: summaryText
       };
 
-      if (shouldAnimate){
-        animateCardToModal(card).then(() => {
-          openModal(id, modalOptions);
-          done();
-        });
-      } else {
-        openModal(id, modalOptions);
-        done();
-      }
+      openModal(id, modalOptions);
+      done();
     });
   });
 
@@ -310,7 +298,6 @@ const gltfInspectionCache = new Map();
 
   function appendProjectContent(target, project){
     if (!project) return;
-
 
     if (Array.isArray(project.gallery) && project.gallery.length){
       const gallery = document.createElement('div');
@@ -665,621 +652,342 @@ const gltfInspectionCache = new Map();
     }
   }
 
-  initProjectCarousels();
+  initProjectSliders();
 
-  function initProjectCarousels(){
-    const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
-    if (!carousels.length) return;
-
-    const mq = desktopMq;
-
-    const mqListener = () => {
-      carousels.forEach(instance => instance.dispatchEvent(new CustomEvent('carousel:refresh')));
-    };
-
-    if (typeof mq.addEventListener === 'function') mq.addEventListener('change', mqListener);
-    else if (typeof mq.addListener === 'function') mq.addListener(mqListener);
-
-    carousels.forEach(grid => setupCarousel(grid, mq));
+  function initProjectSliders(){
+    const sliders = Array.from(document.querySelectorAll('[data-slider]'));
+    if (!sliders.length) return;
+    let sequence = 0;
+    sliders.forEach(slider => setupSlider(slider, ++sequence));
   }
 
-  function setupCarousel(grid, mq){
-    const cards = Array.from(grid.querySelectorAll('.project-card'));
-    if (cards.length <= 1) return;
+  function setupSlider(root, sequence){
+    if (!(root instanceof HTMLElement)) return;
+    const track = root.querySelector('.slider-track');
+    const windowEl = root.querySelector('.slider-window');
+    if (!(track instanceof HTMLElement) || !(windowEl instanceof HTMLElement)) return;
+    const slides = Array.from(track.querySelectorAll('.project-card')).filter(card => card instanceof HTMLElement);
+    if (!slides.length) return;
 
-    grid.setAttribute('tabindex', '0');
-    grid.setAttribute('role', 'group');
-    grid.setAttribute('aria-roledescription', '3D carousel of projects');
-    
-    const controls = document.createElement('div');
-    controls.className = 'carousel-controls';
+    const sliderId = root.id || `project-slider-${sequence}`;
+    if (!root.id) root.id = sliderId;
+    root.dataset.sliderReady = 'true';
 
-    const prevBtn = document.createElement('button');
-    prevBtn.type = 'button';
-    prevBtn.className = 'carousel-control carousel-control--prev';
-    prevBtn.innerHTML = '<span aria-hidden="true">←</span><span class="visually-hidden">Previous project</span>';
+    let menu = root.querySelector('.slider-menu');
+    if (!(menu instanceof HTMLElement)){
+      menu = document.createElement('nav');
+      menu.className = 'slider-menu';
+      root.insertBefore(menu, windowEl);
+    } else if (!menu.classList.contains('slider-menu')){
+      menu.classList.add('slider-menu');
+    }
+    const menuLabel = root.dataset.sliderLabel || 'Projects';
+    menu.setAttribute('aria-label', menuLabel);
+    menu.setAttribute('role', 'tablist');
+    menu.innerHTML = '';
 
-    const status = document.createElement('div');
-    status.className = 'carousel-status';
-    status.setAttribute('aria-live', 'polite');
-    status.setAttribute('aria-atomic', 'true');
+    let controls = root.querySelector('.slider-controls');
+    if (!(controls instanceof HTMLElement)){
+      controls = document.createElement('div');
+      controls.className = 'slider-controls';
+      controls.innerHTML = [
+        '<button class="slider-arrow slider-arrow--prev" type="button" aria-label="Previous project"><span aria-hidden="true">←</span></button>',
+        '<div class="slider-progress" role="presentation"><div class="slider-progress-bar"></div></div>',
+        '<button class="slider-arrow slider-arrow--next" type="button" aria-label="Next project"><span aria-hidden="true">→</span></button>'
+      ].join('');
+      root.appendChild(controls);
+    }
 
-    const nextBtn = document.createElement('button');
-    nextBtn.type = 'button';
-    nextBtn.className = 'carousel-control carousel-control--next';
-    nextBtn.innerHTML = '<span class="visually-hidden">Next project</span><span aria-hidden="true">→</span>';
+    const prevBtn = controls.querySelector('.slider-arrow--prev');
+    const nextBtn = controls.querySelector('.slider-arrow--next');
+    const progressBar = controls.querySelector('.slider-progress-bar');
 
-    controls.appendChild(prevBtn);
-    controls.appendChild(status);
-    controls.appendChild(nextBtn);
+    let liveRegion = root.querySelector('.slider-live');
+    if (!(liveRegion instanceof HTMLElement)){
+      liveRegion = document.createElement('div');
+      liveRegion.className = 'visually-hidden slider-live';
+      liveRegion.setAttribute('aria-live', 'polite');
+      liveRegion.setAttribute('aria-atomic', 'true');
+      root.appendChild(liveRegion);
+    }
 
-    grid.insertAdjacentElement('afterend', controls);
+    const orientationMq = window.matchMedia('(min-width: 900px)');
+    const updateOrientation = () => {
+      menu.setAttribute('aria-orientation', orientationMq.matches ? 'vertical' : 'horizontal');
+    };
+    updateOrientation();
+    if (typeof orientationMq.addEventListener === 'function'){
+      orientationMq.addEventListener('change', updateOrientation);
+    } else if (typeof orientationMq.addListener === 'function'){
+      orientationMq.addListener(updateOrientation);
+    }
 
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const wrap = (value, total) => {
+    if (!root.hasAttribute('role')){
+      root.setAttribute('role', 'group');
+      root.setAttribute('aria-label', menuLabel);
+    }
+
+    const tabs = [];
+    const total = slides.length;
+
+    slides.forEach((slide, index) => {
+      slide.style.flex = '0 0 100%';
+      slide.style.maxWidth = '100%';
+      slide.setAttribute('role', 'tabpanel');
+      slide.setAttribute('aria-hidden', index === 0 ? 'false' : 'true');
+      slide.tabIndex = index === 0 ? 0 : -1;
+
+      const heading = slide.querySelector('h3');
+      const title = heading?.textContent?.trim() || `Project ${index + 1}`;
+      const panelId = slide.id || `${sliderId}-panel-${index + 1}`;
+      slide.id = panelId;
+
+      const tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = 'slider-menu-btn';
+      tab.id = `${sliderId}-tab-${index + 1}`;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-controls', panelId);
+      tab.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+      tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
+      tab.textContent = title;
+      menu.appendChild(tab);
+      tabs.push(tab);
+
+      slide.setAttribute('aria-labelledby', tab.id);
+    });
+
+    let activeIndex = 0;
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let dragOffset = 0;
+    let dragging = false;
+
+    const clampIndex = value => {
+      if (!total) return 0;
       const remainder = value % total;
       return remainder < 0 ? remainder + total : remainder;
     };
-    const shortestDelta = (current, target, total) => {
-      const currentNorm = wrap(current, total);
-      const targetNorm = wrap(target, total);
-      let forward = targetNorm - currentNorm;
-      if (forward < 0) forward += total;
-      const backward = forward - total;
-      return Math.abs(forward) <= Math.abs(backward) ? forward : backward;
-    };
-    const easeInOutCubic = t => (t < 0.5)
-      ? 4 * t * t * t
-      : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    const smoothStep = t => {
-      if (t <= 0) return 0;
-      if (t >= 1) return 1;
-      return t * t * (3 - 2 * t);
-    };
-    
-    let state = {
-      index: 0,
-      position: 0,
-      total: cards.length
+
+    const announce = () => {
+      if (!(liveRegion instanceof HTMLElement)) return;
+      const activeSlide = slides[activeIndex];
+      const title = activeSlide?.querySelector('h3')?.textContent?.trim() || `Project ${activeIndex + 1}`;
+      liveRegion.textContent = `${title} (${activeIndex + 1} of ${total})`;
     };
 
-    const AUTO_INTERVAL = 5200;
-    const RESUME_DELAY = 9000;
-    const DEFAULT_ANIMATION_MS = 780;
-    const MAX_ANIMATION_MS = 1300;
-    let autoRotateTimer = null;
-    let resumeTimer = null;
-    let animationFrame = null;
-    let wheelBuffer = 0;
-
-    function stopAnimation(){
-      if (animationFrame !== null){
-        window.cancelAnimationFrame(animationFrame);
-        animationFrame = null;
+    const syncHeight = () => {
+      const activeSlide = slides[activeIndex];
+      if (!(activeSlide instanceof HTMLElement)) return;
+      const height = activeSlide.offsetHeight;
+      if (height > 0){
+        windowEl.style.height = `${height}px`;
       }
-    }
+    };
 
-    function computeActiveIndex(position){
-      return wrap(Math.round(position), state.total);
-    }
-
-    function getActiveIndex(){
-      const position = typeof state.position === 'number' ? state.position : state.index;
-      return computeActiveIndex(position);
-    }
-
-    function commitPosition(value){
-      if (!state.total){
-        state.position = 0;
-        state.index = 0;
-        return;
+    const setTransform = immediate => {
+      const offset = -activeIndex * 100;
+      if (immediate) track.classList.add('no-transition');
+      track.style.transform = `translateX(${offset}%)`;
+      if (immediate){
+        requestAnimationFrame(() => {
+          track.classList.remove('no-transition');
+        });
       }
-      const wrapped = wrap(Math.round(value), state.total);
-      state.position = wrapped;
-      state.index = wrapped;
-    }
-    
-    function stopAutoRotate(){
-      if (autoRotateTimer !== null){
-        window.clearInterval(autoRotateTimer);
-        autoRotateTimer = null;
+    };
+
+    const updateActiveStates = () => {
+      slides.forEach((slide, index) => {
+        const isActive = index === activeIndex;
+        slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        slide.classList.toggle('is-active', isActive);
+        slide.tabIndex = isActive ? 0 : -1;
+      });
+
+      tabs.forEach((tab, index) => {
+        const isActive = index === activeIndex;
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+
+      if (progressBar instanceof HTMLElement){
+        const percent = ((activeIndex + 1) / total) * 100;
+        progressBar.style.width = `${percent}%`;
       }
-    }
 
-    function clearResumeTimer(){
-      if (resumeTimer !== null){
-        window.clearTimeout(resumeTimer);
-        resumeTimer = null;
+      root.dataset.sliderIndex = String(activeIndex + 1);
+      root.dataset.sliderTotal = String(total);
+      announce();
+      syncHeight();
+    };
+
+    const focusTab = index => {
+      const target = tabs[index];
+      if (!(target instanceof HTMLElement)) return;
+      try {
+        target.focus({ preventScroll: true });
+      } catch (err){
+        target.focus();
       }
-    }
+    };
 
-    function startAutoRotate(){
-      if (prefersReducedMotion.matches) return;
-      if (mq.matches || !grid.classList.contains('carousel-active')) return;
-      stopAutoRotate();
-      clearResumeTimer();
-      autoRotateTimer = window.setInterval(() => {
-        if (mq.matches || !grid.classList.contains('carousel-active')) return;
-        goBy(1, { source: 'auto' });
-      }, AUTO_INTERVAL);
-    }
-
-    function scheduleAutoResume(){
-      clearResumeTimer();
-      resumeTimer = window.setTimeout(() => {
-        resumeTimer = null;
-        startAutoRotate();
-      }, RESUME_DELAY);
-    }
-
-    function pauseAutoRotate(){
-      stopAutoRotate();
-      scheduleAutoResume();
-    }
-
-    function updateAutoRotationState(){
-      if (mq.matches || !grid.classList.contains('carousel-active') || prefersReducedMotion.matches){
-        stopAutoRotate();
-        clearResumeTimer();
-        stopAnimation();
-        return;
-      }
-      if (autoRotateTimer === null && resumeTimer === null){
-        startAutoRotate();
-      }
-    }
-
-    const updateStatus = () => {
-      const total = state.total;
+    const goTo = (index, options = {}) => {
       if (!total) return;
-      const activeIndex = getActiveIndex();
-      const label = cards[activeIndex]?.querySelector('h3')?.textContent?.trim();
-      const fallback = `Project ${activeIndex + 1}`;
-      status.textContent = label ? `${label} (${activeIndex + 1} of ${total})` : `${fallback} (${activeIndex + 1} of ${total})`;
+      const nextIndex = clampIndex(index);
+      const immediate = options.immediate === true;
+      if (nextIndex === activeIndex && !options.force){
+        if (immediate){
+          setTransform(true);
+          syncHeight();
+        }
+        return;
+      }
+      activeIndex = nextIndex;
+      setTransform(immediate);
+      updateActiveStates();
+      if (options.focusTab) focusTab(activeIndex);
     };
 
-    const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(() => {
-      applyTransforms();
-    }) : null;
+    const goBy = (delta, options = {}) => {
+      goTo(activeIndex + delta, options);
+    };
 
-    if (resizeObserver){
-      resizeObserver.observe(grid);
-      cards.forEach(card => resizeObserver.observe(card));
-    } else {
-      window.addEventListener('resize', () => {
-        applyTransforms();
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        goTo(index);
+        focusTab(index);
+      });
+
+      tab.addEventListener('keydown', evt => {
+        if (!evt || typeof evt.key !== 'string') return;
+        if (evt.key === 'ArrowRight' || evt.key === 'ArrowDown'){
+          evt.preventDefault();
+          goTo(index + 1, { focusTab: true });
+        } else if (evt.key === 'ArrowLeft' || evt.key === 'ArrowUp'){
+          evt.preventDefault();
+          goTo(index - 1, { focusTab: true });
+        } else if (evt.key === 'Home'){
+          evt.preventDefault();
+          goTo(0, { focusTab: true });
+        } else if (evt.key === 'End'){
+          evt.preventDefault();
+          goTo(total - 1, { focusTab: true });
+        }
+      });
+    });
+
+    if (prevBtn instanceof HTMLElement){
+      prevBtn.addEventListener('click', () => {
+        goBy(-1);
+        focusTab(activeIndex);
       });
     }
 
-    grid.addEventListener('carousel:refresh', applyTransforms);
+    if (nextBtn instanceof HTMLElement){
+      nextBtn.addEventListener('click', () => {
+        goBy(1);
+        focusTab(activeIndex);
+      });
+    }
 
-    grid.addEventListener('mouseenter', () => {
-      grid.classList.add('carousel-hover');
-      wheelBuffer = 0;
-    });
-    grid.addEventListener('mouseleave', () => {
-      grid.classList.remove('carousel-hover');
-      wheelBuffer = 0;
-    });
+    const onPointerDown = evt => {
+      if (!evt || typeof evt.pointerId !== 'number') return;
+      if (evt.pointerType === 'mouse' && evt.button !== 0) return;
+      if (evt.target instanceof HTMLElement && evt.target.closest('button, a, [role="tab"]')) return;
+      pointerId = evt.pointerId;
+      startX = evt.clientX;
+      startY = evt.clientY;
+      dragOffset = 0;
+      dragging = false;
+      windowEl.classList.add('is-dragging');
+      track.classList.add('is-dragging');
+      if (typeof windowEl.setPointerCapture === 'function'){
+        try {
+          windowEl.setPointerCapture(pointerId);
+        } catch (err){}
+      }
+    };
 
-    grid.addEventListener('wheel', evt => {
-      if (mq.matches || !grid.classList.contains('carousel-active')) return;
-      if (!grid.classList.contains('carousel-hover')) return;
-      evt.preventDefault();
-      const rawDelta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
-      const modeMultiplier = evt.deltaMode === 1 ? 16 : (evt.deltaMode === 2 ? 120 : 1);
-      wheelBuffer += rawDelta * modeMultiplier;
-      const step = 48;
-      let moves = 0;
-      while (wheelBuffer >= step){
-        wheelBuffer -= step;
-        moves += 1;
+    const onPointerMove = evt => {
+      if (pointerId === null || !evt || typeof evt.pointerId !== 'number' || evt.pointerId !== pointerId) return;
+      const deltaX = evt.clientX - startX;
+      const deltaY = evt.clientY - startY;
+      if (!dragging){
+        if (Math.abs(deltaX) < 12 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+        dragging = true;
       }
-      while (wheelBuffer <= -step){
-        wheelBuffer += step;
-        moves -= 1;
-      }
-      if (moves !== 0){
-        pauseAutoRotate();
-        goBy(moves, { duration: 680 });
-      }
-    }, { passive: false });
+      if (typeof evt.preventDefault === 'function') evt.preventDefault();
+      dragOffset = deltaX;
+      const percent = windowEl.clientWidth ? (dragOffset / windowEl.clientWidth) * 100 : 0;
+      track.style.transform = `translateX(${(-activeIndex * 100) + percent}%)`;
+    };
 
-    grid.addEventListener('keydown', evt => {
-      if (mq.matches || !grid.classList.contains('carousel-active')) return;
+    const finishDrag = commit => {
+      if (pointerId === null) return;
+      if (typeof windowEl.releasePointerCapture === 'function'){
+        try {
+          windowEl.releasePointerCapture(pointerId);
+        } catch (err){}
+      }
+      pointerId = null;
+      windowEl.classList.remove('is-dragging');
+      track.classList.remove('is-dragging');
+      if (!dragging){
+        if (commit) setTransform(false);
+        dragging = false;
+        dragOffset = 0;
+        return;
+      }
+      const threshold = windowEl.clientWidth * 0.22;
+      if (commit && Math.abs(dragOffset) > threshold){
+        goBy(dragOffset < 0 ? 1 : -1);
+      } else {
+        setTransform(false);
+        syncHeight();
+      }
+      dragging = false;
+      dragOffset = 0;
+    };
+
+    const onPointerUp = evt => {
+      if (pointerId === null || !evt || typeof evt.pointerId !== 'number' || evt.pointerId !== pointerId) return;
+      finishDrag(true);
+    };
+
+    const onPointerCancel = evt => {
+      if (pointerId === null || !evt || typeof evt.pointerId !== 'number' || evt.pointerId !== pointerId) return;
+      finishDrag(false);
+    };
+
+    if ('onpointerdown' in windowEl){
+      windowEl.addEventListener('pointerdown', onPointerDown, { passive: true });
+      windowEl.addEventListener('pointermove', onPointerMove);
+      windowEl.addEventListener('pointerup', onPointerUp);
+      windowEl.addEventListener('pointercancel', onPointerCancel);
+    }
+
+    windowEl.addEventListener('keydown', evt => {
+      if (!evt || typeof evt.key !== 'string') return;
+      if (evt.target instanceof HTMLElement && evt.target.matches('input, textarea')) return;
       if (evt.key === 'ArrowRight' || evt.key === 'PageDown'){
         evt.preventDefault();
-        pauseAutoRotate();
         goBy(1);
       } else if (evt.key === 'ArrowLeft' || evt.key === 'PageUp'){
         evt.preventDefault();
-        pauseAutoRotate();
         goBy(-1);
       }
     });
 
-    grid.addEventListener('pointerdown', () => {
-      if (!mq.matches) pauseAutoRotate();
-    });
-
-    grid.addEventListener('focusin', () => {
-      if (!mq.matches) pauseAutoRotate();
-    });
-
-    const focusGrid = () => {
-      if (typeof grid.focus === 'function'){
-        try {
-          grid.focus({ preventScroll: true });
-        } catch (err){
-          grid.focus();
-        }
-      }
-    };
-
-    prevBtn.addEventListener('click', () => {
-      pauseAutoRotate();
-      goBy(-1);
-      focusGrid();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      pauseAutoRotate();
-      goBy(1);
-      focusGrid();
-    });
-
-    let touchStartX = null;
-    let touchStartY = null;
-    let touchActive = false;
-
-    grid.addEventListener('touchstart', evt => {
-      if (!mq.matches) return;
-      if (evt.touches.length !== 1) return;
-      const touch = evt.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      touchActive = true;
-    }, { passive: true });
-
-    grid.addEventListener('touchmove', evt => {
-      if (!mq.matches || !touchActive) return;
-      if (evt.touches.length !== 1 || touchStartX === null || touchStartY === null) return;
-      const touch = evt.touches[0];
-      const deltaX = touch.clientX - touchStartX;
-      const deltaY = touch.clientY - touchStartY;
-      if (Math.abs(deltaX) < 28 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-      evt.preventDefault();
-      touchActive = false;
-      pauseAutoRotate();
-      if (deltaX < 0) goBy(1, { duration: 520 });
-      else if (deltaX > 0) goBy(-1, { duration: 520 });
-      touchStartX = null;
-      touchStartY = null;
-    }, { passive: false });
-
-    const resetTouch = () => {
-      touchActive = false;
-      touchStartX = null;
-      touchStartY = null;
-    };
-
-    grid.addEventListener('touchend', resetTouch);
-    grid.addEventListener('touchcancel', resetTouch);
-
-    function goBy(delta, options = {}){
-      if (!state.total || !Number.isFinite(delta) || delta === 0) return;
-
-      if (prefersReducedMotion.matches) options = { ...options, immediate: true };
-
-      const currentPosition = typeof state.position === 'number' ? state.position : state.index;
-      const target = currentPosition + delta;
-
-      if (options.immediate){
-        stopAnimation();
-        commitPosition(target);
-        applyTransforms();
-        if (options.source !== 'auto' && !mq.matches){
-          scheduleAutoResume();
-        }
-        return;
-      }
-
-      stopAnimation();
-
-      const duration = clamp(options.duration ?? DEFAULT_ANIMATION_MS, 360, MAX_ANIMATION_MS);
-      const easing = typeof options.easing === 'function' ? options.easing : easeInOutCubic;
-      const start = performance.now();
-      const from = currentPosition;
-      const change = target - from;
-
-      const step = now => {
-        const elapsed = now - start;
-        const rawProgress = duration === 0 ? 1 : Math.min(elapsed / duration, 1);
-        const eased = easing(rawProgress);
-        const value = from + change * eased;
-        state.position = value;
-        applyTransforms({ animating: true });
-        if (rawProgress < 1){
-          animationFrame = window.requestAnimationFrame(step);
-          return;
-        }
-        animationFrame = null;
-        commitPosition(target);
-        applyTransforms();
-      };
-
-      animationFrame = window.requestAnimationFrame(step);
-
-      if (options.source !== 'auto' && !mq.matches){
-        scheduleAutoResume();
-      }
+    const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(syncHeight) : null;
+    if (resizeObserver){
+      resizeObserver.observe(windowEl);
+      slides.forEach(slide => resizeObserver.observe(slide));
+    } else {
+      window.addEventListener('resize', syncHeight);
     }
 
-    function goTo(nextIndex, options = {}){
-      if (!state.total) return;
-      const currentPosition = typeof state.position === 'number' ? state.position : state.index;
-      const delta = shortestDelta(currentPosition, nextIndex, state.total);
-      goBy(delta, options);
-    }
-
-    function applyTransforms(meta = {}){
-      if (mq.matches){
-        grid.classList.add('carousel-active');
-        grid.classList.add('carousel-mobile');
-        grid.style.overflow = 'visible';
-        const containerWidth = grid.clientWidth || grid.offsetWidth || 0;
-        const cardWidth = Math.min(Math.max(containerWidth * 0.78, 230), 460);
-        const gap = Math.min(Math.max(containerWidth * 0.05, 14), 36);
-        const heights = [];
-        const activeIndex = getActiveIndex();
-
-        cards.forEach((card, idx) => {
-          let relative = idx - activeIndex;
-          relative = ((relative % state.total) + state.total) % state.total;
-          if (relative > state.total / 2) relative -= state.total;
-          const distance = Math.abs(relative);
-          const isFront = distance < 0.5;
-          const isNeighbor = Math.abs(distance - 1) < 0.6;
-          const translateX = relative * (cardWidth + gap);
-
-          card.style.transform = `translate(-50%, 0) translateX(${translateX.toFixed(1)}px)`;
-          card.style.opacity = isFront ? '1' : isNeighbor ? '0.52' : '0';
-          card.style.zIndex = String(isFront ? 900 : isNeighbor ? 600 : 200 - distance);
-          card.style.filter = isFront ? 'brightness(1.02)' : 'brightness(0.82)';
-          card.style.pointerEvents = (isFront || isNeighbor) ? 'auto' : 'none';
-          card.style.width = `${Math.round(cardWidth)}px`;
-          card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
-          card.style.height = '';
-          card.classList.toggle('is-front', isFront);
-          card.classList.toggle('is-side', isNeighbor);
-          if (isFront){
-            card.removeAttribute('aria-hidden');
-          } else {
-            card.setAttribute('aria-hidden', 'true');
-          }
-          heights[idx] = card.scrollHeight;
-        });
-        
-        const tallest = Math.max(...heights, 0);
-        if (tallest){
-          const heightPx = `${Math.ceil(tallest)}px`;
-          grid.style.height = heightPx;
-          cards.forEach(card => {
-            card.style.height = heightPx;
-          });
-        } else {
-          grid.style.height = '';
-          cards.forEach(card => {
-            card.style.height = '';
-          });
-        }
-
-        if (!meta?.animating) updateStatus();
-        return;
-      }
-
-      grid.classList.add('carousel-active');
-      grid.classList.remove('carousel-mobile');
-      grid.style.overflow = 'hidden';
-      
-      const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
-      const frontWidth = clamp(containerWidth * 0.44, 300, 500);
-      const sideWidth = clamp(containerWidth * 0.24, 200, frontWidth * 0.7);
-      const gap = clamp(containerWidth * 0.03, 22, 48);
-      const depth = clamp(containerWidth * 0.16, 90, 200);
-      const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
-      
-      const position = typeof state.position === 'number' ? state.position : state.index;
-      const heights = [];
-      
-      cards.forEach((card, idx) => {
-        let relative = idx - position;
-        relative = ((relative % state.total) + state.total) % state.total;
-        if (relative > state.total / 2) relative -= state.total;
-        const absRelative = Math.abs(relative);
-        const direction = relative === 0 ? 0 : (relative > 0 ? 1 : -1);
-
-        const blendStart = 0.28;
-        const hiddenThreshold = 1.06;
-        const normalized = clamp((absRelative - blendStart) / (1 - blendStart), 0, 1);
-        const eased = smoothStep(normalized);
-
-        const widthPx = frontWidth - (frontWidth - sideWidth) * eased;
-        const translateX = direction * baseOffset * eased;
-        const rotateY = direction * 30 * eased;
-        const translateZ = -depth * eased;
-        const scale = 1 - 0.08 * eased;
-        const opacityBase = 1 - 0.5 * eased;
-        const opacity = absRelative >= hiddenThreshold ? 0 : clamp(opacityBase, 0, 1);
-        const isFront = absRelative < 0.3;
-        const isSide = Math.abs(absRelative - 1) < 0.18 && opacity > 0;
-        const pointerable = isFront || Math.abs(absRelative - 1) < 0.16;
-
-        const transform = `translate3d(-50%, -50%, ${translateZ.toFixed(1)}px) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-        card.style.transform = transform;
-        card.style.opacity = opacity.toFixed(3);
-        card.style.visibility = opacity <= 0.001 ? 'hidden' : 'visible';
-        card.style.zIndex = String(isFront ? 900 : isSide ? 640 : 200 - Math.floor(absRelative));
-        card.style.filter = isFront ? 'brightness(1) saturate(1)' : 'brightness(0.86) saturate(0.9)';
-        card.style.pointerEvents = pointerable ? 'auto' : 'none';
-        card.style.width = `${Math.round(widthPx)}px`;
-        card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
-        card.classList.toggle('is-front', isFront);
-        card.classList.toggle('is-side', isSide);
-        if (isFront || isSide){
-          card.removeAttribute('aria-hidden');
-        } else {
-          card.setAttribute('aria-hidden', 'true');
-        }
-        card.style.height = 'auto';
-        heights[idx] = card.scrollHeight;
-      });
-      
-      const tallest = Math.max(...heights, 0);
-      if (tallest){
-        const cardHeight = Math.ceil(tallest);
-        const padding = clamp(Math.round(frontWidth * 0.35), 110, 200);
-        const totalHeight = cardHeight + padding;
-        grid.style.height = `${totalHeight}px`;
-        cards.forEach(card => {
-          card.style.height = `${cardHeight}px`;
-        });
-      } else {
-        grid.style.height = '';
-      }
-    }
-
-    if (!meta?.animating){
-      updateStatus();
-    }
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden'){
-        stopAutoRotate();
-        clearResumeTimer();
-        stopAnimation();
-      } else {
-        applyTransforms();
-        updateAutoRotationState();
-      }
-    };
-
-    const handleMotionPreference = () => {
-      if (prefersReducedMotion.matches){
-        stopAutoRotate();
-        clearResumeTimer();
-        stopAnimation();
-        commitPosition(typeof state.position === 'number' ? state.position : state.index);
-        applyTransforms();
-      } else {
-        applyTransforms();
-        updateAutoRotationState();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    if (typeof prefersReducedMotion.addEventListener === 'function'){
-      prefersReducedMotion.addEventListener('change', handleMotionPreference);
-    } else if (typeof prefersReducedMotion.addListener === 'function'){
-      prefersReducedMotion.addListener(handleMotionPreference);
-    }
-
-    goTo(0, { source: 'auto', immediate: true });
-
-    updateAutoRotationState();
-
-    if (!prefersReducedMotion.matches){
-      window.setTimeout(() => {
-        updateAutoRotationState();
-      }, 400);
-    }
-
-    cards.forEach((card, idx) => {
-      card.addEventListener('click', evt => {
-        if (evt.target instanceof HTMLElement && evt.target.closest('.project-more')) return;
-        const activeIndex = getActiveIndex();
-        if (mq.matches){
-          if (activeIndex === idx) return;
-          evt.preventDefault();
-          pauseAutoRotate();
-          goTo(idx);
-          return;
-        }
-        if (state.index === idx) return;
-        evt.preventDefault();
-        pauseAutoRotate();
-        goTo(idx);
-      });
-    });
-  }
-
-  function animateCardToModal(card){
-    return new Promise(resolve => {
-      if (!(card instanceof HTMLElement)){
-        resolve();
-        return;
-      }
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-        resolve();
-        return;
-      }
-
-      const rect = card.getBoundingClientRect();
-      const ghost = card.cloneNode(true);
-      ghost.classList.add('project-card-ghost');
-      ghost.style.top = `${rect.top}px`;
-      ghost.style.left = `${rect.left}px`;
-      ghost.style.width = `${rect.width}px`;
-      ghost.style.height = `${rect.height}px`;
-      ghost.style.transform = 'none';
-      ghost.style.opacity = '1';
-      ghost.style.transformOrigin = 'center center';
-      const computedRadius = window.getComputedStyle(card).borderRadius || '24px';
-      ghost.style.borderRadius = computedRadius;
-      ghost.style.transition = 'top .62s cubic-bezier(.22, 1, .36, 1), left .62s cubic-bezier(.22, 1, .36, 1), width .62s cubic-bezier(.22, 1, .36, 1), height .62s cubic-bezier(.22, 1, .36, 1), transform .62s cubic-bezier(.22, 1, .36, 1), border-radius .62s ease, opacity .32s ease .42s';
-      document.body.appendChild(ghost);
-      card.classList.add('is-animating');
-
-      let finished = false;
-      const finish = () => {
-        if (finished) return;
-        finished = true;
-        ghost.removeEventListener('transitionend', onTransitionEnd);
-        ghost.remove();
-        card.classList.remove('is-animating');
-        resolve();
-      };
-
-      const onTransitionEnd = evt => {
-        if (evt.target === ghost) finish();
-      };
-
-      ghost.addEventListener('transitionend', onTransitionEnd);
-
-      requestAnimationFrame(() => {
-        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-        const maxWidth = Math.max(Math.min(window.innerWidth - 64, 920), 420);
-        const maxHeight = Math.max(Math.min(window.innerHeight - 80, 640), 340);
-        const targetWidth = clamp(Math.max(rect.width * 1.35, 420), 420, maxWidth);
-        const targetHeight = clamp(Math.max(rect.height * 1.35, 360), 320, maxHeight);
-        const targetLeft = Math.max((window.innerWidth - targetWidth) / 2, 32);
-        const targetTop = Math.max((window.innerHeight - targetHeight) / 2, 32);
-
-        ghost.style.top = `${targetTop}px`;
-        ghost.style.left = `${targetLeft}px`;
-        ghost.style.width = `${targetWidth}px`;
-        ghost.style.height = `${targetHeight}px`;
-        ghost.style.transform = 'translate3d(0, 0, 0) scale(1.03)';
-        ghost.style.borderRadius = '28px';
-
-        window.setTimeout(() => {
-          ghost.style.opacity = '0';
-          ghost.style.transform = 'translate3d(0, 0, 0) scale(1.01)';
-        }, 420);
-      });
-
-      window.setTimeout(finish, 760);
-    });
+    goTo(0, { immediate: true, force: true });
   }
 })();
