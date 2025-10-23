@@ -177,6 +177,8 @@ body.portfolio-page main{
 .project-card{
   display:grid;
   grid-template-columns:160px 1fr;
+  grid-template-rows:1fr;
+  align-items:stretch;
   gap:20px;
   padding:22px;
   background:#fff;
@@ -199,6 +201,7 @@ body.portfolio-page main{
   left:50%;
   width:clamp(260px, 42vw, 520px);
   max-width:none;
+  height:auto;
   transform-style:preserve-3d;
   transform-origin:center center;
   opacity:0;
@@ -227,6 +230,28 @@ body.portfolio-page main{
 }
 
 .projects-grid.carousel-active .project-card.is-front::after{opacity:0.38;}
+
+.project-card.is-animating{
+  opacity:0;
+  pointer-events:none;
+}
+
+.project-card-ghost{
+  position:fixed;
+  inset:auto;
+  margin:0;
+  z-index:1600;
+  pointer-events:none;
+  transform-origin:center center;
+  box-shadow:var(--shadow-2);
+  border-radius:var(--radius-xl);
+  background:#fff;
+}
+
+.project-card-ghost::after{
+  display:none !important;
+}
+
 
 @media (max-width:900px){
   .projects-grid.carousel-active{
@@ -270,7 +295,40 @@ body.portfolio-page main{
   justify-content:center;
 }
 
-.project-media img{width:100%;height:auto;display:block;object-fit:cover;}
+@media (max-width:720px){
+  .project-media{min-height:200px;}
+}
+
+@media (max-width:520px){
+  .project-media{min-height:180px;}
+}
+
+.project-media img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.project-media model-viewer{
+  width:100%;
+  height:100%;
+  display:block;
+  border:none;
+  background:rgba(43,47,51,.04);
+  --poster-color:rgba(43,47,51,.82);
+  border-radius:inherit;
+}
+
+.project-media--viewer{
+  padding:0;
+}
+
+.project-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
 
 .project-info h3{
   margin:0 0 8px;
@@ -282,6 +340,8 @@ body.portfolio-page main{
 .project-summary{
   margin:0 0 16px;
   color:var(--muted);
+  flex-grow:1;
+
 }
 
 .project-more{
