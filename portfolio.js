@@ -47,8 +47,7 @@
         src: 'assets/models/horn.gltf',
         alt: 'Interactive preview of the custom horn assembly placeholder mesh',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Explore the interactive CAD preview of the horn assembly. Drag to orbit, scroll to zoom, and right-click to pan.',
-        autoRotate: true,
+        message: 'Keep horn.gltf and its exported .bin companions together in assets/models so the viewer can load the CAD preview.'
         rotationPerSecond: '15deg',
         shadowIntensity: '0.8',
         exposure: '1.1'
@@ -139,6 +138,91 @@
 
   const desktopMq = window.matchMedia('(max-width: 900px)');
 
+const gltfInspectionCache = new Map();
+
+  function collectGltfUris(manifest){
+    const entries = [];
+    if (!manifest || typeof manifest !== 'object') return entries;
+    const seen = new Set();
+    const push = (uri, type) => {
+      if (typeof uri !== 'string') return;
+      const clean = uri.trim();
+      if (!clean || clean.startsWith('data:') || seen.has(clean)) return;
+      seen.add(clean);
+      entries.push({ uri: clean, type });
+    };
+    if (Array.isArray(manifest.buffers)){
+      manifest.buffers.forEach((buffer, index) => {
+        if (buffer && typeof buffer === 'object') push(buffer.uri, `buffer #${index + 1}`);
+      });
+    }
+    if (Array.isArray(manifest.images)){
+      manifest.images.forEach((image, index) => {
+        if (image && typeof image === 'object') push(image.uri, `image #${index + 1}`);
+      });
+    }
+    return entries;
+  }
+
+  function inspectGltfManifest(src){
+    if (typeof src !== 'string' || !src.trim() || !/\.gltf(?:[?#].*)?$/i.test(src)) return Promise.resolve(null);
+    if (gltfInspectionCache.has(src)) return gltfInspectionCache.get(src);
+
+    const task = (async () => {
+      let gltfUrl;
+      try {
+        gltfUrl = new URL(src, window.location.href);
+      } catch (err){
+        return { references: [], basePath: '', error: 'invalid-url' };
+      }
+
+      const basePath = gltfUrl.href.replace(/[^/]+$/, '');
+
+      if (window.location.protocol === 'file:'){
+        return { references: [], basePath, error: 'file-protocol' };
+      }
+
+      let manifest;
+      try {
+        const response = await fetch(gltfUrl.href, { cache: 'no-store' });
+        if (!response.ok) return { references: [], basePath, error: 'fetch-failed' };
+        manifest = await response.json();
+      } catch (err){
+        return { references: [], basePath, error: 'fetch-failed' };
+      }
+
+      const refs = collectGltfUris(manifest);
+      if (!refs.length) return { references: [], basePath, error: null };
+
+      const results = await Promise.all(refs.map(async ref => {
+        let absolute;
+        try {
+          absolute = new URL(ref.uri, gltfUrl);
+        } catch (err){
+          return { ...ref, status: 'invalid' };
+        }
+
+        try {
+          const response = await fetch(absolute.href, { method: 'HEAD' });
+          if (response.status >= 200 && response.status < 300){
+            return { ...ref, status: 'found' };
+          }
+          if (response.status === 401 || response.status === 403 || response.status === 405){
+            return { ...ref, status: 'unknown' };
+          }
+          return { ...ref, status: 'missing' };
+        } catch (err){
+          return { ...ref, status: 'missing' };
+        }
+      }));
+
+      return { references: results, basePath, error: null };
+    })();
+
+    gltfInspectionCache.set(src, task);
+    return task;
+  }
+
   const modalBody = document.getElementById('modalBody');
   const modalTitle = document.getElementById('modalTitle');
   const modalSubtitle = document.getElementById('modalSubtitle');
@@ -171,7 +255,7 @@
         delete btn.dataset.animating;
       };
 
-       const modalOptions = {
+      const modalOptions = {
         collection,
         summary: summaryText
       };
@@ -267,6 +351,7 @@
         viewer.setAttribute('interaction-prompt', 'auto');
         viewer.setAttribute('reveal', 'auto');
         viewer.setAttribute('camera-orbit', project.model.cameraOrbit || 'auto auto auto');
+        viewer.setAttribute('alt', project.model.alt || project.title || 'Interactive 3D model');
         if (project.model.alt) viewer.setAttribute('alt', project.model.alt);
         if (project.model.autoRotate) viewer.setAttribute('auto-rotate', '');
         if (project.model.rotationPerSecond) viewer.setAttribute('rotation-per-second', project.model.rotationPerSecond);
@@ -274,7 +359,122 @@
         viewer.addEventListener('error', () => {
           const placeholder = document.createElement('div');
           placeholder.className = 'viewer-placeholder';
-          placeholder.innerHTML = `<strong>3D model unavailable</strong>${project.model.message || 'Link a .glb or .gltf file to enable the viewer.'}`;
+          const heading = document.createElement('strong');
+          heading.textContent = '3D model unavailable';
+          const description = document.createElement('p');
+          description.className = 'viewer-placeholder__status';
+          description.textContent = project.model.message || 'Link a .glb or .gltf file to enable the viewer.';
+          placeholder.appendChild(heading);
+          placeholder.appendChild(description);
+
+          const src = project.model.src;
+          inspectGltfManifest(src).then(info => {
+            if (!info) return;
+            const status = document.createElement('p');
+            status.className = 'viewer-placeholder__status';
+
+            if (info.error === 'file-protocol'){
+              status.textContent = 'Open this page through a local web server (http:// or https://) so companion files can be inspected automatically.';
+              placeholder.appendChild(status);
+              return;
+            }
+
+            if (info.error === 'invalid-url'){
+              status.textContent = 'The GLTF path could not be resolved. Double-check the src attribute for typos or unsupported characters.';
+              placeholder.appendChild(status);
+              return;
+            }
+
+            if (info.error === 'fetch-failed'){
+              status.textContent = 'The GLTF manifest could not be downloaded to verify its companion files. Make sure the file path is correct.';
+              placeholder.appendChild(status);
+              return;
+            }
+
+            if (info.error){
+              status.textContent = 'The GLTF manifest could not be parsed. Ensure the export is valid JSON.';
+              placeholder.appendChild(status);
+              return;
+            }
+
+            const references = Array.isArray(info.references) ? info.references : [];
+            if (!references.length){
+              status.textContent = 'This GLTF does not reference external buffers or textures. If loading still fails, re-export the asset.';
+              placeholder.appendChild(status);
+              return;
+            }
+
+            status.textContent = 'The GLTF references these companion files:';
+            placeholder.appendChild(status);
+
+            const list = document.createElement('ul');
+            list.className = 'viewer-placeholder__refs';
+            const missing = [];
+            const statusLabels = {
+              found: 'found',
+              missing: 'missing',
+              unknown: 'check manually',
+              invalid: 'invalid path'
+            };
+
+            references.forEach(ref => {
+              const item = document.createElement('li');
+              const file = document.createElement('code');
+              file.textContent = ref.uri;
+              item.appendChild(file);
+              if (ref.type){
+                const type = document.createElement('span');
+                type.className = 'viewer-placeholder__ref-type';
+                type.textContent = ` (${ref.type})`;
+                item.appendChild(type);
+              }
+              item.appendChild(document.createTextNode(' — '));
+              const key = statusLabels[ref.status] ? ref.status : 'unknown';
+              if (key === 'missing') missing.push(ref.uri);
+              const statusTag = document.createElement('span');
+              statusTag.dataset.status = key;
+              statusTag.className = 'viewer-placeholder__ref-status';
+              statusTag.textContent = statusLabels[key];
+              item.appendChild(statusTag);
+              list.appendChild(item);
+            });
+
+            placeholder.appendChild(list);
+
+            const baseDir = (src.split('/').slice(0, -1).join('/') || '.') + '/';
+            const followUp = document.createElement('p');
+            followUp.className = 'viewer-placeholder__status';
+            if (missing.length){
+              followUp.appendChild(document.createTextNode(`Upload the missing file${missing.length > 1 ? 's' : ''} `));
+              missing.forEach((name, index) => {
+                if (index > 0) followUp.appendChild(document.createTextNode(', '));
+                const code = document.createElement('code');
+                code.textContent = name;
+                followUp.appendChild(code);
+              });
+              followUp.appendChild(document.createTextNode(' to '));
+              const dirCode = document.createElement('code');
+              dirCode.textContent = baseDir;
+              followUp.appendChild(dirCode);
+              followUp.appendChild(document.createTextNode(' so the viewer can stream the geometry.'));
+            } else {
+              followUp.appendChild(document.createTextNode('Deploy each companion file alongside '));
+              const fileCode = document.createElement('code');
+              fileCode.textContent = src.split('/').pop() || src;
+              followUp.appendChild(fileCode);
+              followUp.appendChild(document.createTextNode(' (folder: '));
+              const dirCode = document.createElement('code');
+              dirCode.textContent = baseDir;
+              followUp.appendChild(dirCode);
+              followUp.appendChild(document.createTextNode(').'));
+            }
+            placeholder.appendChild(followUp);
+          }).catch(() => {
+            const status = document.createElement('p');
+            status.className = 'viewer-placeholder__status';
+            status.textContent = 'Unable to inspect the GLTF manifest for companion assets.';
+            placeholder.appendChild(status);
+          });
           viewer.replaceWith(placeholder);
         }, { once: true });
         viewerShell.appendChild(viewer);
