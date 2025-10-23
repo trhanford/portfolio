@@ -755,7 +755,8 @@
       tab.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
       tab.setAttribute('tabindex', index === 0 ? '0' : '-1');
       tab.textContent = title;
-      menu.appendChild(tab);
+      tab.setAttribute('aria-label', title);
+      menuViewport.appendChild(tab);
       tabs.push(tab);
 
       slide.setAttribute('aria-labelledby', tab.id);
