@@ -41,14 +41,14 @@
       note: 'Replace with track-day shots, detail photos, and instrumentation close-ups to tell the full story.'
     },
     'cad-1': {
-      title: 'Placeholder 1',
+      title: 'Custom Horn Assembly',
       category: 'CAD',
       model: {
-        src: '',
+        src: 'assets/models/horn.gltf',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Place a .glb or .gltf file inside assets/models/ and update portfolio.js to point to it. The viewer will allow orbit, zoom, and pan controls once a file is linked.'
+        message: 'Explore the interactive CAD preview of the horn assembly. Drag to orbit, scroll to zoom, and right-click to pan.'
       },
-      note: 'The <model-viewer> component prefers binary GLB or GLTF with embedded textures. OBJ/STL will need conversion before use.'
+     note: 'Model exported as GLTF for use with the <model-viewer> component. Additional exploded views can be added as separate entries if needed.'
     },
     'cad-2': {
       title: 'Placeholder 2',
@@ -247,7 +247,7 @@
 
     let state = {
       index: 0,
-      angle: 0,
+      rotation: 0,
       radius: 320,
       step: 360 / cards.length
     };
@@ -298,13 +298,15 @@
       const bounds = sample.getBoundingClientRect();
       const width = bounds.width || sample.offsetWidth || 320;
       const raw = width / (2 * Math.tan(Math.PI / cards.length));
-      state.radius = Math.max(180, Math.round(raw) + 56);
+      state.radius = Math.max(width * 2.4, Math.round(raw * 2.2));
     }
 
     function goTo(nextIndex){
       const total = cards.length;
+      const previous = state.index;
+      const delta = nextIndex - previous;
       state.index = (nextIndex % total + total) % total;
-      state.angle = -state.step * state.index;
+      state.rotation += -state.step * delta;
       applyTransforms();
     }
 
@@ -326,18 +328,42 @@
       grid.classList.add('carousel-active');
 
       cards.forEach((card, idx) => {
-        const angle = idx * state.step + state.angle;
+        const angle = idx * state.step + state.rotation;
         const rad = angle * Math.PI / 180;
         const depth = (Math.cos(rad) + 1) / 2; // 0 (back) to 1 (front)
-        const scale = 0.82 + depth * 0.22;
+        
+        let relative = idx - state.index;
+        relative = ((relative % cards.length) + cards.length) % cards.length;
+        if (relative > cards.length / 2) relative -= cards.length;
+        const absRelative = Math.abs(relative);
+
+        const isFront = absRelative < 0.001;
+        const isSide = absRelative > 0 && absRelative <= 1;
+
+        let scale;
+        let opacity;
+        let filter;
+        if (isFront){
+          scale = 1.08;
+          opacity = 1;
+          filter = 'brightness(1.05) saturate(1.05)';
+        } else if (isSide){
+          scale = 0.62 + depth * 0.18;
+          opacity = 0.55;
+          filter = 'brightness(0.85) saturate(0.92)';
+        } else {
+          scale = 0.55;
+          opacity = 0;
+          filter = 'brightness(0.7) saturate(0.85)';
+        }
+
+
         const translate = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${state.radius}px) scale(${scale.toFixed(3)})`;
         card.style.transform = translate;
-        card.style.opacity = (0.28 + depth * 0.72).toFixed(3);
-        card.style.zIndex = String(Math.round(depth * 1000));
-        card.style.filter = `brightness(${(0.7 + depth * 0.3).toFixed(2)}) saturate(${(0.9 + depth * 0.15).toFixed(2)})`;
-
-        const normalized = ((angle % 360) + 360) % 360;
-        const isFront = normalized < state.step / 1.5 || normalized > 360 - state.step / 1.5;
+        card.style.opacity = opacity.toFixed(3);
+        card.style.zIndex = String(Math.round((isFront ? 1 : depth) * 1000));
+        card.style.filter = filter;
+       
         card.classList.toggle('is-front', isFront);
         if (isFront){
           card.style.pointerEvents = 'auto';
