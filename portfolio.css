@@ -176,8 +176,8 @@ body.portfolio-page main{
 
 .project-card{
   display:grid;
-  grid-template-columns:160px 1fr;
-  grid-template-rows:1fr;
+  grid-template-columns:170px 1fr;
+  grid-template-rows:auto;
   grid-template-areas:"media info";
   align-items:stretch;
   gap:20px;
@@ -214,6 +214,23 @@ body.portfolio-page main{
              box-shadow .35s ease;
 }
 
+.projects-grid.carousel-active .project-card .project-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  gap:12px;
+  text-align:left;
+}
+
+.projects-grid.carousel-active .project-card .project-more{
+  align-self:flex-start;
+}
+
+.projects-grid.carousel-active .project-card .project-media{
+  align-self:stretch;
+}
+
 .projects-grid.carousel-active .project-card.is-front{
   box-shadow:var(--shadow-2);
 }
@@ -230,6 +247,34 @@ body.portfolio-page main{
 }
 
 .projects-grid.carousel-active .project-card.is-front::after{opacity:0.38;}
+
+.projects-grid.carousel-active .project-card.is-front{
+  grid-template-columns:1fr;
+  grid-template-rows:auto auto;
+  grid-template-areas:
+    "info"
+    "media";
+  align-content:start;
+}
+
+.projects-grid.carousel-active .project-card.is-front .project-info{
+  align-items:center;
+  text-align:center;
+  max-width:520px;
+}
+
+.projects-grid.carousel-active .project-card.is-front .project-more{
+  align-self:center;
+}
+
+.projects-grid.carousel-active .project-card.is-front .project-media{
+  width:100%;
+  margin-top:16px;
+}
+
+.projects-grid.carousel-active .project-card.is-front .project-summary{
+  margin:0 0 12px;
+}
 
 .project-card.is-animating{
   opacity:0;
