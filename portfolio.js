@@ -47,7 +47,7 @@
         src: 'assets/models/horn.glb',
         alt: 'Interactive preview of the custom horn assembly placeholder mesh',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Keep horn.gltf and its exported .bin companions together in assets/models so the viewer can load the CAD preview.'
+        message: 'Keep horn.gltf and its exported .bin companions together in assets/models so the viewer can load the CAD preview.',
         rotationPerSecond: '15deg',
         shadowIntensity: '0.8',
         exposure: '1.1'
@@ -695,6 +695,59 @@ const gltfInspectionCache = new Map();
       total: cards.length
     };
 
+    const AUTO_INTERVAL = 5200;
+    const RESUME_DELAY = 9000;
+    let autoRotateTimer = null;
+    let resumeTimer = null;
+
+    function stopAutoRotate(){
+      if (autoRotateTimer !== null){
+        window.clearInterval(autoRotateTimer);
+        autoRotateTimer = null;
+      }
+    }
+
+    function clearResumeTimer(){
+      if (resumeTimer !== null){
+        window.clearTimeout(resumeTimer);
+        resumeTimer = null;
+      }
+    }
+
+    function startAutoRotate(){
+      if (mq.matches || !grid.classList.contains('carousel-active')) return;
+      stopAutoRotate();
+      clearResumeTimer();
+      autoRotateTimer = window.setInterval(() => {
+        if (mq.matches || !grid.classList.contains('carousel-active')) return;
+        goTo(state.index + 1, { source: 'auto' });
+      }, AUTO_INTERVAL);
+    }
+
+    function scheduleAutoResume(){
+      clearResumeTimer();
+      resumeTimer = window.setTimeout(() => {
+        resumeTimer = null;
+        startAutoRotate();
+      }, RESUME_DELAY);
+    }
+
+    function pauseAutoRotate(){
+      stopAutoRotate();
+      scheduleAutoResume();
+    }
+
+    function updateAutoRotationState(){
+      if (mq.matches || !grid.classList.contains('carousel-active')){
+        stopAutoRotate();
+        clearResumeTimer();
+        return;
+      }
+      if (autoRotateTimer === null && resumeTimer === null){
+        startAutoRotate();
+      }
+    }
+
     const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(() => {
       applyTransforms();
     }) : null;
@@ -720,6 +773,7 @@ const gltfInspectionCache = new Map();
       const delta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
       if (delta === 0) return;
       const direction = delta > 0 ? 1 : -1;
+      pauseAutoRotate();
       goTo(state.index + direction);
     }, { passive: false });
 
@@ -727,17 +781,28 @@ const gltfInspectionCache = new Map();
       if (mq.matches || !grid.classList.contains('carousel-active')) return;
       if (evt.key === 'ArrowRight' || evt.key === 'PageDown'){
         evt.preventDefault();
+        pauseAutoRotate();
         goTo(state.index + 1);
       } else if (evt.key === 'ArrowLeft' || evt.key === 'PageUp'){
         evt.preventDefault();
+        pauseAutoRotate();
         goTo(state.index - 1);
       }
     });
 
-    function goTo(nextIndex){
+    grid.addEventListener('pointerdown', () => {
+      if (!mq.matches) pauseAutoRotate();
+    });
+
+    grid.addEventListener('focusin', () => {
+      if (!mq.matches) pauseAutoRotate();
+    });
+
+    function goTo(nextIndex, options = {}){
       const total = state.total;
       state.index = (nextIndex % total + total) % total;
       applyTransforms();
+      if (options.source !== 'auto' && !mq.matches) scheduleAutoResume();
     }
 
     function applyTransforms(){
@@ -837,8 +902,13 @@ const gltfInspectionCache = new Map();
         });
       }
     }
+    
+      updateAutoRotationState();
+    }
 
-    goTo(0);
+    goTo(0, { source: 'auto' });
+
+    updateAutoRotationState();
 
     cards.forEach((card, idx) => {
       card.addEventListener('click', evt => {
@@ -846,6 +916,7 @@ const gltfInspectionCache = new Map();
         if (evt.target instanceof HTMLElement && evt.target.closest('.project-more')) return;
         if (state.index === idx) return;
         evt.preventDefault();
+        pauseAutoRotate();
         goTo(idx);
       });
     });
