@@ -112,6 +112,26 @@
   const modal = document.getElementById('projectModal');
   if (!modal) return;
 
+  if (typeof customElements !== 'undefined' && !customElements.get('model-viewer')){
+    const scripts = Array.from(document.querySelectorAll('script[src]'));
+    const hasModule = scripts.some(script => script.src.includes('model-viewer.min.js'));
+    const hasLegacy = scripts.some(script => script.src.includes('model-viewer-legacy.js'));
+    if (!hasModule){
+      const loader = document.createElement('script');
+      loader.type = 'module';
+      loader.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+      loader.defer = true;
+      document.head.appendChild(loader);
+    }
+    if (!hasLegacy){
+      const legacyLoader = document.createElement('script');
+      legacyLoader.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js';
+      legacyLoader.setAttribute('nomodule', '');
+      legacyLoader.dataset.modelViewer = 'legacy';
+      document.head.appendChild(legacyLoader);
+    }
+  }
+
   const desktopMq = window.matchMedia('(max-width: 900px)');
 
   const modalBody = document.getElementById('modalBody');
@@ -120,6 +140,8 @@
   const closeButtons = modal.querySelectorAll('[data-close]');
 
   const projectButtons = Array.from(document.querySelectorAll('.project-more'));
+  let activeModalObserver = null;
+  let activeModalScrollHandler = null;
   projectButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.project;
@@ -129,17 +151,33 @@
       const carousel = card?.closest('[data-carousel]');
       const shouldAnimate = !!card && !!carousel && carousel.classList.contains('carousel-active') && !desktopMq.matches;
 
+      const summaryText = card?.querySelector('.project-summary')?.textContent?.trim() || '';
+      const collection = carousel ? Array.from(carousel.querySelectorAll('.project-card')).map(projectCard => {
+        const projectId = projectCard.dataset.projectId || projectCard.querySelector('.project-more')?.dataset.project;
+        if (!projectId) return null;
+        return {
+          id: projectId,
+          summary: projectCard.querySelector('.project-summary')?.textContent?.trim() || ''
+        };
+      }).filter(Boolean) : [];
+
+
       const done = () => {
         delete btn.dataset.animating;
       };
 
+       const modalOptions = {
+        collection,
+        summary: summaryText
+      };
+
       if (shouldAnimate){
         animateCardToModal(card).then(() => {
-          openModal(id);
+          openModal(id, modalOptions);
           done();
         });
       } else {
-        openModal(id);
+        openModal(id, modalOptions);
         done();
       }
     });
@@ -156,16 +194,33 @@
     if (evt.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 
-  function openModal(id){
-    const project = PROJECT_DATA[id];
+  function normaliseCollection(collection, fallbackId, fallbackSummary){
+    const output = [];
+    const seen = new Set();
+
+    if (Array.isArray(collection)){
+      collection.forEach(entry => {
+        if (!entry || typeof entry !== 'object') return;
+        const key = entry.id;
+        if (!key || seen.has(key) || !PROJECT_DATA[key]) return;
+        seen.add(key);
+        output.push({
+          id: key,
+          summary: typeof entry.summary === 'string' ? entry.summary : ''
+        });
+      });
+    }
+
+    if (fallbackId && PROJECT_DATA[fallbackId] && !seen.has(fallbackId)){
+      output.unshift({ id: fallbackId, summary: typeof fallbackSummary === 'string' ? fallbackSummary : '' });
+    }
+
+    return output;
+  }
+
+  function appendProjectContent(target, project){
     if (!project) return;
 
-    modalTitle.textContent = project.title;
-    const subtitle = project.category || project.subtitle || '';
-    modalSubtitle.textContent = subtitle;
-    modalSubtitle.hidden = !subtitle;
-
-    modalBody.innerHTML = '';
 
     if (Array.isArray(project.gallery) && project.gallery.length){
       const gallery = document.createElement('div');
@@ -190,7 +245,7 @@
         gallery.appendChild(figure);
       });
 
-      modalBody.appendChild(gallery);
+      target.appendChild(gallery);
     }
 
     if (project.model){
@@ -201,11 +256,19 @@
         const viewer = document.createElement('model-viewer');
         viewer.setAttribute('src', project.model.src);
         viewer.setAttribute('camera-controls', '');
-        viewer.setAttribute('shadow-intensity', '0.75');
+        viewer.setAttribute('shadow-intensity', project.model.shadowIntensity || '0.75');
         viewer.setAttribute('touch-action', 'pan-y');
-        viewer.setAttribute('exposure', '1.1');
+        viewer.setAttribute('exposure', project.model.exposure || '1.1');
         viewer.setAttribute('interaction-prompt', 'auto');
+        viewer.setAttribute('reveal', 'auto');
+        viewer.setAttribute('camera-orbit', project.model.cameraOrbit || 'auto auto auto');
         if (project.model.poster) viewer.setAttribute('poster', project.model.poster);
+        viewer.addEventListener('error', () => {
+          const placeholder = document.createElement('div');
+          placeholder.className = 'viewer-placeholder';
+          placeholder.innerHTML = `<strong>3D model unavailable</strong>${project.model.message || 'Link a .glb or .gltf file to enable the viewer.'}`;
+          viewer.replaceWith(placeholder);
+        }, { once: true });
         viewerShell.appendChild(viewer);
       } else {
         const placeholder = document.createElement('div');
@@ -214,14 +277,161 @@
         viewerShell.appendChild(placeholder);
       }
 
-      modalBody.appendChild(viewerShell);
+      target.appendChild(viewerShell);
     }
 
     if (project.note){
       const note = document.createElement('div');
       note.className = 'modal-note';
       note.innerHTML = `<strong>Next steps</strong>${project.note}`;
-      modalBody.appendChild(note);
+      target.appendChild(note);
+    }
+  }
+
+  function openModal(id, options = {}){
+    const project = PROJECT_DATA[id];
+    if (!project) return;
+
+    if (activeModalObserver){
+      activeModalObserver.disconnect();
+      activeModalObserver = null;
+    }
+
+    if (typeof activeModalScrollHandler === 'function'){
+      modalBody.removeEventListener('scroll', activeModalScrollHandler);
+      activeModalScrollHandler = null;
+    }
+
+    const collection = normaliseCollection(options.collection, id, options.summary);
+    const hasCollection = collection.length > 1;
+    const categoryLabel = project.category || 'Projects';
+    const instructionsTail = hasCollection ? ` Scroll to explore the rest of the ${(categoryLabel || 'project').toLowerCase()} collection.` : '';
+
+    modalTitle.textContent = hasCollection ? `${categoryLabel} Collection` : project.title;
+    const subtitle = hasCollection ? `Currently viewing ${project.title}.${instructionsTail}` : (project.category || project.subtitle || `Currently viewing ${project.title}.`);
+    modalSubtitle.textContent = subtitle;
+    modalSubtitle.hidden = !subtitle;
+
+    modalBody.innerHTML = '';
+    modalBody.scrollTop = 0;
+
+    const navButtons = new Map();
+    const sectionById = new Map();
+
+    if (hasCollection){
+      const nav = document.createElement('div');
+      nav.className = 'modal-collection-nav';
+      collection.forEach(entry => {
+        const proj = PROJECT_DATA[entry.id];
+        if (!proj) return;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'modal-collection-chip';
+        button.textContent = proj.title;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => {
+          const target = sectionById.get(entry.id);
+          if (target){
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+        nav.appendChild(button);
+        navButtons.set(entry.id, button);
+      });
+      modalBody.appendChild(nav);
+    }
+
+    const collectionWrap = document.createElement('div');
+    collectionWrap.className = 'modal-collection';
+
+    collection.forEach(entry => {
+      const proj = PROJECT_DATA[entry.id];
+      if (!proj) return;
+
+      const section = document.createElement('article');
+      section.className = 'modal-project';
+      section.dataset.projectId = entry.id;
+      section.id = `modal-${entry.id}`;
+
+      const head = document.createElement('header');
+      head.className = 'modal-project-head';
+      const heading = document.createElement('h3');
+      heading.textContent = proj.title;
+      head.appendChild(heading);
+
+      const summaryText = entry.summary || '';
+      if (summaryText){
+        const summaryEl = document.createElement('p');
+        summaryEl.className = 'modal-project-summary';
+        summaryEl.textContent = summaryText;
+        head.appendChild(summaryEl);
+      }
+
+      section.appendChild(head);
+      appendProjectContent(section, proj);
+      collectionWrap.appendChild(section);
+      sectionById.set(entry.id, section);
+    });
+
+    modalBody.appendChild(collectionWrap);
+
+    const setActive = projectId => {
+      const currentProject = PROJECT_DATA[projectId];
+      sectionById.forEach((section, key) => {
+        const isActive = key === projectId;
+        section.classList.toggle('is-active', isActive);
+      });
+      navButtons.forEach((button, key) => {
+        const isActive = key === projectId;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      if (currentProject && hasCollection){
+        modalSubtitle.textContent = `Currently viewing ${currentProject.title}.${instructionsTail}`;
+        modalSubtitle.hidden = false;
+      }
+    };
+
+    setActive(id);
+
+    if (hasCollection){
+      const activeSection = sectionById.get(id);
+      if (activeSection){
+        activeSection.scrollIntoView({ block: 'start' });
+      }
+
+      if ('IntersectionObserver' in window){
+        const observer = new IntersectionObserver(entries => {
+          const visible = entries
+            .filter(entry => entry.isIntersecting)
+            .sort((a, b) => a.target.offsetTop - b.target.offsetTop)
+            .shift();
+          if (!visible || !visible.target.dataset.projectId) return;
+          setActive(visible.target.dataset.projectId);
+        }, {
+          root: modalBody,
+          threshold: 0.45
+        });
+        sectionById.forEach(section => observer.observe(section));
+        activeModalObserver = observer;
+      } else {
+        const onScroll = () => {
+          let closestId = id;
+          let closestDistance = Number.POSITIVE_INFINITY;
+          sectionById.forEach(section => {
+            const bounds = section.getBoundingClientRect();
+            const containerBounds = modalBody.getBoundingClientRect();
+            const distance = Math.abs(bounds.top - containerBounds.top - 100);
+            if (distance < closestDistance){
+              closestDistance = distance;
+              closestId = section.dataset.projectId || closestId;
+            }
+          });
+          setActive(closestId);
+        };
+        modalBody.addEventListener('scroll', onScroll, { passive: true });
+        activeModalScrollHandler = onScroll;
+      }
     }
 
     modal.classList.add('open');
@@ -236,6 +446,14 @@
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+    if (activeModalObserver){
+      activeModalObserver.disconnect();
+      activeModalObserver = null;
+    }
+    if (typeof activeModalScrollHandler === 'function'){
+      modalBody.removeEventListener('scroll', activeModalScrollHandler);
+      activeModalScrollHandler = null;
+    }
   }
 
   initProjectCarousels();
@@ -327,7 +545,7 @@
           card.style.boxShadow = '';
           card.style.height = '';
           card.removeAttribute('aria-hidden');
-          card.classList.remove('is-front');
+          card.classList.remove('is-front', 'is-side');
         });
         return;
       }
@@ -336,9 +554,9 @@
 
       const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
       const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
-      const frontWidth = clampValue(containerWidth * 0.45, 320, 560);
-      const sideWidth = clampValue(containerWidth * 0.2, 180, frontWidth * 0.65);
-      const gap = clampValue(containerWidth * 0.05, 36, 72);
+      const frontWidth = clampValue(containerWidth * 0.58, 360, 680);
+      const sideWidth = clampValue(containerWidth * 0.18, 150, frontWidth * 0.55);
+      const gap = clampValue(containerWidth * 0.045, 28, 64);
       const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
 
       const heights = [];
@@ -354,7 +572,7 @@
 
         let widthPx = frontWidth;
         let opacity = 0;
-        let filter = 'brightness(0.7) saturate(0.85)';
+        let filter = 'brightness(0.72) saturate(0.88)';
         let rotateY = 0;
         let translateX = 0;
         let scale = 1;
@@ -362,28 +580,27 @@
         if (isFront){
           widthPx = frontWidth;
           opacity = 1;
-          filter = 'brightness(1.05) saturate(1.05)';
+          filter = 'brightness(1.08) saturate(1.08)';
           rotateY = 0;
           translateX = 0;
-          scale = 1.02;
+          scale = 1.04;
         } else if (isSide){
           widthPx = sideWidth;
-          opacity = 0.5;
-          filter = 'brightness(0.85) saturate(0.92)';
-          rotateY = direction * -28;
-          translateX = direction * baseOffset;
-          scale = 0.94;
+          opacity = 0.48;
+          filter = 'brightness(0.9) saturate(0.96)';
+          rotateY = direction * -30;
+          translateX = direction * (baseOffset - gap * 0.35);
+          scale = 0.9;
         } else {
-          widthPx = sideWidth;
-          opacity = 0;
-          rotateY = direction * -40;
-          const extra = baseOffset + (sideWidth + gap) * (absRelative - 1);
+          widthPx = sideWidth * 0.88;
+          opacity = 0.12;
+          rotateY = direction * -42;
+          const extra = baseOffset + (sideWidth + gap * 0.8) * (absRelative - 1);
           translateX = direction * extra;
-          scale = 0.88;
+          scale = 0.84;
         }
 
         const translate = `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
-        card.style.transform = translate;
         card.style.transform = translate;
         card.style.opacity = opacity.toFixed(3);
         card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
@@ -391,10 +608,11 @@
         card.style.width = `${Math.round(widthPx)}px`;
         card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
         card.classList.toggle('is-front', isFront);
+        card.classList.toggle('is-side', isSide);
         if (isFront){
           card.style.pointerEvents = 'auto';
           card.removeAttribute('aria-hidden');
-          } else if (isSide){
+        } else if (isSide){
           card.style.pointerEvents = 'auto';
           card.removeAttribute('aria-hidden');
         } else {
@@ -446,7 +664,10 @@
       ghost.style.height = `${rect.height}px`;
       ghost.style.transform = 'none';
       ghost.style.opacity = '1';
-      ghost.style.transition = 'top .52s cubic-bezier(.4, 0, .2, 1), left .52s cubic-bezier(.4, 0, .2, 1), width .52s cubic-bezier(.4, 0, .2, 1), height .52s cubic-bezier(.4, 0, .2, 1), transform .52s cubic-bezier(.4, 0, .2, 1), opacity .32s ease .12s';
+      ghost.style.transformOrigin = 'center center';
+      const computedRadius = window.getComputedStyle(card).borderRadius || '24px';
+      ghost.style.borderRadius = computedRadius;
+      ghost.style.transition = 'top .62s cubic-bezier(.22, 1, .36, 1), left .62s cubic-bezier(.22, 1, .36, 1), width .62s cubic-bezier(.22, 1, .36, 1), height .62s cubic-bezier(.22, 1, .36, 1), transform .62s cubic-bezier(.22, 1, .36, 1), border-radius .62s ease, opacity .32s ease .42s';
       document.body.appendChild(ghost);
       card.classList.add('is-animating');
 
@@ -467,22 +688,28 @@
       ghost.addEventListener('transitionend', onTransitionEnd);
 
       requestAnimationFrame(() => {
-        const maxWidth = Math.min(window.innerWidth - 48, 760);
-        const maxHeight = Math.min(window.innerHeight - 96, 580);
-        const targetWidth = Math.max(Math.min(maxWidth, Math.max(rect.width, 360)), 320);
-        const targetHeight = Math.max(Math.min(maxHeight, Math.max(rect.height, 320)), 280);
-        const targetLeft = Math.max((window.innerWidth - targetWidth) / 2, 24);
-        const targetTop = Math.max((window.innerHeight - targetHeight) / 2, 24);
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+        const maxWidth = Math.max(Math.min(window.innerWidth - 64, 920), 420);
+        const maxHeight = Math.max(Math.min(window.innerHeight - 80, 640), 340);
+        const targetWidth = clamp(Math.max(rect.width * 1.35, 420), 420, maxWidth);
+        const targetHeight = clamp(Math.max(rect.height * 1.35, 360), 320, maxHeight);
+        const targetLeft = Math.max((window.innerWidth - targetWidth) / 2, 32);
+        const targetTop = Math.max((window.innerHeight - targetHeight) / 2, 32);
 
         ghost.style.top = `${targetTop}px`;
         ghost.style.left = `${targetLeft}px`;
         ghost.style.width = `${targetWidth}px`;
         ghost.style.height = `${targetHeight}px`;
-        ghost.style.transform = 'scale(1.04)';
-        ghost.style.opacity = '0';
+        ghost.style.transform = 'translate3d(0, 0, 0) scale(1.03)';
+        ghost.style.borderRadius = '28px';
+
+        window.setTimeout(() => {
+          ghost.style.opacity = '0';
+          ghost.style.transform = 'translate3d(0, 0, 0) scale(1.01)';
+        }, 420);
       });
 
-      window.setTimeout(finish, 650);
+      window.setTimeout(finish, 760);
     });
   }
 })();
