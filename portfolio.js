@@ -247,13 +247,10 @@
 
     let state = {
       index: 0,
-      rotation: 0,
-      radius: 320,
-      step: 360 / cards.length
+      total: cards.length
     };
 
     const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(() => {
-      calculateRadius();
       applyTransforms();
     }) : null;
 
@@ -262,7 +259,6 @@
       cards.forEach(card => resizeObserver.observe(card));
     } else {
       window.addEventListener('resize', () => {
-        calculateRadius();
         applyTransforms();
       });
     }
@@ -293,20 +289,9 @@
       }
     });
 
-    function calculateRadius(){
-      const sample = cards[0];
-      const bounds = sample.getBoundingClientRect();
-      const width = bounds.width || sample.offsetWidth || 320;
-      const raw = width / (2 * Math.tan(Math.PI / cards.length));
-      state.radius = Math.max(width * 2.4, Math.round(raw * 2.2));
-    }
-
     function goTo(nextIndex){
-      const total = cards.length;
-      const previous = state.index;
-      const delta = nextIndex - previous;
+      const total = state.total;
       state.index = (nextIndex % total + total) % total;
-      state.rotation += -state.step * delta;
       applyTransforms();
     }
 
@@ -319,6 +304,8 @@
           card.style.zIndex = '';
           card.style.filter = '';
           card.style.pointerEvents = '';
+          card.style.width = '';
+          card.style.boxShadow = '';
           card.removeAttribute('aria-hidden');
           card.classList.remove('is-front');
         });
@@ -327,43 +314,60 @@
 
       grid.classList.add('carousel-active');
 
+      const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
+      const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
+      const frontWidth = clampValue(containerWidth * 0.45, 320, 560);
+      const sideWidth = clampValue(containerWidth * 0.2, 180, frontWidth * 0.65);
+      const gap = clampValue(containerWidth * 0.05, 36, 72);
+      const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
+      
       cards.forEach((card, idx) => {
-        const angle = idx * state.step + state.rotation;
-        const rad = angle * Math.PI / 180;
-        const depth = (Math.cos(rad) + 1) / 2; // 0 (back) to 1 (front)
-        
         let relative = idx - state.index;
-        relative = ((relative % cards.length) + cards.length) % cards.length;
-        if (relative > cards.length / 2) relative -= cards.length;
+        relative = ((relative % state.total) + state.total) % state.total;
+        if (relative > state.total / 2) relative -= state.total;
         const absRelative = Math.abs(relative);
+        const isFront = absRelative === 0;
+        const isSide = absRelative === 1;
+        const direction = relative === 0 ? 0 : (relative > 0 ? 1 : -1);
 
-        const isFront = absRelative < 0.001;
-        const isSide = absRelative > 0 && absRelative <= 1;
-
-        let scale;
-        let opacity;
-        let filter;
+        let widthPx = frontWidth;
+        let opacity = 0;
+        let filter = 'brightness(0.7) saturate(0.85)';
+        let rotateY = 0;
+        let translateX = 0;
+        let scale = 1;
+        
         if (isFront){
-          scale = 1.08;
+          widthPx = frontWidth;
           opacity = 1;
           filter = 'brightness(1.05) saturate(1.05)';
+          rotateY = 0;
+          translateX = 0;
+          scale = 1.02;
         } else if (isSide){
-          scale = 0.62 + depth * 0.18;
-          opacity = 0.55;
+          widthPx = sideWidth;
+          opacity = 0.5;
           filter = 'brightness(0.85) saturate(0.92)';
+          rotateY = direction * -28;
+          translateX = direction * baseOffset;
+          scale = 0.94;
         } else {
-          scale = 0.55;
+          widthPx = sideWidth;
           opacity = 0;
-          filter = 'brightness(0.7) saturate(0.85)';
+          rotateY = direction * -40;
+          const extra = baseOffset + (sideWidth + gap) * (absRelative - 1);
+          translateX = direction * extra;
+          scale = 0.88;
         }
 
-
-        const translate = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${state.radius}px) scale(${scale.toFixed(3)})`;
+        const translate = `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
+        card.style.transform = translate;
         card.style.transform = translate;
         card.style.opacity = opacity.toFixed(3);
-        card.style.zIndex = String(Math.round((isFront ? 1 : depth) * 1000));
+        card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
         card.style.filter = filter;
-       
+        card.style.width = `${Math.round(widthPx)}px`;
+        card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
         card.classList.toggle('is-front', isFront);
         if (isFront){
           card.style.pointerEvents = 'auto';
@@ -375,7 +379,6 @@
       });
     }
 
-    calculateRadius();
     goTo(0);
   }
 })();
