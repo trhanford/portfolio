@@ -211,7 +211,6 @@ body.portfolio-page main{
   transition:transform .45s cubic-bezier(.4, 0, .2, 1),
              opacity .35s ease,
              filter .35s ease,
-             width .45s cubic-bezier(.4, 0, .2, 1),
              box-shadow .35s ease;
 }
 
@@ -382,23 +381,13 @@ body.portfolio-page main{
 }
 
 .project-card.is-front{
-  grid-template-columns:1fr;
-  grid-template-areas:
-    "info"
-    "media";
-  gap:24px;
-  padding:26px 28px 30px;
-}
-
-.project-card.is-front .project-info{
-  align-items:flex-start;
-  text-align:left;
+  padding:24px 26px;
 }
 
 .project-card.is-front .project-media{
   width:100%;
-  min-height:clamp(260px, 40vh, 380px);
-  aspect-ratio:16/9;
+  min-height:clamp(220px, 32vh, 320px);
+  aspect-ratio:16/10;
 }
 
 .project-card.is-front .project-media img{
