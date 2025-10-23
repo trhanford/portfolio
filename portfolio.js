@@ -715,17 +715,69 @@ const gltfInspectionCache = new Map();
 
     grid.insertAdjacentElement('afterend', controls);
 
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const wrap = (value, total) => {
+      const remainder = value % total;
+      return remainder < 0 ? remainder + total : remainder;
+    };
+    const shortestDelta = (current, target, total) => {
+      const currentNorm = wrap(current, total);
+      const targetNorm = wrap(target, total);
+      let forward = targetNorm - currentNorm;
+      if (forward < 0) forward += total;
+      const backward = forward - total;
+      return Math.abs(forward) <= Math.abs(backward) ? forward : backward;
+    };
+    const easeInOutCubic = t => (t < 0.5)
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const smoothStep = t => {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t * t * (3 - 2 * t);
+    };
+    
     let state = {
       index: 0,
+      position: 0,
       total: cards.length
     };
 
     const AUTO_INTERVAL = 5200;
     const RESUME_DELAY = 9000;
+    const DEFAULT_ANIMATION_MS = 780;
+    const MAX_ANIMATION_MS = 1300;
     let autoRotateTimer = null;
     let resumeTimer = null;
-    const WHEEL_THROTTLE_MS = 360;
-    let lastWheelEventTime = 0;
+    let animationFrame = null;
+    let wheelBuffer = 0;
+
+    function stopAnimation(){
+      if (animationFrame !== null){
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+    }
+
+    function computeActiveIndex(position){
+      return wrap(Math.round(position), state.total);
+    }
+
+    function getActiveIndex(){
+      const position = typeof state.position === 'number' ? state.position : state.index;
+      return computeActiveIndex(position);
+    }
+
+    function commitPosition(value){
+      if (!state.total){
+        state.position = 0;
+        state.index = 0;
+        return;
+      }
+      const wrapped = wrap(Math.round(value), state.total);
+      state.position = wrapped;
+      state.index = wrapped;
+    }
     
     function stopAutoRotate(){
       if (autoRotateTimer !== null){
@@ -748,7 +800,7 @@ const gltfInspectionCache = new Map();
       clearResumeTimer();
       autoRotateTimer = window.setInterval(() => {
         if (mq.matches || !grid.classList.contains('carousel-active')) return;
-        goTo(state.index + 1, { source: 'auto' });
+        goBy(1, { source: 'auto' });
       }, AUTO_INTERVAL);
     }
 
@@ -769,6 +821,7 @@ const gltfInspectionCache = new Map();
       if (mq.matches || !grid.classList.contains('carousel-active') || prefersReducedMotion.matches){
         stopAutoRotate();
         clearResumeTimer();
+        stopAnimation();
         return;
       }
       if (autoRotateTimer === null && resumeTimer === null){
@@ -779,7 +832,7 @@ const gltfInspectionCache = new Map();
     const updateStatus = () => {
       const total = state.total;
       if (!total) return;
-      const activeIndex = ((state.index % total) + total) % total;
+      const activeIndex = getActiveIndex();
       const label = cards[activeIndex]?.querySelector('h3')?.textContent?.trim();
       const fallback = `Project ${activeIndex + 1}`;
       status.textContent = label ? `${label} (${activeIndex + 1} of ${total})` : `${fallback} (${activeIndex + 1} of ${total})`;
@@ -800,21 +853,36 @@ const gltfInspectionCache = new Map();
 
     grid.addEventListener('carousel:refresh', applyTransforms);
 
-    grid.addEventListener('mouseenter', () => grid.classList.add('carousel-hover'));
-    grid.addEventListener('mouseleave', () => grid.classList.remove('carousel-hover'));
+    grid.addEventListener('mouseenter', () => {
+      grid.classList.add('carousel-hover');
+      wheelBuffer = 0;
+    });
+    grid.addEventListener('mouseleave', () => {
+      grid.classList.remove('carousel-hover');
+      wheelBuffer = 0;
+    });
 
     grid.addEventListener('wheel', evt => {
       if (mq.matches || !grid.classList.contains('carousel-active')) return;
       if (!grid.classList.contains('carousel-hover')) return;
       evt.preventDefault();
-      const delta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
-      if (Math.abs(delta) < 12) return;
-      const now = Date.now();
-      if (now - lastWheelEventTime < WHEEL_THROTTLE_MS) return;
-      lastWheelEventTime = now;
-      const direction = delta > 0 ? 1 : -1;
-      pauseAutoRotate();
-      goTo(state.index + direction);
+      const rawDelta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
+      const modeMultiplier = evt.deltaMode === 1 ? 16 : (evt.deltaMode === 2 ? 120 : 1);
+      wheelBuffer += rawDelta * modeMultiplier;
+      const step = 48;
+      let moves = 0;
+      while (wheelBuffer >= step){
+        wheelBuffer -= step;
+        moves += 1;
+      }
+      while (wheelBuffer <= -step){
+        wheelBuffer += step;
+        moves -= 1;
+      }
+      if (moves !== 0){
+        pauseAutoRotate();
+        goBy(moves, { duration: 680 });
+      }
     }, { passive: false });
 
     grid.addEventListener('keydown', evt => {
@@ -822,11 +890,11 @@ const gltfInspectionCache = new Map();
       if (evt.key === 'ArrowRight' || evt.key === 'PageDown'){
         evt.preventDefault();
         pauseAutoRotate();
-        goTo(state.index + 1);
+        goBy(1);
       } else if (evt.key === 'ArrowLeft' || evt.key === 'PageUp'){
         evt.preventDefault();
         pauseAutoRotate();
-        goTo(state.index - 1);
+        goBy(-1);
       }
     });
 
@@ -850,13 +918,13 @@ const gltfInspectionCache = new Map();
 
     prevBtn.addEventListener('click', () => {
       pauseAutoRotate();
-      goTo(state.index - 1);
+      goBy(-1);
       focusGrid();
     });
 
     nextBtn.addEventListener('click', () => {
       pauseAutoRotate();
-      goTo(state.index + 1);
+      goBy(1);
       focusGrid();
     });
 
@@ -883,8 +951,8 @@ const gltfInspectionCache = new Map();
       evt.preventDefault();
       touchActive = false;
       pauseAutoRotate();
-      if (deltaX < 0) goTo(state.index + 1);
-      else if (deltaX > 0) goTo(state.index - 1);
+      if (deltaX < 0) goBy(1, { duration: 520 });
+      else if (deltaX > 0) goBy(-1, { duration: 520 });
       touchStartX = null;
       touchStartY = null;
     }, { passive: false });
@@ -897,15 +965,64 @@ const gltfInspectionCache = new Map();
 
     grid.addEventListener('touchend', resetTouch);
     grid.addEventListener('touchcancel', resetTouch);
-    
-    function goTo(nextIndex, options = {}){
-      const total = state.total;
-      state.index = (nextIndex % total + total) % total;
-      applyTransforms();
-      if (options.source !== 'auto' && !mq.matches) scheduleAutoResume();
+
+    function goBy(delta, options = {}){
+      if (!state.total || !Number.isFinite(delta) || delta === 0) return;
+
+      if (prefersReducedMotion.matches) options = { ...options, immediate: true };
+
+      const currentPosition = typeof state.position === 'number' ? state.position : state.index;
+      const target = currentPosition + delta;
+
+      if (options.immediate){
+        stopAnimation();
+        commitPosition(target);
+        applyTransforms();
+        if (options.source !== 'auto' && !mq.matches){
+          scheduleAutoResume();
+        }
+        return;
+      }
+
+      stopAnimation();
+
+      const duration = clamp(options.duration ?? DEFAULT_ANIMATION_MS, 360, MAX_ANIMATION_MS);
+      const easing = typeof options.easing === 'function' ? options.easing : easeInOutCubic;
+      const start = performance.now();
+      const from = currentPosition;
+      const change = target - from;
+
+      const step = now => {
+        const elapsed = now - start;
+        const rawProgress = duration === 0 ? 1 : Math.min(elapsed / duration, 1);
+        const eased = easing(rawProgress);
+        const value = from + change * eased;
+        state.position = value;
+        applyTransforms({ animating: true });
+        if (rawProgress < 1){
+          animationFrame = window.requestAnimationFrame(step);
+          return;
+        }
+        animationFrame = null;
+        commitPosition(target);
+        applyTransforms();
+      };
+
+      animationFrame = window.requestAnimationFrame(step);
+
+      if (options.source !== 'auto' && !mq.matches){
+        scheduleAutoResume();
+      }
     }
 
-    function applyTransforms(){
+    function goTo(nextIndex, options = {}){
+      if (!state.total) return;
+      const currentPosition = typeof state.position === 'number' ? state.position : state.index;
+      const delta = shortestDelta(currentPosition, nextIndex, state.total);
+      goBy(delta, options);
+    }
+
+    function applyTransforms(meta = {}){
       if (mq.matches){
         grid.classList.add('carousel-active');
         grid.classList.add('carousel-mobile');
@@ -914,14 +1031,15 @@ const gltfInspectionCache = new Map();
         const cardWidth = Math.min(Math.max(containerWidth * 0.78, 230), 460);
         const gap = Math.min(Math.max(containerWidth * 0.05, 14), 36);
         const heights = [];
+        const activeIndex = getActiveIndex();
 
         cards.forEach((card, idx) => {
-          let relative = idx - state.index;
+          let relative = idx - activeIndex;
           relative = ((relative % state.total) + state.total) % state.total;
           if (relative > state.total / 2) relative -= state.total;
           const distance = Math.abs(relative);
-          const isFront = distance === 0;
-          const isNeighbor = distance === 1;
+          const isFront = distance < 0.5;
+          const isNeighbor = Math.abs(distance - 1) < 0.6;
           const translateX = relative * (cardWidth + gap);
 
           card.style.transform = `translate(-50%, 0) translateX(${translateX.toFixed(1)}px)`;
@@ -956,102 +1074,92 @@ const gltfInspectionCache = new Map();
           });
         }
 
-        updateStatus();
+        if (!meta?.animating) updateStatus();
         return;
       }
 
       grid.classList.add('carousel-active');
       grid.classList.remove('carousel-mobile');
       grid.style.overflow = 'hidden';
-      grid.style.height = '';
-
+      
       const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
-      const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
-      const frontWidth = clampValue(containerWidth * 0.42, 300, 480);
-      const sideWidth = clampValue(containerWidth * 0.22, 190, frontWidth * 0.7);
-      const gap = clampValue(containerWidth * 0.028, 20, 40);
+      const frontWidth = clamp(containerWidth * 0.44, 300, 500);
+      const sideWidth = clamp(containerWidth * 0.24, 200, frontWidth * 0.7);
+      const gap = clamp(containerWidth * 0.03, 22, 48);
+      const depth = clamp(containerWidth * 0.16, 90, 200);
       const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
-
+      
+      const position = typeof state.position === 'number' ? state.position : state.index;
       const heights = [];
       
       cards.forEach((card, idx) => {
-        let relative = idx - state.index;
+        let relative = idx - position;
         relative = ((relative % state.total) + state.total) % state.total;
         if (relative > state.total / 2) relative -= state.total;
         const absRelative = Math.abs(relative);
-        const isFront = absRelative === 0;
-        const isSide = absRelative === 1;
         const direction = relative === 0 ? 0 : (relative > 0 ? 1 : -1);
 
-        let widthPx = frontWidth;
-        let opacity = 0;
-        let filter = 'brightness(0.76) saturate(0.9)';
-        let rotateY = 0;
-        let translateX = 0;
-        let scale = 1;
-        
-        if (isFront){
-          widthPx = frontWidth;
-          opacity = 1;
-          filter = 'brightness(1.02) saturate(1.01)';
-          rotateY = 0;
-          translateX = 0;
-          scale = 1.01;
-        } else if (isSide){
-          widthPx = sideWidth;
-          opacity = 0.58;
-          filter = 'brightness(0.9) saturate(0.95)';
-          rotateY = direction * -20;
-          translateX = direction * (baseOffset - gap * 0.35);
-          scale = 0.93;
-        } else {
-          widthPx = sideWidth * 0.8;
-          opacity = 0.22;
-          rotateY = direction * -32;
-          const extra = baseOffset + (sideWidth * 0.7 + gap * 0.55) * (absRelative - 1);
-          translateX = direction * extra;
-          scale = 0.88;
-        }
+        const blendStart = 0.28;
+        const hiddenThreshold = 1.06;
+        const normalized = clamp((absRelative - blendStart) / (1 - blendStart), 0, 1);
+        const eased = smoothStep(normalized);
 
-        const translate = `translate3d(-50%, -50%, 0) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
-        card.style.transform = translate;
+        const widthPx = frontWidth - (frontWidth - sideWidth) * eased;
+        const translateX = direction * baseOffset * eased;
+        const rotateY = direction * 30 * eased;
+        const translateZ = -depth * eased;
+        const scale = 1 - 0.08 * eased;
+        const opacityBase = 1 - 0.5 * eased;
+        const opacity = absRelative >= hiddenThreshold ? 0 : clamp(opacityBase, 0, 1);
+        const isFront = absRelative < 0.3;
+        const isSide = Math.abs(absRelative - 1) < 0.18 && opacity > 0;
+        const pointerable = isFront || Math.abs(absRelative - 1) < 0.16;
+
+        const transform = `translate3d(-50%, -50%, ${translateZ.toFixed(1)}px) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        card.style.transform = transform;
         card.style.opacity = opacity.toFixed(3);
-        card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
-        card.style.filter = filter;
-        card.style.pointerEvents = isFront || isSide ? 'auto' : 'none';
+        card.style.visibility = opacity <= 0.001 ? 'hidden' : 'visible';
+        card.style.zIndex = String(isFront ? 900 : isSide ? 640 : 200 - Math.floor(absRelative));
+        card.style.filter = isFront ? 'brightness(1) saturate(1)' : 'brightness(0.86) saturate(0.9)';
+        card.style.pointerEvents = pointerable ? 'auto' : 'none';
         card.style.width = `${Math.round(widthPx)}px`;
         card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
         card.classList.toggle('is-front', isFront);
         card.classList.toggle('is-side', isSide);
-        if (isFront){
-          card.style.pointerEvents = 'auto';
-          card.removeAttribute('aria-hidden');
-        } else if (isSide){
-          card.style.pointerEvents = 'auto';
+        if (isFront || isSide){
           card.removeAttribute('aria-hidden');
         } else {
-          card.style.pointerEvents = 'none';
           card.setAttribute('aria-hidden', 'true');
         }
         card.style.height = 'auto';
         heights[idx] = card.scrollHeight;
       });
+      
       const tallest = Math.max(...heights, 0);
       if (tallest){
+        const cardHeight = Math.ceil(tallest);
+        const padding = clamp(Math.round(frontWidth * 0.35), 110, 200);
+        const totalHeight = cardHeight + padding;
+        grid.style.height = `${totalHeight}px`;
         cards.forEach(card => {
-          card.style.height = `${Math.ceil(tallest)}px`;
+          card.style.height = `${cardHeight}px`;
         });
+      } else {
+        grid.style.height = '';
       }
-      updateStatus();
     }
 
-    updateStatus();
+    if (!meta?.animating){
+      updateStatus();
+    }
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden'){
         stopAutoRotate();
         clearResumeTimer();
+        stopAnimation();
       } else {
+        applyTransforms();
         updateAutoRotationState();
       }
     };
@@ -1060,7 +1168,11 @@ const gltfInspectionCache = new Map();
       if (prefersReducedMotion.matches){
         stopAutoRotate();
         clearResumeTimer();
+        stopAnimation();
+        commitPosition(typeof state.position === 'number' ? state.position : state.index);
+        applyTransforms();
       } else {
+        applyTransforms();
         updateAutoRotationState();
       }
     };
@@ -1072,7 +1184,7 @@ const gltfInspectionCache = new Map();
       prefersReducedMotion.addListener(handleMotionPreference);
     }
 
-    goTo(0, { source: 'auto' });
+    goTo(0, { source: 'auto', immediate: true });
 
     updateAutoRotationState();
 
@@ -1085,8 +1197,9 @@ const gltfInspectionCache = new Map();
     cards.forEach((card, idx) => {
       card.addEventListener('click', evt => {
         if (evt.target instanceof HTMLElement && evt.target.closest('.project-more')) return;
+        const activeIndex = getActiveIndex();
         if (mq.matches){
-          if (state.index === idx) return;
+          if (activeIndex === idx) return;
           evt.preventDefault();
           pauseAutoRotate();
           goTo(idx);
