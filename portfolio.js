@@ -44,7 +44,7 @@
       title: 'Custom Horn Assembly',
       category: 'CAD',
       model: {
-        src: 'assets/models/horn.gltf',
+        src: 'assets/models/horn.glb',
         alt: 'Interactive preview of the custom horn assembly placeholder mesh',
         poster: 'images/placeholders/cad-default.svg',
         message: 'Keep horn.gltf and its exported .bin companions together in assets/models so the viewer can load the CAD preview.'
