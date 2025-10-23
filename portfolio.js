@@ -137,6 +137,7 @@
   }
 
   const desktopMq = window.matchMedia('(max-width: 900px)');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const gltfInspectionCache = new Map();
 
@@ -723,7 +724,9 @@ const gltfInspectionCache = new Map();
     const RESUME_DELAY = 9000;
     let autoRotateTimer = null;
     let resumeTimer = null;
-
+    const WHEEL_THROTTLE_MS = 360;
+    let lastWheelEventTime = 0;
+    
     function stopAutoRotate(){
       if (autoRotateTimer !== null){
         window.clearInterval(autoRotateTimer);
@@ -739,6 +742,7 @@ const gltfInspectionCache = new Map();
     }
 
     function startAutoRotate(){
+      if (prefersReducedMotion.matches) return;
       if (mq.matches || !grid.classList.contains('carousel-active')) return;
       stopAutoRotate();
       clearResumeTimer();
@@ -762,7 +766,7 @@ const gltfInspectionCache = new Map();
     }
 
     function updateAutoRotationState(){
-      if (mq.matches || !grid.classList.contains('carousel-active')){
+      if (mq.matches || !grid.classList.contains('carousel-active') || prefersReducedMotion.matches){
         stopAutoRotate();
         clearResumeTimer();
         return;
@@ -804,7 +808,10 @@ const gltfInspectionCache = new Map();
       if (!grid.classList.contains('carousel-hover')) return;
       evt.preventDefault();
       const delta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
-      if (delta === 0) return;
+      if (Math.abs(delta) < 12) return;
+      const now = Date.now();
+      if (now - lastWheelEventTime < WHEEL_THROTTLE_MS) return;
+      lastWheelEventTime = now;
       const direction = delta > 0 ? 1 : -1;
       pauseAutoRotate();
       goTo(state.index + direction);
@@ -902,9 +909,10 @@ const gltfInspectionCache = new Map();
       if (mq.matches){
         grid.classList.add('carousel-active');
         grid.classList.add('carousel-mobile');
+        grid.style.overflow = 'visible';
         const containerWidth = grid.clientWidth || grid.offsetWidth || 0;
-        const cardWidth = Math.min(Math.max(containerWidth * 0.86, 260), 520);
-        const gap = Math.min(Math.max(containerWidth * 0.06, 16), 48);
+        const cardWidth = Math.min(Math.max(containerWidth * 0.78, 230), 460);
+        const gap = Math.min(Math.max(containerWidth * 0.05, 14), 36);
         const heights = [];
 
         cards.forEach((card, idx) => {
@@ -917,9 +925,9 @@ const gltfInspectionCache = new Map();
           const translateX = relative * (cardWidth + gap);
 
           card.style.transform = `translate(-50%, 0) translateX(${translateX.toFixed(1)}px)`;
-          card.style.opacity = isFront ? '1' : isNeighbor ? '0.45' : '0';
+          card.style.opacity = isFront ? '1' : isNeighbor ? '0.52' : '0';
           card.style.zIndex = String(isFront ? 900 : isNeighbor ? 600 : 200 - distance);
-          card.style.filter = isFront ? 'brightness(1.03)' : 'brightness(0.78)';
+          card.style.filter = isFront ? 'brightness(1.02)' : 'brightness(0.82)';
           card.style.pointerEvents = (isFront || isNeighbor) ? 'auto' : 'none';
           card.style.width = `${Math.round(cardWidth)}px`;
           card.style.boxShadow = isFront ? 'var(--shadow-2)' : 'var(--shadow-1)';
@@ -954,13 +962,14 @@ const gltfInspectionCache = new Map();
 
       grid.classList.add('carousel-active');
       grid.classList.remove('carousel-mobile');
+      grid.style.overflow = 'hidden';
       grid.style.height = '';
 
       const containerWidth = grid.clientWidth || grid.offsetWidth || 960;
       const clampValue = (value, min, max) => Math.min(Math.max(value, min), max);
-      const frontWidth = clampValue(containerWidth * 0.46, 320, 520);
-      const sideWidth = clampValue(containerWidth * 0.24, 200, frontWidth * 0.72);
-      const gap = clampValue(containerWidth * 0.035, 24, 48);
+      const frontWidth = clampValue(containerWidth * 0.42, 300, 480);
+      const sideWidth = clampValue(containerWidth * 0.22, 190, frontWidth * 0.7);
+      const gap = clampValue(containerWidth * 0.028, 20, 40);
       const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
 
       const heights = [];
@@ -976,7 +985,7 @@ const gltfInspectionCache = new Map();
 
         let widthPx = frontWidth;
         let opacity = 0;
-        let filter = 'brightness(0.72) saturate(0.88)';
+        let filter = 'brightness(0.76) saturate(0.9)';
         let rotateY = 0;
         let translateX = 0;
         let scale = 1;
@@ -984,27 +993,27 @@ const gltfInspectionCache = new Map();
         if (isFront){
           widthPx = frontWidth;
           opacity = 1;
-          filter = 'brightness(1.04) saturate(1.02)';
+          filter = 'brightness(1.02) saturate(1.01)';
           rotateY = 0;
           translateX = 0;
-          scale = 1.02;
+          scale = 1.01;
         } else if (isSide){
           widthPx = sideWidth;
-          opacity = 0.62;
-          filter = 'brightness(0.92) saturate(0.96)';
-          rotateY = direction * -22;
-          translateX = direction * (baseOffset - gap * 0.25);
-          scale = 0.94;
+          opacity = 0.58;
+          filter = 'brightness(0.9) saturate(0.95)';
+          rotateY = direction * -20;
+          translateX = direction * (baseOffset - gap * 0.35);
+          scale = 0.93;
         } else {
-          widthPx = sideWidth * 0.82;
-          opacity = 0.18;
-          rotateY = direction * -34;
-          const extra = baseOffset + (sideWidth * 0.72 + gap * 0.65) * (absRelative - 1);
+          widthPx = sideWidth * 0.8;
+          opacity = 0.22;
+          rotateY = direction * -32;
+          const extra = baseOffset + (sideWidth * 0.7 + gap * 0.55) * (absRelative - 1);
           translateX = direction * extra;
           scale = 0.88;
         }
 
-        const translate = `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) translateZ(0) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
+        const translate = `translate3d(-50%, -50%, 0) translateX(${translateX.toFixed(1)}px) rotateY(${rotateY}deg) scale(${scale.toFixed(3)})`;
         card.style.transform = translate;
         card.style.opacity = opacity.toFixed(3);
         card.style.zIndex = String(isFront ? 900 : isSide ? 600 : 200 - absRelative);
@@ -1033,14 +1042,45 @@ const gltfInspectionCache = new Map();
           card.style.height = `${Math.ceil(tallest)}px`;
         });
       }
-    updateStatus();
+      updateStatus();
     }
 
     updateStatus();
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden'){
+        stopAutoRotate();
+        clearResumeTimer();
+      } else {
+        updateAutoRotationState();
+      }
+    };
+
+    const handleMotionPreference = () => {
+      if (prefersReducedMotion.matches){
+        stopAutoRotate();
+        clearResumeTimer();
+      } else {
+        updateAutoRotationState();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    if (typeof prefersReducedMotion.addEventListener === 'function'){
+      prefersReducedMotion.addEventListener('change', handleMotionPreference);
+    } else if (typeof prefersReducedMotion.addListener === 'function'){
+      prefersReducedMotion.addListener(handleMotionPreference);
+    }
+
     goTo(0, { source: 'auto' });
 
     updateAutoRotationState();
+
+    if (!prefersReducedMotion.matches){
+      window.setTimeout(() => {
+        updateAutoRotationState();
+      }, 400);
+    }
 
     cards.forEach((card, idx) => {
       card.addEventListener('click', evt => {
