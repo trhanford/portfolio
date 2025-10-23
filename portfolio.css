@@ -189,21 +189,26 @@ body.portfolio-page main{
 
 .projects-grid.carousel-active{
   display:block;
-  perspective:1400px;
-  height:clamp(340px, 60vh, 440px);
+  perspective:1200px;
+  height:clamp(380px, 62vh, 520px);
 }
 
 .projects-grid.carousel-active .project-card{
   position:absolute;
   top:50%;
   left:50%;
-  width:min(360px, 74vw);
-  max-width:420px;
+  width:clamp(260px, 42vw, 520px);
+  max-width:none;
   transform-style:preserve-3d;
   transform-origin:center center;
   opacity:0;
   pointer-events:none;
-  will-change:transform, opacity, filter;
+  will-change:transform, opacity, filter, width;
+  transition:transform .4s cubic-bezier(.4, 0, .2, 1),
+             opacity .35s ease,
+             filter .35s ease,
+             width .4s cubic-bezier(.4, 0, .2, 1),
+             box-shadow .35s ease;
 }
 
 .projects-grid.carousel-active .project-card.is-front{
