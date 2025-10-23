@@ -686,6 +686,10 @@
     menu.setAttribute('role', 'tablist');
     menu.innerHTML = '';
 
+    const menuViewport = document.createElement('div');
+    menuViewport.className = 'slider-menu-viewport';
+    menu.appendChild(menuViewport);
+    
     let controls = root.querySelector('.slider-controls');
     if (!(controls instanceof HTMLElement)){
       controls = document.createElement('div');
@@ -812,6 +816,34 @@
         tab.setAttribute('tabindex', isActive ? '0' : '-1');
       });
 
+      if (menuViewport instanceof HTMLElement){
+        const activeTab = tabs[activeIndex];
+        if (activeTab instanceof HTMLElement){
+          const viewportTop = menuViewport.scrollTop;
+          const viewportHeight = menuViewport.clientHeight;
+          const tabTop = activeTab.offsetTop;
+          const tabHeight = activeTab.offsetHeight;
+          const padding = 32;
+          const behavior = lastUpdateImmediate ? 'auto' : 'smooth';
+          const scrollMenu = value => {
+            if (typeof menuViewport.scrollTo === 'function'){
+              try {
+                menuViewport.scrollTo({ top: value, behavior });
+                return;
+              } catch (err){}
+            }
+            menuViewport.scrollTop = value;
+          };
+          if (tabTop < viewportTop + padding){
+            const target = Math.max(0, tabTop - padding);
+            scrollMenu(target);
+          } else if ((tabTop + tabHeight) > (viewportTop + viewportHeight - padding)){
+            const target = tabTop - viewportHeight + tabHeight + padding;
+            scrollMenu(target);
+          }
+        }
+      }
+
       if (progressBar instanceof HTMLElement){
         const percent = ((activeIndex + 1) / total) * 100;
         progressBar.style.width = `${percent}%`;
@@ -846,6 +878,7 @@
       }
       activeIndex = nextIndex;
       setTransform(immediate);
+      lastUpdateImmediate = immediate;
       updateActiveStates();
       if (options.focusTab) focusTab(activeIndex);
     };
@@ -854,8 +887,145 @@
       goTo(activeIndex + delta, options);
     };
 
+    let autoPlayStopped = false;
+    let autoPlayTimer = null;
+    let autoPlayStartTimer = null;
+    let autoPlayObserver = null;
+    let autoPlayInView = false;
+    const autoPlayDelay = 3600;
+    const autoPlayInterval = 6000;
+    const prefersReducedMotion = (typeof window.matchMedia === 'function') ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    let motionPreferenceListenerAttached = false;
+
+    const clearAutoplayTimers = () => {
+      if (autoPlayTimer !== null){
+        window.clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+      if (autoPlayStartTimer !== null){
+        window.clearTimeout(autoPlayStartTimer);
+        autoPlayStartTimer = null;
+      }
+    };
+
+    const scheduleAutoplay = () => {
+      if (autoPlayStopped) return;
+      clearAutoplayTimers();
+      if (prefersReducedMotion && prefersReducedMotion.matches) return;
+      autoPlayStartTimer = window.setTimeout(() => {
+        if (autoPlayStopped) return;
+        if (prefersReducedMotion && prefersReducedMotion.matches) return;
+        autoPlayTimer = window.setInterval(() => {
+          if (autoPlayStopped) return;
+          if (typeof document !== 'undefined' && document.hidden) return;
+          goBy(1);
+        }, autoPlayInterval);
+      }, autoPlayDelay);
+    };
+
+    const pauseAutoplay = () => {
+      clearAutoplayTimers();
+    };
+
+    const onVisibilityChange = () => {
+      if (autoPlayStopped) return;
+      if (typeof document !== 'undefined' && document.hidden){
+        pauseAutoplay();
+      } else if (autoPlayInView){
+        scheduleAutoplay();
+      }
+    };
+
+    const disableAutoplay = () => {
+      if (autoPlayStopped) return;
+      autoPlayStopped = true;
+      clearAutoplayTimers();
+      if (autoPlayObserver){
+        autoPlayObserver.disconnect();
+        autoPlayObserver = null;
+      }
+      if (typeof document !== 'undefined'){
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      }
+      removeMotionPreferenceListener();
+      root.classList.add('slider-manual');
+    };
+
+    const noteManualControl = () => {
+      disableAutoplay();
+    };
+
+    if (typeof document !== 'undefined'){
+      document.addEventListener('visibilitychange', onVisibilityChange);
+    }
+
+    const handleMotionPreference = event => {
+      if (!event) return;
+      if (event.matches){
+        clearAutoplayTimers();
+      } else if (!autoPlayStopped && autoPlayInView){
+        scheduleAutoplay();
+      }
+    };
+
+    const addMotionPreferenceListener = () => {
+      if (!prefersReducedMotion || motionPreferenceListenerAttached) return;
+      if (typeof prefersReducedMotion.addEventListener === 'function'){
+        prefersReducedMotion.addEventListener('change', handleMotionPreference);
+        motionPreferenceListenerAttached = true;
+      } else if (typeof prefersReducedMotion.addListener === 'function'){
+        prefersReducedMotion.addListener(handleMotionPreference);
+        motionPreferenceListenerAttached = true;
+      }
+    };
+
+    const removeMotionPreferenceListener = () => {
+      if (!prefersReducedMotion || !motionPreferenceListenerAttached) return;
+      if (typeof prefersReducedMotion.removeEventListener === 'function'){
+        prefersReducedMotion.removeEventListener('change', handleMotionPreference);
+      } else if (typeof prefersReducedMotion.removeListener === 'function'){
+        prefersReducedMotion.removeListener(handleMotionPreference);
+      }
+      motionPreferenceListenerAttached = false;
+    };
+
+    if ('IntersectionObserver' in window){
+      autoPlayObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.target !== root) return;
+          if (autoPlayStopped) return;
+          autoPlayInView = entry.isIntersecting && entry.intersectionRatio > 0;
+          if (autoPlayInView){
+            scheduleAutoplay();
+          } else {
+            clearAutoplayTimers();
+          }
+        });
+      }, { threshold: 0.4 });
+      autoPlayObserver.observe(root);
+    } else {
+      autoPlayInView = true;
+      scheduleAutoplay();
+    }
+
+    addMotionPreferenceListener();
+
+    const attachManualListeners = () => {
+      if (menuViewport instanceof HTMLElement){
+        const passiveOptions = { passive: true };
+        menuViewport.addEventListener('wheel', noteManualControl, passiveOptions);
+        menuViewport.addEventListener('touchstart', noteManualControl, passiveOptions);
+        menuViewport.addEventListener('pointerdown', noteManualControl, passiveOptions);
+        menuViewport.addEventListener('keydown', noteManualControl);
+      }
+      root.addEventListener('focusin', noteManualControl);
+    };
+
+    attachManualListeners();
+    
     tabs.forEach((tab, index) => {
       tab.addEventListener('click', () => {
+        disableAutoplay();
         goTo(index);
         focusTab(index);
       });
@@ -864,15 +1034,19 @@
         if (!evt || typeof evt.key !== 'string') return;
         if (evt.key === 'ArrowRight' || evt.key === 'ArrowDown'){
           evt.preventDefault();
+          disableAutoplay();
           goTo(index + 1, { focusTab: true });
         } else if (evt.key === 'ArrowLeft' || evt.key === 'ArrowUp'){
           evt.preventDefault();
+          disableAutoplay();
           goTo(index - 1, { focusTab: true });
         } else if (evt.key === 'Home'){
           evt.preventDefault();
+          disableAutoplay();
           goTo(0, { focusTab: true });
         } else if (evt.key === 'End'){
           evt.preventDefault();
+          disableAutoplay();
           goTo(total - 1, { focusTab: true });
         }
       });
@@ -880,6 +1054,7 @@
 
     if (prevBtn instanceof HTMLElement){
       prevBtn.addEventListener('click', () => {
+        disableAutoplay();
         goBy(-1);
         focusTab(activeIndex);
       });
@@ -887,6 +1062,7 @@
 
     if (nextBtn instanceof HTMLElement){
       nextBtn.addEventListener('click', () => {
+        disableAutoplay();
         goBy(1);
         focusTab(activeIndex);
       });
@@ -895,6 +1071,7 @@
     const onPointerDown = evt => {
       if (!evt || typeof evt.pointerId !== 'number') return;
       if (evt.pointerType === 'mouse' && evt.button !== 0) return;
+      noteManualControl();
       if (evt.target instanceof HTMLElement && evt.target.closest('button, a, [role="tab"]')) return;
       pointerId = evt.pointerId;
       startX = evt.clientX;
@@ -973,9 +1150,11 @@
       if (evt.target instanceof HTMLElement && evt.target.matches('input, textarea')) return;
       if (evt.key === 'ArrowRight' || evt.key === 'PageDown'){
         evt.preventDefault();
+        disableAutoplay();
         goBy(1);
       } else if (evt.key === 'ArrowLeft' || evt.key === 'PageUp'){
         evt.preventDefault();
+        disableAutoplay();
         goBy(-1);
       }
     });
