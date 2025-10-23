@@ -112,6 +112,8 @@
   const modal = document.getElementById('projectModal');
   if (!modal) return;
 
+  const desktopMq = window.matchMedia('(max-width: 900px)');
+
   const modalBody = document.getElementById('modalBody');
   const modalTitle = document.getElementById('modalTitle');
   const modalSubtitle = document.getElementById('modalSubtitle');
@@ -121,8 +123,25 @@
   projectButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.project;
-      if (!id) return;
-      openModal(id);
+      if (!id || btn.dataset.animating === 'true') return;
+      btn.dataset.animating = 'true';
+      const card = btn.closest('.project-card');
+      const carousel = card?.closest('[data-carousel]');
+      const shouldAnimate = !!card && !!carousel && carousel.classList.contains('carousel-active') && !desktopMq.matches;
+
+      const done = () => {
+        delete btn.dataset.animating;
+      };
+
+      if (shouldAnimate){
+        animateCardToModal(card).then(() => {
+          openModal(id);
+          done();
+        });
+      } else {
+        openModal(id);
+        done();
+      }
     });
   });
 
@@ -225,7 +244,7 @@
     const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
     if (!carousels.length) return;
 
-    const mq = window.matchMedia('(max-width: 900px)');
+    const mq = desktopMq;
 
     const mqListener = () => {
       carousels.forEach(instance => instance.dispatchEvent(new CustomEvent('carousel:refresh')));
@@ -306,6 +325,7 @@
           card.style.pointerEvents = '';
           card.style.width = '';
           card.style.boxShadow = '';
+          card.style.height = '';
           card.removeAttribute('aria-hidden');
           card.classList.remove('is-front');
         });
@@ -320,6 +340,8 @@
       const sideWidth = clampValue(containerWidth * 0.2, 180, frontWidth * 0.65);
       const gap = clampValue(containerWidth * 0.05, 36, 72);
       const baseOffset = (frontWidth / 2) + (sideWidth / 2) + gap;
+
+      const heights = [];
       
       cards.forEach((card, idx) => {
         let relative = idx - state.index;
@@ -372,13 +394,95 @@
         if (isFront){
           card.style.pointerEvents = 'auto';
           card.removeAttribute('aria-hidden');
+          } else if (isSide){
+          card.style.pointerEvents = 'auto';
+          card.removeAttribute('aria-hidden');
         } else {
           card.style.pointerEvents = 'none';
           card.setAttribute('aria-hidden', 'true');
         }
+        card.style.height = 'auto';
+        heights[idx] = card.scrollHeight;
       });
+      const tallest = Math.max(...heights, 0);
+      if (tallest){
+        cards.forEach(card => {
+          card.style.height = `${Math.ceil(tallest)}px`;
+        });
+      }
     }
 
     goTo(0);
+
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', evt => {
+        if (mq.matches) return;
+        if (evt.target instanceof HTMLElement && evt.target.closest('.project-more')) return;
+        if (state.index === idx) return;
+        evt.preventDefault();
+        goTo(idx);
+      });
+    });
+  }
+
+  function animateCardToModal(card){
+    return new Promise(resolve => {
+      if (!(card instanceof HTMLElement)){
+        resolve();
+        return;
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        resolve();
+        return;
+      }
+
+      const rect = card.getBoundingClientRect();
+      const ghost = card.cloneNode(true);
+      ghost.classList.add('project-card-ghost');
+      ghost.style.top = `${rect.top}px`;
+      ghost.style.left = `${rect.left}px`;
+      ghost.style.width = `${rect.width}px`;
+      ghost.style.height = `${rect.height}px`;
+      ghost.style.transform = 'none';
+      ghost.style.opacity = '1';
+      ghost.style.transition = 'top .52s cubic-bezier(.4, 0, .2, 1), left .52s cubic-bezier(.4, 0, .2, 1), width .52s cubic-bezier(.4, 0, .2, 1), height .52s cubic-bezier(.4, 0, .2, 1), transform .52s cubic-bezier(.4, 0, .2, 1), opacity .32s ease .12s';
+      document.body.appendChild(ghost);
+      card.classList.add('is-animating');
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        ghost.removeEventListener('transitionend', onTransitionEnd);
+        ghost.remove();
+        card.classList.remove('is-animating');
+        resolve();
+      };
+
+      const onTransitionEnd = evt => {
+        if (evt.target === ghost) finish();
+      };
+
+      ghost.addEventListener('transitionend', onTransitionEnd);
+
+      requestAnimationFrame(() => {
+        const maxWidth = Math.min(window.innerWidth - 48, 760);
+        const maxHeight = Math.min(window.innerHeight - 96, 580);
+        const targetWidth = Math.max(Math.min(maxWidth, Math.max(rect.width, 360)), 320);
+        const targetHeight = Math.max(Math.min(maxHeight, Math.max(rect.height, 320)), 280);
+        const targetLeft = Math.max((window.innerWidth - targetWidth) / 2, 24);
+        const targetTop = Math.max((window.innerHeight - targetHeight) / 2, 24);
+
+        ghost.style.top = `${targetTop}px`;
+        ghost.style.left = `${targetLeft}px`;
+        ghost.style.width = `${targetWidth}px`;
+        ghost.style.height = `${targetHeight}px`;
+        ghost.style.transform = 'scale(1.04)';
+        ghost.style.opacity = '0';
+      });
+
+      window.setTimeout(finish, 650);
+    });
   }
 })();
