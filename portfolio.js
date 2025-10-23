@@ -218,4 +218,138 @@
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
   }
+
+  initProjectCarousels();
+
+  function initProjectCarousels(){
+    const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
+    if (!carousels.length) return;
+
+    const mq = window.matchMedia('(max-width: 900px)');
+
+    const mqListener = () => {
+      carousels.forEach(instance => instance.dispatchEvent(new CustomEvent('carousel:refresh')));
+    };
+
+    if (typeof mq.addEventListener === 'function') mq.addEventListener('change', mqListener);
+    else if (typeof mq.addListener === 'function') mq.addListener(mqListener);
+
+    carousels.forEach(grid => setupCarousel(grid, mq));
+  }
+
+  function setupCarousel(grid, mq){
+    const cards = Array.from(grid.querySelectorAll('.project-card'));
+    if (cards.length <= 1) return;
+
+    grid.setAttribute('tabindex', '0');
+    grid.setAttribute('role', 'group');
+    grid.setAttribute('aria-roledescription', '3D carousel of projects');
+
+    let state = {
+      index: 0,
+      angle: 0,
+      radius: 320,
+      step: 360 / cards.length
+    };
+
+    const resizeObserver = ('ResizeObserver' in window) ? new ResizeObserver(() => {
+      calculateRadius();
+      applyTransforms();
+    }) : null;
+
+    if (resizeObserver){
+      resizeObserver.observe(grid);
+      cards.forEach(card => resizeObserver.observe(card));
+    } else {
+      window.addEventListener('resize', () => {
+        calculateRadius();
+        applyTransforms();
+      });
+    }
+
+    grid.addEventListener('carousel:refresh', applyTransforms);
+
+    grid.addEventListener('mouseenter', () => grid.classList.add('carousel-hover'));
+    grid.addEventListener('mouseleave', () => grid.classList.remove('carousel-hover'));
+
+    grid.addEventListener('wheel', evt => {
+      if (mq.matches || !grid.classList.contains('carousel-active')) return;
+      if (!grid.classList.contains('carousel-hover')) return;
+      evt.preventDefault();
+      const delta = Math.abs(evt.deltaY) > Math.abs(evt.deltaX) ? evt.deltaY : evt.deltaX;
+      if (delta === 0) return;
+      const direction = delta > 0 ? 1 : -1;
+      goTo(state.index + direction);
+    }, { passive: false });
+
+    grid.addEventListener('keydown', evt => {
+      if (mq.matches || !grid.classList.contains('carousel-active')) return;
+      if (evt.key === 'ArrowRight' || evt.key === 'PageDown'){
+        evt.preventDefault();
+        goTo(state.index + 1);
+      } else if (evt.key === 'ArrowLeft' || evt.key === 'PageUp'){
+        evt.preventDefault();
+        goTo(state.index - 1);
+      }
+    });
+
+    function calculateRadius(){
+      const sample = cards[0];
+      const bounds = sample.getBoundingClientRect();
+      const width = bounds.width || sample.offsetWidth || 320;
+      const raw = width / (2 * Math.tan(Math.PI / cards.length));
+      state.radius = Math.max(180, Math.round(raw) + 56);
+    }
+
+    function goTo(nextIndex){
+      const total = cards.length;
+      state.index = (nextIndex % total + total) % total;
+      state.angle = -state.step * state.index;
+      applyTransforms();
+    }
+
+    function applyTransforms(){
+      if (mq.matches){
+        grid.classList.remove('carousel-active');
+        cards.forEach(card => {
+          card.style.transform = '';
+          card.style.opacity = '';
+          card.style.zIndex = '';
+          card.style.filter = '';
+          card.style.pointerEvents = '';
+          card.removeAttribute('aria-hidden');
+          card.classList.remove('is-front');
+        });
+        return;
+      }
+
+      grid.classList.add('carousel-active');
+
+      cards.forEach((card, idx) => {
+        const angle = idx * state.step + state.angle;
+        const rad = angle * Math.PI / 180;
+        const depth = (Math.cos(rad) + 1) / 2; // 0 (back) to 1 (front)
+        const scale = 0.82 + depth * 0.22;
+        const translate = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${state.radius}px) scale(${scale.toFixed(3)})`;
+        card.style.transform = translate;
+        card.style.opacity = (0.28 + depth * 0.72).toFixed(3);
+        card.style.zIndex = String(Math.round(depth * 1000));
+        card.style.filter = `brightness(${(0.7 + depth * 0.3).toFixed(2)}) saturate(${(0.9 + depth * 0.15).toFixed(2)})`;
+
+        const normalized = ((angle % 360) + 360) % 360;
+        const isFront = normalized < state.step / 1.5 || normalized > 360 - state.step / 1.5;
+        card.classList.toggle('is-front', isFront);
+        if (isFront){
+          card.style.pointerEvents = 'auto';
+          card.removeAttribute('aria-hidden');
+        } else {
+          card.style.pointerEvents = 'none';
+          card.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+
+    calculateRadius();
+    goTo(0);
+  }
 })();
