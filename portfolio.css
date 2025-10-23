@@ -201,10 +201,11 @@ body.portfolio-page main{
 }
 
 .slider-menu{
-   position:relative;
+  position:relative;
   display:flex;
   width:100%;
   justify-content:flex-start;
+  align-items:stretch;
 }
 
 .slider-menu-viewport{
@@ -218,55 +219,56 @@ body.portfolio-page main{
   overflow-y:hidden;
   scrollbar-width:none;
   -ms-overflow-style:none;
-  transition:background .3s ease, box-shadow .3s ease;
+  transition:background .3s ease, box-shadow .3s ease, transform .3s ease;
 }
 
 .slider-menu-viewport::-webkit-scrollbar{display:none;}
 
 @media (min-width:900px){
   .slider-menu{
-     justify-content:center;
+    justify-content:flex-end;
+    max-width:80px;
   }
 
   .slider-menu-viewport{
     position:relative;
     flex-direction:column;
-    align-items:stretch;
-    gap:14px;
-    padding:118px 26px;
-    background:radial-gradient(circle at 50% 30%, rgba(255,255,255,.96) 0%, rgba(245,241,234,.94) 52%, rgba(226,220,211,.92) 100%);
-    border-radius:999px;
+    align-items:center;
+    gap:16px;
+    padding:24px 14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(235,231,223,.92));
+    border-radius:40px;
     border:1px solid rgba(33,37,43,.08);
-    box-shadow:0 25px 45px rgba(16,18,21,.16);
+    box-shadow:0 20px 36px rgba(16,18,21,.14);
     overflow-y:auto;
     overflow-x:hidden;
-    max-height:min(540px, 70vh);
+    max-height:min(520px, 68vh);
     min-height:clamp(320px, 44vh, 480px);
-    scroll-padding-block:118px;
+    scroll-padding-block:24px;
     scroll-snap-type:y proximity;
-    mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.2) 6%, rgba(0,0,0,.85) 24%, rgba(0,0,0,.95) 50%, rgba(0,0,0,.85) 76%, rgba(0,0,0,.2) 94%, transparent 100%);
-    -webkit-mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.2) 6%, rgba(0,0,0,.85) 24%, rgba(0,0,0,.95) 50%, rgba(0,0,0,.85) 76%, rgba(0,0,0,.2) 94%, transparent 100%);
   }
 
+   .slider-menu-viewport::-webkit-scrollbar{width:0;height:0;}
+   
   .slider-menu-viewport::before,
   .slider-menu-viewport::after{
     content:"";
     position:sticky;
     left:0;
     right:0;
-    height:120px;
+    height:36px;
     pointer-events:none;
     z-index:1;
   }
 
   .slider-menu-viewport::before{
     top:0;
-    background:linear-gradient(to bottom, rgba(255,255,255,.92) 0%, rgba(255,255,255,0) 100%);
+    background:linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
   }
 
   .slider-menu-viewport::after{
     bottom:0;
-    background:linear-gradient(to top, rgba(22,24,28,.65) 0%, rgba(22,24,28,0) 100%);
+    background:linear-gradient(to top, rgba(22,24,28,.35) 0%, rgba(22,24,28,0) 100%);
   }
 }
 
@@ -288,26 +290,61 @@ body.portfolio-page main{
   outline:2px solid var(--accent-soft);
   outline-offset:2px;
 }
-.slider-menu-btn.is-active{
-  background:var(--slate-strong);
-  color:#fff;
-  box-shadow:var(--shadow-2);
-  transform:translateX(4px);
+@media (max-width:899px){
+  .slider-menu-btn.is-active{
+    background:var(--slate-strong);
+    color:#fff;
+    box-shadow:var(--shadow-2);
+    transform:translateX(4px);
+  }
 }
 
 @media (min-width:900px){
   .slider-menu-btn{
     width:100%;
-    white-space:normal;
-    padding:16px 20px;
+    min-height:64px;
+    padding:0;
     text-align:center;
     scroll-snap-align:center;
-    border-radius:24px;
+    border-radius:999px;
+    position:relative;
+    overflow:hidden;
+    font-size:0;
+    color:transparent;
+    text-indent:-9999px;
+    transition:transform .25s ease;
+  }
+
+  .slider-menu-btn::after{
+    content:"";
+    position:absolute;
+    top:6px;
+    bottom:6px;
+    left:50%;
+    width:18px;
+    transform:translateX(-50%);
+    border-radius:999px;
+    background:rgba(33,37,43,.18);
+    opacity:.45;
+    transition:opacity .25s ease, background-color .25s ease, box-shadow .25s ease;
+  }
+
+  .slider-menu-btn:hover::after,
+  .slider-menu-btn:focus-visible::after{
+    opacity:.75;
   }
 
   .slider-menu-btn.is-active{
-    transform:scale(1.02);
-    box-shadow:0 18px 28px rgba(16,18,21,.18);
+    background:transparent;
+    color:transparent;
+    transform:scale(1.08);
+    box-shadow:none;
+  }
+
+  .slider-menu-btn.is-active::after{
+    background:var(--slate-strong);
+    opacity:1;
+    box-shadow:0 18px 28px rgba(16,18,21,.25);
   }
 }
 
@@ -435,6 +472,8 @@ body.portfolio-page main{
   align-items:center;
   justify-content:center;
   position:relative;
+  aspect-ratio:4 / 3;
+  min-height:240px;
 }
 
 @media (max-width:720px){
