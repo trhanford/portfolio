@@ -115,12 +115,23 @@
         </div>
        <div class="projects-grid projects-grid--cad" data-carousel data-carousel-count="4">
           <article class="project-card" data-project-id="cad-1">
-            <div class="project-media">
-              <img src="images/placeholders/horn.gltf" alt="CAD viewer placeholder graphic" loading="lazy" />
+            <div class="project-media project-media--viewer">
+              <model-viewer
+                src="assets/models/horn.gltf"
+                poster="images/placeholders/cad-default.svg"
+                alt="Interactive preview of the custom horn assembly"
+                camera-controls
+                shadow-intensity="0.8"
+                disable-zoom
+                interaction-prompt="none"
+                auto-rotate
+                rotation-per-second="15deg"
+                touch-action="pan-y"
+              ></model-viewer>
             </div>
             <div class="project-info">
-              <h3>Placeholder 1</h3>
-              <p class="project-summary">Slot for a mechanical assembly or component with exploded view states.</p>
+             <h3>Custom Horn Assembly</h3>
+              <p class="project-summary">Orbit the in-progress horn assembly concept directly within the carousel.</p>
               <button class="project-more" type="button" data-project="cad-1">See more →</button>
             </div>
           </article>
