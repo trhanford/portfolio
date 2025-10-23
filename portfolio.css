@@ -584,6 +584,55 @@ body.portfolio-page main{
   z-index:1;
 }
 
+.modal-viewer .viewer-placeholder p{
+  margin:6px 0 0;
+  line-height:1.45;
+}
+
+.modal-viewer .viewer-placeholder__refs{
+  margin:12px 0 0;
+  padding:0;
+  list-style:none;
+  width:100%;
+}
+
+.modal-viewer .viewer-placeholder__refs li{
+  margin:4px 0;
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+.modal-viewer .viewer-placeholder__refs code{
+  font-family:'Fira Code','SFMono-Regular','Menlo','Consolas',monospace;
+  font-size:.85rem;
+  color:var(--slate-strong);
+  background:rgba(15,17,19,.08);
+  padding:2px 6px;
+  border-radius:4px;
+}
+
+.modal-viewer .viewer-placeholder__ref-type{
+  font-size:.82rem;
+  color:var(--slate);
+}
+
+.modal-viewer .viewer-placeholder__ref-status{
+  font-weight:600;
+}
+
+.modal-viewer .viewer-placeholder__ref-status[data-status='found']{
+  color:var(--slate-strong);
+}
+
+.modal-viewer .viewer-placeholder__ref-status[data-status='missing']{
+  color:#b1402f;
+}
+
+.modal-viewer .viewer-placeholder__ref-status[data-status='unknown'],
+.modal-viewer .viewer-placeholder__ref-status[data-status='invalid']{
+  color:var(--muted);
+}
+
 .modal-collection-chip{
   border-radius:999px;
   border:1px solid rgba(15,17,19,.12);
