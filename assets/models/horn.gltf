@@ -1,132 +1,79 @@
 {
-    "asset": {
-        "version": "2.0",
-        "generator": "Open Asset Import Library (assimp v5.2.cf7d3637)"
+   "asset": {
+    "version": "2.0",
+    "generator": "Hand-authored sample"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [0]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0
+    }
+  ],
+  "materials": [
+    {
+      "name": "HornPlaceholderMaterial",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [0.82, 0.36, 0.24, 1.0],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.68
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "HornPlaceholderMesh",
+      "primitives": [
+        {
+            "attributes": {
+            "POSITION": 0
+          },
+          "indices": 1,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 3,
+      "type": "VEC3",
+      "max": [1.0, 1.0, 0.0],
+      "min": [0.0, 0.0, 0.0]
     },
-    "extensionsUsed": [
-        "KHR_materials_volume",
-        "FB_ngon_encoding"
-    ],
-    "accessors": [
-        {
-            "bufferView": 0,
-            "byteOffset": 0,
-            "componentType": 5126,
-            "count": 38556,
-            "type": "VEC3",
-            "max": [
-                990.5999755859375,
-                1168.4000244140626,
-                1447.800048828125
-            ],
-            "min": [
-                -1854.199951171875,
-                -3.22499005278587e-7,
-                -990.5999755859375
-            ]
-        },
-        {
-            "bufferView": 1,
-            "byteOffset": 0,
-            "componentType": 5126,
-            "count": 38556,
-            "type": "VEC3",
-            "max": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "min": [
-                -1.0,
-                -1.0,
-                -1.0
-            ]
-        },
-        {
-            "bufferView": 2,
-            "byteOffset": 0,
-            "componentType": 5125,
-            "count": 38556,
-            "type": "SCALAR",
-            "max": [
-                38555
-            ],
-            "min": [
-                0
-            ]
-        }
-    ],
-    "buffers": [
-        {
-            "byteLength": 1079568,
-            "uri": "result.bin"
-        }
-    ],
-    "bufferViews": [
-        {
-            "buffer": 0,
-            "byteOffset": 0,
-            "byteLength": 462672,
-            "target": 34962
-        },
-        {
-            "buffer": 0,
-            "byteOffset": 462672,
-            "byteLength": 462672,
-            "target": 34962
-        },
-        {
-            "buffer": 0,
-            "byteOffset": 925344,
-            "byteLength": 154224,
-            "target": 34963
-        }
-    ],
-    "materials": [
-        {
-            "name": "material",
-            "pbrMetallicRoughness": {
-                "baseColorFactor": [
-                    0.6038273572921753,
-                    0.6038273572921753,
-                    0.6038273572921753,
-                    1.0
-                ],
-                "metallicFactor": 0.0
-            }
-        },
-        {
-            "name": "material"
-        }
-    ],
-    "meshes": [
-        {
-            "name": "meshes[0]",
-            "primitives": [
-                {
-                    "mode": 4,
-                    "material": 0,
-                    "indices": 2,
-                    "attributes": {
-                        "POSITION": 0,
-                        "NORMAL": 1
-                    }
-                }
-            ]
-        }
-    ],
-    "nodes": [
-        {
-            "name": "empty_2",
-            "mesh": 0
-        }
-    ],
-    "scenes": [
-        {
-            "nodes": [
-                0
-            ]
-        }
-    ],
-    "scene": 0
+    {
+      "bufferView": 1,
+      "componentType": 5125,
+      "count": 3,
+      "type": "SCALAR",
+      "max": [2],
+      "min": [0]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 36,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 36,
+      "byteLength": 12,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 48,
+      "uri": "data:application/octet-stream;base64,AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAEAAAACAAAA"
+    }
+  ]
 }
