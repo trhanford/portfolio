@@ -37,11 +37,17 @@
   <main>
     <header class="portfolio-hero" data-field-surface data-disable-magnet=".hero-content, .hero-stats, a, button">
       <div class="hero-background" aria-hidden="true">
-        <canvas id="portfolioField" class="flux-canvas" data-fade-zones=".hero-content,.hero-stats" data-fade-depth="52"></canvas>
+        <canvas
+          id="portfolioField"
+          class="flux-canvas"
+          data-fade-zones=".hero-content,.hero-stats"
+          data-fade-depth="52"
+          data-exclusions=".hero-content,.hero-stats"
+        ></canvas>
         <div class="hero-gradient"></div>
       </div>
       <div class="container hero-layout">
-        <div class="hero-content" data-field-exclusion>
+        <div class="hero-content" data-field-exclusion data-particle-exclusion-margin="26">
           <span class="hero-kicker eyebrow">Selected Work</span>
           <h1 class="hero-title">Hands-on builds, digital models, and smart systems</h1>
           <p class="hero-subtitle">Browse a sampling of automotive restorations, CAD studies, and computer &amp; electrical projects. Each entry links to a richer gallery or interactive viewer.</p>
@@ -56,7 +62,7 @@
             </div>
           </div>
         </div>
-        <aside class="hero-stats" aria-label="Portfolio breakdown">
+        <aside class="hero-stats" aria-label="Portfolio breakdown" data-particle-exclusion-margin="26">
           <div class="stat" data-stat="automotive">
             <span class="stat-value">4</span>
             <span class="stat-label">Automotive builds</span>
