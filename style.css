@@ -29,14 +29,63 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;background:var(--taupe);color:var(--slate);
+  margin:0;color:var(--slate);
+  background-color:var(--taupe);
+  background-image:radial-gradient(circle at 12% 18%, rgba(255,255,255,.65), rgba(255,255,255,0) 48%),
+                   radial-gradient(circle at 82% 12%, rgba(214,205,187,.65), rgba(214,205,187,0) 52%),
+                   linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(236,229,216,.65) 44%, rgba(228,221,204,.9) 100%);
+  background-attachment:fixed;
   font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
   line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+   min-height:100%;
+  position:relative;
+}
+
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  inset:-30vh -30vw;
+  pointer-events:none;
+  z-index:-2;
+  transition:opacity .6s ease;
+}
+
+body::before{
+  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.38), rgba(255,255,255,0) 60%),
+             radial-gradient(circle at 70% 60%, rgba(214,205,187,.35), rgba(214,205,187,0) 62%);
+  opacity:.7;
+}
+
+body::after{
+  z-index:-3;
+  inset:-60vh -40vw;
+  background:linear-gradient(120deg, rgba(255,255,255,.18) 0%, rgba(196,188,171,.12) 48%, rgba(31,35,39,.08) 100%);
+  mix-blend-mode:soft-light;
+  opacity:.55;
 }
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 .container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
 h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
+
+/* -------------------- Reveal animations -------------------- */
+body.has-reveal .reveal-item{
+  opacity:0;
+  transform:translate3d(0,32px,0);
+  transition:opacity .6s ease, transform .6s ease;
+  transition-delay:var(--reveal-delay,0ms);
+  will-change:opacity,transform;
+}
+
+body.has-reveal .reveal-item.is-visible{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.has-reveal .reveal-item{opacity:1 !important;transform:none !important;transition:none !important}
+}
 
 /* -------------------- Buttons -------------------- */
 .btn-primary,.btn-outline{
@@ -159,9 +208,10 @@ hero-cta{
 .hero-col--panel{display:flex;justify-content:center}
 .panel{
   position:relative;width:min(560px,100%);border-radius:var(--radius-xl);
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.72) 55%, rgba(255,255,255,0) 100%);
-  box-shadow:var(--shadow-1);padding:26px 20px;overflow:hidden; /* clip any effects */
+  border:1px solid rgba(43,47,51,.14);
+  background:linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.7) 55%, rgba(255,255,255,.4) 100%);
+  box-shadow:0 24px 48px rgba(0,0,0,.12);padding:26px 20px;overflow:hidden; /* clip any effects */
+  backdrop-filter:blur(14px) saturate(1.08);
 }
 .panel::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .panel-title{
@@ -250,13 +300,16 @@ hero-cta{
 }
 .workflow-steps::before{
   content:""; position:absolute; left:16px; top:0; bottom:0; width:2px; background:rgba(43,47,51,.18);
+  box-shadow:0 0 12px rgba(43,47,51,.1);
 }
 .step{
   position:relative; display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:flex-start;
-  padding:10px 12px 12px 8px; border-radius:12px; border:1px solid var(--line); background:#fff; box-shadow:var(--shadow-1);
-  margin:10px 0 14px 0; transition:transform .18s ease, box-shadow .18s ease;
+  padding:12px 14px 16px 10px; border-radius:18px; border:1px solid rgba(43,47,51,.12); background:rgba(255,255,255,.92);
+  box-shadow:0 20px 38px rgba(0,0,0,.12);
+  backdrop-filter:blur(14px);
+  margin:12px 0 18px 0; transition:transform .2s ease, box-shadow .2s ease;
 }
-.step:hover{ box-shadow:var(--shadow-2); transform:translateY(-1px); }
+.step:hover{ box-shadow:0 28px 52px rgba(0,0,0,.16); transform:translateY(-4px); }
 .badge{
   width:32px; height:32px; border-radius:999px; display:grid; place-items:center; font-weight:900;
   background:var(--taupe); color:var(--slate-strong); box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 2px 8px rgba(0,0,0,.06);
@@ -267,8 +320,9 @@ hero-cta{
 
 /* Bubble network panel */
 .bubble-panel{
-  position:relative; border:1px solid var(--line); border-radius:var(--radius); background:#fff;
-  box-shadow:var(--shadow-1); padding:14px; overflow:hidden;
+  position:relative; border:1px solid rgba(43,47,51,.14); border-radius:var(--radius-xl); background:rgba(255,255,255,.9);
+  box-shadow:0 24px 48px rgba(0,0,0,.14); padding:22px; overflow:hidden;
+  backdrop-filter:blur(16px);
 }
 #skillsGraph{ width:100%; height:420px; display:block; }
 .bubble-fallback{ display:none; margin:10px 0 0 18px; color:var(--muted); }
