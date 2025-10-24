@@ -128,7 +128,8 @@
         inside: false,
         strength: 0,
         targetStrength: 0,
-        lastMove: 0
+        lastMove: 0,
+        magnetExpireAt: 0
       };
 
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -177,7 +178,6 @@
         pointer.targetX = clamp(clientX - rect.left, 0, rect.width);
         pointer.targetY = clamp(clientY - rect.top, 0, rect.height);
         pointer.lastMove = performance.now();
-        pointer.lastMove = performance.now();
       }
 
       function handlePointerMove(e){
@@ -185,13 +185,19 @@
         const suppressed = shouldDisableMagnet(e.target);
         pointer.inside = !suppressed;
         pointer.targetStrength = suppressed ? 0 : 1;
-        if (suppressed) pointer.strength *= 0.35;
+        if (suppressed){
+          pointer.strength *= 0.35;
+          pointer.magnetExpireAt = 0;
+        } else {
+          pointer.magnetExpireAt = pointer.lastMove + 1000;
+        }
       }
       
       function handlePointerLeave(){
         pointer.inside = false;
         pointer.targetStrength = 0;
         pointer.strength *= 0.5;
+        pointer.magnetExpireAt = 0;
       }
 
       function computeExclusionZones(){
@@ -236,18 +242,24 @@
             const top = Math.abs(p.y - zone.y);
             const bottom = Math.abs(zone.y + zone.h - p.y);
             const min = Math.min(left, right, top, bottom);
+            const buffer = 6 + Math.random() * 6;
+            const tangentKick = (Math.random() - 0.5) * 0.8;
             if (min === left){
-              p.x = zone.x - 1;
-              p.vx = -Math.abs(p.vx);
+              p.x = zone.x - buffer;
+              p.vx = -Math.abs(p.vx) * 0.75 - 0.05;
+              p.vy += tangentKick;
             } else if (min === right){
-              p.x = zone.x + zone.w + 1;
-              p.vx = Math.abs(p.vx);
+              p.x = zone.x + zone.w + buffer;
+              p.vx = Math.abs(p.vx) * 0.75 + 0.05;
+              p.vy += tangentKick;
             } else if (min === top){
-              p.y = zone.y - 1;
-              p.vy = -Math.abs(p.vy);
+              p.y = zone.y - buffer;
+              p.vy = -Math.abs(p.vy) * 0.75 - 0.05;
+              p.vx += tangentKick;
             } else {
-              p.y = zone.y + zone.h + 1;
-              p.vy = Math.abs(p.vy);
+              p.y = zone.y + zone.h + buffer;
+              p.vy = Math.abs(p.vy) * 0.75 + 0.05;
+              p.vx += tangentKick;
             }
           }
         }
@@ -419,7 +431,9 @@
         ctx.fillStyle = vignette;
         ctx.fillRect(0, 0, W, H);
 
-        pointer.targetStrength = pointer.inside ? 1 : 0;
+        const hasExpiry = pointer.magnetExpireAt > 0;
+        const magnetActive = pointer.inside && (!hasExpiry || now <= pointer.magnetExpireAt);
+        pointer.targetStrength = magnetActive ? 1 : 0;
         pointer.strength += (pointer.targetStrength - pointer.strength) * 0.22;
         const pointerEase = reduceMotion ? 0.25 : 0.18;
         pointer.x += (pointer.targetX - pointer.x) * pointerEase;
