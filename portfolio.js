@@ -50,39 +50,85 @@
         message: 'Keep horn.gltf and its exported .bin companions together in assets/models so the viewer can load the CAD preview.',
         rotationPerSecond: '15deg',
         shadowIntensity: '0.8',
-        exposure: '1.1'
+        exposure: '1.1',
+        autoRotate: true
       },
       note: 'Model exported as GLTF for use with the <model-viewer> component. Additional exploded views can be added as separate entries if needed.'
     },
     'cad-2': {
-      title: 'Placeholder 2',
+      title: 'Precision Bench Vice',
       category: 'CAD',
       model: {
-        src: '',
+        src: 'assets/models/bench_vice.glb',
+        alt: 'Interactive preview of the precision bench vice assembly',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Upload the finished CAD export (GLB/GLTF) and update this slot to preview it interactively.'
+        message: 'Place bench_vice.glb in assets/models. Include any separate texture files or .bin companions alongside the GLB if exported as GLTF.',
+        shadowIntensity: '0.9',
+        rotationPerSecond: '12deg',
+        autoRotate: true,
+        exposure: '1.05'
       },
-      note: 'Include exploded positions or configurations by exporting separate GLB files if needed.'
+      note: 'Highlight jaw inserts, guide rails, or stress relieved components by adding still renders to the gallery array if desired.'
     },
     'cad-3': {
-      title: 'Placeholder 3',
+      title: 'RC Car Chassis Study',
       category: 'CAD',
       model: {
-        src: '',
+        src: 'assets/models/rc_car.glb',
+        alt: 'Interactive preview of the RC car chassis concept',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Once your GLB/GLTF is ready, reference it here to enable the interactive viewer.'
+        message: 'Copy rc_car.glb into assets/models. If your export references textures, keep them in the same folder for seamless loading.',
+        shadowIntensity: '0.7',
+        rotationPerSecond: '14deg',
+        autoRotate: true,
+        exposure: '1.0'
       },
-      note: 'Keep polygon counts reasonable for smooth browser playback (generally < 200k faces).' 
+      note: 'Consider appending suspension detail shots or annotated callouts via the gallery array to explain tuning decisions.'
     },
     'cad-4': {
-      title: 'Placeholder 4',
+      title: 'Cow Bell Casting Pattern',
       category: 'CAD',
       model: {
-        src: '',
+        src: 'assets/models/cow_bell.glb',
+        alt: 'Interactive preview of the cow bell casting pattern',
         poster: 'images/placeholders/cad-default.svg',
-        message: 'Link a GLB or GLTF file to give visitors a real-time view of this concept.'
+        message: 'Drop cow_bell.glb into assets/models. Pair halves, cores, and gating as needed; <model-viewer> reads a single GLB bundle.',
+        shadowIntensity: '0.65',
+        rotationPerSecond: '10deg',
+        autoRotate: true,
+        exposure: '1.05'
       },
-      note: 'Add optional annotation images to the gallery array if you want supporting callouts.'
+      note: 'Supplement with photos of the sand mold or finished casting by extending the gallery array for this entry.'
+    },
+    'cad-5': {
+      title: 'Can Stamper Mechanism',
+      category: 'CAD',
+      model: {
+        src: 'assets/models/can_stamper.glb',
+        alt: 'Interactive preview of the can stamper mechanism',
+        poster: 'images/placeholders/cad-default.svg',
+        message: 'Add can_stamper.glb to assets/models to animate the punch head and linkage in the viewer.',
+        shadowIntensity: '0.8',
+        rotationPerSecond: '11deg',
+        autoRotate: true,
+        exposure: '1.08'
+      },
+      note: 'Use the gallery to contrast exploded linkage positions or prototype photos that inspired the mechanism.'
+    },
+    'cad-6': {
+      title: 'Modular Organizer System',
+      category: 'CAD',
+      model: {
+        src: 'assets/models/organizer.glb',
+        alt: 'Interactive preview of the modular organizer tray system',
+        poster: 'images/placeholders/cad-default.svg',
+        message: 'Save organizer.glb in assets/models. Keep any additional textures beside it so inserts display correctly.',
+        shadowIntensity: '0.75',
+        rotationPerSecond: '13deg',
+        autoRotate: true,
+        exposure: '1.04'
+      },
+      note: 'Document alternative bin layouts or FDM print settings in the gallery to showcase modularity and ease of fabrication.'
     },
     'timer-police': {
       title: '555 Timer Police Light Circuit',
