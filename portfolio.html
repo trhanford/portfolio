@@ -36,41 +36,60 @@
 
   <main>
     <header class="portfolio-hero">
-      <div class="portfolio-hero-bg" aria-hidden="true">
-        <canvas id="portfolioField" class="magnetic-field"></canvas>
+      <div class="hero-background" aria-hidden="true">
+        <canvas id="portfolioField" class="flux-canvas"></canvas>
+        <div class="hero-gradient"></div>
       </div>
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">Selected Work</p>
+      <div class="container hero-layout">
+        <div class="hero-content">
+          <span class="hero-kicker eyebrow">Selected Work</span>
           <h1 class="hero-title">Hands-on builds, digital models, and smart systems</h1>
           <p class="hero-subtitle">Browse a sampling of automotive restorations, CAD studies, and computer &amp; electrical projects. Each entry links to a richer gallery or interactive viewer.</p>
           <div class="hero-actions">
-            <a class="start-exploring-btn" href="#automotive" data-scroll>
+            <a class="hero-button" href="#automotive" data-scroll>
               <span class="label">Start Exploring</span>
               <span class="arrow" aria-hidden="true">→</span>
             </a>
+            <div class="hero-scroll-hint" aria-hidden="true">
+              <span class="dot"></span>
+              <span class="hint-text">Scroll to view the projects</span>
+            </div>
           </div>
         </div>
+        <aside class="hero-stats" aria-label="Portfolio breakdown">
+          <div class="stat" data-stat="automotive">
+            <span class="stat-value">4</span>
+            <span class="stat-label">Automotive builds</span>
+          </div>
+          <div class="stat" data-stat="cad">
+            <span class="stat-value">6</span>
+            <span class="stat-label">CAD studies</span>
+          </div>
+          <div class="stat" data-stat="electrical">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Computer &amp; electrical systems</span>
+          </div>
+        </aside>
       </div>
     </header>
 
-    <section class="portfolio-section" id="automotive">
+    <section class="category-block" id="automotive">
       <div class="container">
-        <div class="section-head">
+        <div class="section-heading">
           <h2>Automotive</h2>
           <p>Engine swaps, chassis refurbishments, and tailored details. Image galleries open in a horizontal lightbox.</p>
         </div>
-        <div class="project-slider project-slider--automotive" data-slider data-slider-label="Automotive projects">
-          <div class="slider-window">
-            <div class="slider-track">
+        <div class="project-rail" data-project-rail data-rail-label="Automotive projects">
+          <div class="rail-window">
+            <div class="rail-track">
               <article class="project-card" data-project-id="bronco-289">
                 <div class="project-media">
                   <img src="images/placeholders/Bronco_289.jpg" alt="Illustration placeholder for the 1968 Ford Bronco 289 build" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>1968 Ford Bronco — 289 CID</h3>
+                <div class="project-body">
+                  <span class="project-kicker">1968 Ford Bronco — 289 CID</span>
                   <p class="project-summary">Baseline restoration with period-correct power, refreshed drivetrain, and safety upgrades.</p>
-                  <button class="project-more" type="button" data-project="bronco-289">See more →</button>
+                  <button class="project-action" type="button" data-project="bronco-289">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -78,10 +97,10 @@
                 <div class="project-media">
                   <img src="images/placeholders/bronco_coy_1.jpg" alt="Illustration placeholder for the 1968 Ford Bronco Coyote swap" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>1968 Ford Bronco — 5.0L Gen 4x Coyote</h3>
+                <div class="project-body">
+                  <span class="project-kicker">1968 Ford Bronco — 5.0L Gen 4x Coyote</span>
                   <p class="project-summary">Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.</p>
-                  <button class="project-more" type="button" data-project="bronco-coyote">See more →</button>
+                  <button class="project-action" type="button" data-project="bronco-coyote">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -89,10 +108,10 @@
                 <div class="project-media">
                   <img src="images/placeholders/Jeep_1.jpg" alt="Illustration placeholder for the 1974 Jeep CJ5 build" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>1974 Jeep CJ5 — 304 CID</h3>
+                <div class="project-body">
+                  <span class="project-kicker">1974 Jeep CJ5 — 304 CID</span>
                   <p class="project-summary">Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.</p>
-                  <button class="project-more" type="button" data-project="jeep-cj5">See more →</button>
+                  <button class="project-action" type="button" data-project="jeep-cj5">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -100,10 +119,10 @@
                 <div class="project-media">
                   <img src="images/placeholders/350z_1.jpg" alt="Illustration placeholder for the 2003 Nissan 350Z project" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>2003 Nissan 350Z — VQ35</h3>
+                <div class="project-body">
+                  <span class="project-kicker">2003 Nissan 350Z — VQ35</span>
                   <p class="project-summary">Street-tuned coupe with aero tweaks, suspension refresh, and track-ready instrumentation.</p>
-                  <button class="project-more" type="button" data-project="nissan-350z">See more →</button>
+                  <button class="project-action" type="button" data-project="nissan-350z">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
             </div>
@@ -112,15 +131,15 @@
       </div>
     </section>
 
-    <section class="portfolio-section" id="cad">
+    <section class="category-block" id="cad">
       <div class="container">
-        <div class="section-head">
+        <div class="section-heading">
           <h2>CAD</h2>
           <p>Interactive viewers let you orbit, zoom, and inspect detailed models. Upload GLB/GLTF assets to replace the placeholders.</p>
         </div>
-        <div class="project-slider project-slider--cad" data-slider data-slider-label="CAD projects">
-          <div class="slider-window">
-            <div class="slider-track">
+        <div class="project-rail" data-project-rail data-rail-label="CAD projects">
+          <div class="rail-window">
+            <div class="rail-track">
               <article class="project-card" data-project-id="cad-1">
                 <div class="project-media project-media--viewer">
                   <model-viewer
@@ -128,18 +147,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of the custom horn assembly"
                     camera-controls
-                    shadow-intensity="0.8"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="15deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.8"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>Custom Horn Assembly</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Custom Horn Assembly</span>
                   <p class="project-summary">Orbit the in-progress horn assembly concept directly within the carousel.</p>
-                  <button class="project-more" type="button" data-project="cad-1">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-1">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -150,18 +167,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of a precision bench vice assembly"
                     camera-controls
-                    shadow-intensity="0.9"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="12deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.9"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>Precision Bench Vice</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Precision Bench Vice</span>
                   <p class="project-summary">Explore the multi-part jaw assembly, screw drive, and mounting hardware ready for machining.</p>
-                  <button class="project-more" type="button" data-project="cad-2">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-2">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -172,18 +187,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of an RC car chassis model"
                     camera-controls
-                    shadow-intensity="0.7"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="14deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.7"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>RC Car Chassis Study</h3>
+                <div class="project-body">
+                  <span class="project-kicker">RC Car Chassis Study</span>
                   <p class="project-summary">View suspension pickup points, battery placement, and aero details for a performance RC platform.</p>
-                  <button class="project-more" type="button" data-project="cad-3">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-3">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -194,18 +207,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of a cow bell casting pattern"
                     camera-controls
-                    shadow-intensity="0.65"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="10deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.65"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>Cow Bell Casting Pattern</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Cow Bell Casting Pattern</span>
                   <p class="project-summary">Inspect the split pattern and draft considerations for a cast aluminum cow bell concept.</p>
-                  <button class="project-more" type="button" data-project="cad-4">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-4">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -216,18 +227,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of a can stamper mechanism"
                     camera-controls
-                    shadow-intensity="0.8"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="11deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.8"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>Can Stamper Mechanism</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Can Stamper Mechanism</span>
                   <p class="project-summary">Follow the linkage-driven head that embosses beverage cans with a custom brand mark.</p>
-                  <button class="project-more" type="button" data-project="cad-5">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-5">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -238,18 +247,16 @@
                     poster="images/placeholders/cad-default.svg"
                     alt="Interactive preview of a modular organizer tray"
                     camera-controls
-                    shadow-intensity="0.75"
-                    reveal="auto"
-                    interaction-prompt="none"
+                    touch-action="pan-y"
                     auto-rotate
                     rotation-per-second="13deg"
-                    touch-action="pan-y"
+                    shadow-intensity="0.75"
                   ></model-viewer>
                 </div>
-                <div class="project-info">
-                  <h3>Modular Organizer System</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Modular Organizer System</span>
                   <p class="project-summary">Rotate through interchangeable bins and covers tailored for workshop fasteners.</p>
-                  <button class="project-more" type="button" data-project="cad-6">See more →</button>
+                  <button class="project-action" type="button" data-project="cad-6">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
             </div>
@@ -258,23 +265,23 @@
       </div>
     </section>
 
-    <section class="portfolio-section" id="computer-electrical">
+    <section class="category-block" id="computer-electrical">
       <div class="container">
-        <div class="section-head">
+        <div class="section-heading">
           <h2>Computer &amp; Electrical</h2>
           <p>Embedded builds, audio-reactive lighting, and smart home integrations. Galleries highlight wiring discipline and final behavior.</p>
         </div>
-        <div class="project-slider project-slider--electrical" data-slider data-slider-label="Computer and electrical projects">
-          <div class="slider-window">
-            <div class="slider-track">
+        <div class="project-rail" data-project-rail data-rail-label="Computer and electrical projects">
+          <div class="rail-window">
+            <div class="rail-track">
               <article class="project-card" data-project-id="timer-police">
                 <div class="project-media">
                   <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the 555 timer police light circuit" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>555 Timer Police Light Circuit</h3>
+                <div class="project-body">
+                  <span class="project-kicker">555 Timer Police Light Circuit</span>
                   <p class="project-summary">Classic timing IC driving alternating beacons with adjustable pulse widths.</p>
-                  <button class="project-more" type="button" data-project="timer-police">See more →</button>
+                  <button class="project-action" type="button" data-project="timer-police">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -282,10 +289,10 @@
                 <div class="project-media">
                   <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the Alexa-integrated smart mirror" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>Alexa Integrated Smart Mirror</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Alexa Integrated Smart Mirror</span>
                   <p class="project-summary">Voice-enabled display with embedded LEDs, microphone array, and responsive UI.</p>
-                  <button class="project-more" type="button" data-project="smart-mirror">See more →</button>
+                  <button class="project-action" type="button" data-project="smart-mirror">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
@@ -293,10 +300,10 @@
                 <div class="project-media">
                   <img src="images/placeholders/electrical-default.svg" alt="Illustration placeholder for the sound reactive LED equalizer" loading="lazy" />
                 </div>
-                <div class="project-info">
-                  <h3>Sound Reactive LED Equalizer</h3>
+                <div class="project-body">
+                  <span class="project-kicker">Sound Reactive LED Equalizer</span>
                   <p class="project-summary">FFT-driven light bar that maps audio frequencies to cascading color bands.</p>
-                  <button class="project-more" type="button" data-project="led-eq">See more →</button>
+                  <button class="project-action" type="button" data-project="led-eq">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
             </div>
@@ -313,15 +320,16 @@
     </div>
   </footer>
 
-  <div id="projectModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button class="modal-close" type="button" aria-label="Close" data-close>&times;</button>
-      <div class="modal-header">
-        <h2 id="modalTitle"></h2>
-        <p id="modalSubtitle" class="modal-subtitle"></p>
-      </div>
-      <div id="modalBody" class="modal-body"></div>
+  <div id="projectModal" class="portfolio-modal" aria-hidden="true">
+    <div class="portfolio-modal__backdrop" data-close></div>
+    <div class="portfolio-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle" aria-describedby="projectModalSummary">
+      <button class="portfolio-modal__close" type="button" aria-label="Close" data-close>&times;</button>
+      <header class="portfolio-modal__header">
+        <p id="projectModalCategory" class="portfolio-modal__kicker"></p>
+        <h2 id="projectModalTitle"></h2>
+        <p id="projectModalSummary" class="portfolio-modal__summary"></p>
+      </header>
+      <div id="projectModalBody" class="portfolio-modal__body"></div>
     </div>
   </div>
 
