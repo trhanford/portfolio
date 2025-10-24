@@ -242,8 +242,8 @@ body.portfolio-page main{
     box-shadow:0 20px 36px rgba(16,18,21,.14);
     overflow-y:auto;
     overflow-x:hidden;
-    max-height:min(520px, 68vh);
-    min-height:clamp(320px, 44vh, 480px);
+    max-height:min(320px, 60vh);
+    min-height:0;
     scroll-padding-block:24px;
     scroll-snap-type:y proximity;
   }
