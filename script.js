@@ -251,21 +251,15 @@
             const rect = el.getBoundingClientRect();
             const marginAttr = parseFloat(el.getAttribute('data-particle-fade-margin') || '');
             const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : fadeDefaultMargin;
-            const fadeOverride = parseFloat(el.getAttribute('data-particle-fade-depth') || '');
-            const zoneFade = Number.isFinite(fadeOverride) ? Math.max(0, fadeOverride) : fadeDepth;
-            const fadeModeAttr = (el.getAttribute('data-particle-fade-mode') || '').toLowerCase();
-            const occlude = el.hasAttribute('data-particle-occlude') || fadeModeAttr === 'occlude' || fadeModeAttr === 'mask';
             const zone = {
               x: rect.left - canvasRect.left,
               y: rect.top - canvasRect.top,
               w: rect.width,
               h: rect.height,
-              fade: zoneFade,
-              margin,
-              occlude
+              fade: fadeDepth,
+              margin
             };
-            if (zone.w <= 0 || zone.h <= 0) continue;
-            if (!zone.occlude && zone.fade <= 0) continue;
+            if (zone.w <= 0 || zone.h <= 0 || zone.fade <= 0) continue;
             zones.push(zone);
           }
         }
@@ -331,18 +325,13 @@
           if (!insideInner && !insideOuter) continue;
 
           if (insideInner){
-            if (zone.occlude){
-              factor = 0;
-              if (factor <= 0.001) break;
-            } else {
-              const distLeft = x - innerX;
-              const distRight = innerX + innerW - x;
-              const distTop = y - innerY;
-              const distBottom = innerY + innerH - y;
-              const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
-              const fade = clamp(distToEdge / Math.max(1, zone.fade), 0, 1);
-              factor = Math.min(factor, 1 - Math.pow(1 - fade, 2));
-            }
+            const distLeft = x - innerX;
+            const distRight = innerX + innerW - x;
+            const distTop = y - innerY;
+            const distBottom = innerY + innerH - y;
+            const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
+            const fade = clamp(distToEdge / Math.max(1, zone.fade), 0, 1);
+            factor = Math.min(factor, 1 - Math.pow(1 - fade, 2));
           } else if (insideOuter){
             const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
             const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
