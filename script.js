@@ -337,8 +337,7 @@
             const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
             const distToInner = Math.sqrt(dx * dx + dy * dy);
             const fadeRatio = clamp(1 - distToInner / Math.max(1, margin), 0, 1);
-            const eased = fade * fade * (3 - 2 * fade);
-            factor = Math.min(factor, eased);
+            factor = Math.min(factor, fadeRatio);
           }
         }
         return factor;
