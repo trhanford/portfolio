@@ -12,6 +12,9 @@ body.portfolio-page{
   min-height:100vh;
 }
 
+body.portfolio-page::before{opacity:.6;}
+body.portfolio-page::after{opacity:.42;}
+
 .visually-hidden{
   position:absolute !important;
   width:1px !important;
@@ -290,6 +293,7 @@ body.portfolio-page main{
   scroll-snap-align:start;
   border:1px solid rgba(43,47,51,.08);
   transition:transform .35s ease, box-shadow .35s ease;
+  will-change:transform;
 }
 
 .project-card::after{
@@ -305,9 +309,10 @@ body.portfolio-page main{
 .project-card:focus-within::after,
 .project-card:hover::after{opacity:1;}
 
-.project-card.is-active{
-  transform:translateY(-6px);
-  box-shadow:0 34px 70px rgba(0,0,0,.18);
+.project-card.is-active,
+.project-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 36px 74px rgba(0,0,0,.18);
 }
 
 .project-media{aspect-ratio:4/3;background:#f4f1eb;overflow:hidden;position:relative;}
