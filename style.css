@@ -196,7 +196,7 @@ body.has-reveal .reveal-item.is-visible{
   border-right:2px solid rgba(31,35,39,.95);padding-right:8px;animation:blink .9s steps(1) infinite;
 }
 @keyframes blink{50%{border-color:transparent}}
-hero-cta{
+.hero-cta{
   margin-top:32px;
   display:flex;
   flex-wrap:wrap;
