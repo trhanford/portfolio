@@ -8,6 +8,9 @@ body.resume-body{
   color:var(--slate);
 }
 
+body.resume-body::before{opacity:.62;}
+body.resume-body::after{opacity:.45;}
+
 .resume-hero{
   position:relative;
   padding:calc(var(--nav-h) + 72px) 0 96px;
@@ -52,10 +55,11 @@ body.resume-body{
 
 .resume-hero__meta{
   background:rgba(255,255,255,.82);
-  border:1px solid var(--line);
+  border:1px solid rgba(43,47,51,.14);
   border-radius:var(--radius-xl);
   padding:28px;
-  box-shadow:var(--shadow-1);
+  box-shadow:0 26px 52px rgba(0,0,0,.14);
+  backdrop-filter:blur(18px) saturate(1.08);
 }
 
 .resume-hero__meta dl{
@@ -95,10 +99,11 @@ body.resume-body{
 
 .resume-toc__inner{
   background:rgba(255,255,255,.86);
-  border:1px solid var(--line);
+  border:1px solid rgba(43,47,51,.14);
   border-radius:var(--radius-xl);
   padding:24px 24px 32px;
-  box-shadow:var(--shadow-1);
+  box-shadow:0 22px 48px rgba(0,0,0,.14);
+  backdrop-filter:blur(16px);
 }
 
 .resume-toc__title{
@@ -169,11 +174,12 @@ body.resume-body{
 }
 
 .resume-section{
-  background:rgba(255,255,255,.9);
-  border:1px solid var(--line);
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(43,47,51,.12);
   border-radius:var(--radius-xl);
   padding:32px clamp(24px,4vw,48px);
-  box-shadow:var(--shadow-1);
+  box-shadow:0 28px 60px rgba(0,0,0,.14);
+  backdrop-filter:blur(16px);
 }
 
 .resume-section h2{
