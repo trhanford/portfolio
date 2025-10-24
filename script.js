@@ -381,40 +381,6 @@
         ctx.lineTo(b.x, b.y);
         ctx.stroke();
       }
-
-      function drawFocusConnections(particles, radius, intensity){
-        if (intensity <= 0.01) return;
-        const count = particles.length;
-        if (count < 2) return;
-        const maxDist = Math.max(radius * 0.88, 160);
-        const maxDistSq = maxDist * maxDist;
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.lineWidth = 0.6;
-        for (let i = 0; i < count; i++){
-          const a = particles[i];
-          if (isInsideExclusion(a.x, a.y)) continue;
-          for (let j = i + 1; j < count; j++){
-            const b = particles[j];
-            if (isInsideExclusion(b.x, b.y)) continue;
-            if (segmentHitsExclusion(a.x, a.y, b.x, b.y)) continue;
-            const dx = a.x - b.x;
-            const dy = a.y - b.y;
-            const distSq = dx * dx + dy * dy;
-            if (distSq > maxDistSq) continue;
-            const dist = Math.sqrt(distSq) || 1;
-            const closeness = Math.max(0, 1 - dist / maxDist);
-            const alpha = clamp(closeness * (0.6 + intensity * 0.65), 0, 0.9) * intensity;
-            if (alpha < 0.05) continue;
-            ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-        ctx.restore();
-      }
       
       function loop(now){
         const dt = Math.min(0.033, (now - lastFrame) / 1000 || 0.016);
@@ -438,9 +404,10 @@
 
         clearBuckets();
 
-        const focusRadius = clamp(Math.max(W, H) * 0.28, 120, 320);
-        const focusRadiusSq = focusRadius * focusRadius;
-        const focusParticles = [];
+        const magnetRadius = clamp(Math.max(W, H) * 0.28, 120, 320);
+        const magnetRadiusSq = magnetRadius * magnetRadius;
+        const magnetStrength = reduceMotion ? 0.045 : 0.16;
+        const pointerLinks = [];
 
         const baseFlow = now * 0.00018;
 
@@ -454,8 +421,13 @@
             const dx = pointer.x - p.x;
             const dy = pointer.y - p.y;
             const distSq = dx * dx + dy * dy;
-            if (distSq < focusRadiusSq && !isInsideExclusion(p.x, p.y)){
-              focusParticles.push(p);
+            if (distSq < magnetRadiusSq){
+              const dist = Math.sqrt(distSq) || 1;
+              const influence = (1 - dist / magnetRadius) * pointer.strength;
+              const pull = magnetStrength * influence;
+              p.vx += (dx / dist) * pull;
+              p.vy += (dy / dist) * pull;
+              if (!isInsideExclusion(p.x, p.y)) pointerLinks.push({ particle: p, influence });
             }
           }
 
@@ -481,11 +453,6 @@
 
         const connectDist = clamp(Math.max(W, H) * 0.24, 140, 260);
         drawConnections(connectDist * connectDist, connectDist);
-
-        const pointerInsideExclusion = isInsideExclusion(pointer.x, pointer.y);
-        if (!reduceMotion && pointer.strength > 0.04 && !pointerInsideExclusion){
-          drawFocusConnections(focusParticles, focusRadius, pointer.strength);
-        }
         
         ctx.fillStyle = 'rgba(43,47,51,0.85)';
         for (const p of pts){
@@ -495,19 +462,36 @@
           ctx.arc(p.x, p.y, Math.max(0.65, size), 0, Math.PI * 2);
           ctx.fill();
         }
-  
+
+        const pointerInsideExclusion = isInsideExclusion(pointer.x, pointer.y);
+        
         if (!reduceMotion && pointer.strength > 0.02 && !pointerInsideExclusion){
           ctx.save();
           ctx.globalCompositeOperation = 'lighter';
-          const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, focusRadius * 0.9);
+          const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, magnetRadius * 0.9);
           halo.addColorStop(0, `rgba(255,255,255,${0.16 * pointer.strength})`);
           halo.addColorStop(0.45, `rgba(255,255,255,${0.08 * pointer.strength})`);
           halo.addColorStop(1, 'rgba(255,255,255,0)');
           ctx.fillStyle = halo;
           ctx.beginPath();
-          ctx.arc(pointer.x, pointer.y, focusRadius * 0.9, 0, Math.PI * 2);
+          ctx.arc(pointer.x, pointer.y, magnetRadius * 0.9, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
+          
+          ctx.lineWidth = 0.55;
+          for (const link of pointerLinks){
+            if (link.influence <= 0) continue;
+            const alpha = clamp(link.influence * pointer.strength * 1.4, 0, 0.85);
+            if (alpha < 0.05) continue;
+            ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
+            ctx.beginPath();
+            const lx = link.particle.x;
+            const ly = link.particle.y;
+            if (segmentHitsExclusion(pointer.x, pointer.y, lx, ly)) continue;
+            ctx.moveTo(pointer.x, pointer.y);
+            ctx.lineTo(lx, ly);
+            ctx.stroke();
+          }
         }
 
         if (document.visibilityState !== 'hidden'){
