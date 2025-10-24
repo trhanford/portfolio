@@ -148,6 +148,13 @@
         .filter(Boolean);
       let exclusionZones = [];
 
+      const fadeSelectors = (bg.dataset.fadeZones || bg.dataset.fadezones || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const fadeDepth = Math.max(6, parseFloat(bg.dataset.fadeDepth) || 42);
+      let fadeZones = [];
+      
        const disableMagnetSelectors = [pointerSurface?.dataset.disableMagnet, bg.dataset.disableMagnet]
         .filter(Boolean)
         .join(',')
@@ -224,7 +231,33 @@
         }
         exclusionZones = zones;
       }
-  
+
+      function computeFadeZones(){
+        if (!fadeSelectors.length){
+          fadeZones = [];
+          return;
+        }
+        const canvasRect = bg.getBoundingClientRect();
+        const zones = [];
+        for (const selector of fadeSelectors){
+          const elements = Array.from(document.querySelectorAll(selector));
+          for (const el of elements){
+            if (!(el instanceof Element)) continue;
+            const rect = el.getBoundingClientRect();
+            const zone = {
+              x: rect.left - canvasRect.left,
+              y: rect.top - canvasRect.top,
+              w: rect.width,
+              h: rect.height,
+              fade: fadeDepth
+            };
+            if (zone.w <= 0 || zone.h <= 0 || zone.fade <= 0) continue;
+            zones.push(zone);
+          }
+        }
+        fadeZones = zones;
+      }
+      
       function isInsideExclusion(x, y){
         if (!exclusionZones.length) return false;
         for (const zone of exclusionZones){
@@ -264,7 +297,24 @@
           }
         }
       }
-  
+
+      function fadeFactor(x, y){
+        if (!fadeZones.length) return 1;
+        let factor = 1;
+        for (const zone of fadeZones){
+          if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h){
+            const distLeft = x - zone.x;
+            const distRight = zone.x + zone.w - x;
+            const distTop = y - zone.y;
+            const distBottom = zone.y + zone.h - y;
+            const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
+            const fade = clamp(1 - (distToEdge / zone.fade), 0, 1);
+            factor = Math.min(factor, fade);
+          }
+        }
+        return factor;
+      }
+      
       function segmentHitsExclusion(ax, ay, bx, by){
         if (!exclusionZones.length) return false;
         for (const zone of exclusionZones){
@@ -339,6 +389,8 @@
         buckets = Array.from({ length: columns * rows }, () => []);
 
         computeExclusionZones();
+
+        computeFadeZones();
         
         if (firstResize){
           pointer.x = W * 0.5;
@@ -408,7 +460,10 @@
         if (distSq > maxDistSq) return;
         const dist = Math.sqrt(distSq) || 1;
         const closeness = 1 - (dist / maxDist);
-        const alpha = Math.max(0, Math.min(0.4, closeness * 0.6));
+        const midFade = fadeFactor((a.x + b.x) * 0.5, (a.y + b.y) * 0.5);
+        const fade = Math.min(fadeFactor(a.x, a.y), fadeFactor(b.x, b.y), midFade);
+        if (fade <= 0.01) return;
+        const alpha = Math.max(0, Math.min(0.4, closeness * 0.6 * fade));
         if (alpha <= 0.01) return;
         ctx.strokeStyle = `rgba(102,108,115,${alpha.toFixed(3)})`;
         ctx.beginPath();
@@ -464,7 +519,10 @@
               const pull = magnetStrength * influence;
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
-              if (!isInsideExclusion(p.x, p.y)) pointerLinks.push({ particle: p, influence });
+              if (!isInsideExclusion(p.x, p.y)){
+                const fade = fadeFactor(p.x, p.y);
+                if (fade > 0.01) pointerLinks.push({ particle: p, influence });
+              }
             }
           }
 
@@ -494,10 +552,15 @@
         ctx.fillStyle = 'rgba(43,47,51,0.85)';
         for (const p of pts){
           if (isInsideExclusion(p.x, p.y)) continue;
+          const fade = fadeFactor(p.x, p.y);
+          if (fade <= 0.01) continue;
           const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.7;
+          ctx.save();
+          ctx.globalAlpha = fade;
           ctx.beginPath();
           ctx.arc(p.x, p.y, Math.max(0.65, size), 0, Math.PI * 2);
           ctx.fill();
+          ctx.restore();
         }
 
         const pointerInsideExclusion = isInsideExclusion(pointer.x, pointer.y);
@@ -518,7 +581,11 @@
           ctx.lineWidth = 0.55;
           for (const link of pointerLinks){
             if (link.influence <= 0) continue;
-            const alpha = clamp(link.influence * pointer.strength * 1.4, 0, 0.85);
+            const linkFade = fadeFactor(link.particle.x, link.particle.y);
+            const midFade = fadeFactor((pointer.x + link.particle.x) * 0.5, (pointer.y + link.particle.y) * 0.5);
+            const fade = Math.min(linkFade, midFade);
+            if (fade <= 0.01) continue;
+            const alpha = clamp(link.influence * pointer.strength * 1.4 * fade, 0, 0.85);
             if (alpha < 0.05) continue;
             ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
             ctx.beginPath();
