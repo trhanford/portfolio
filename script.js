@@ -115,113 +115,323 @@
       .filter(Boolean)
       .forEach(initFieldBackground);
 
-    function initFieldBackground(bg){
-      const ctx=bg.getContext('2d');
-      const pointer={x:0,y:0,active:false};
-      let W=0,H=0,DPR=1, pts=[], t=0;
+    initRevealAnimations();
 
-      function resize(){
-        W=bg.clientWidth; H=bg.clientHeight; DPR=Math.min(2, window.devicePixelRatio||1);
-        bg.width=Math.floor(W*DPR); bg.height=Math.floor(H*DPR);
-        ctx.setTransform(DPR,0,0,DPR,0,0);
-        const taupe = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
-        document.documentElement.style.setProperty('--_bgTaupe', taupe);
-        const count = Math.max(120, Math.min(320, Math.round((W*H)/14000)));
-        pts = Array.from({length:count}, ()=>({
-          x: Math.random()*W,
-          y: Math.random()*H,
-          vx: (Math.random()*2-1)*0.18,
-          vy: (Math.random()*2-1)*0.18,
-          s: 1 + Math.random()*1.2,
-          a: 0.35 + Math.random()*0.45,
-          phase: Math.random()*Math.PI*2,
-          fx: 0.15 + Math.random()*0.25,
-          fy: 0.15 + Math.random()*0.25
-        }));
+      function initFieldBackground(bg){
+      const ctx = bg.getContext('2d');
+      const pointer = {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0,
+        inside: false,
+        strength: 0,
+        targetStrength: 0,
+        lastMove: 0
+      };
+
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let reduceMotion = mediaQuery.matches;
+      mediaQuery.addEventListener?.('change', e => { reduceMotion = e.matches; });
+
+      let W = 0, H = 0, DPR = 1;
+      let pts = [];
+      let columns = 0, rows = 0, cellSize = 160, buckets = [];
+      let lastFrame = performance.now();
+      let firstResize = true;
+
+      const taupe = () => getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
+
+      function createParticle(){
+        const speed = (Math.random()*2 - 1) * 0.12;
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: speed,
+          vy: (Math.random()*2 - 1) * 0.12,
+          baseSize: 1.8 + Math.random() * 2.8,
+          pulse: Math.random() * Math.PI * 2,
+          flowX: Math.random() * 0.6 + 0.25,
+          flowY: Math.random() * 0.6 + 0.25,
+          jitter: Math.random() * 0.4 + 0.1,
+          seed: Math.random() * 1000
+        };
       }
 
       function handlePointerMove(e){
         const rect = bg.getBoundingClientRect();
-        pointer.x = (e.clientX - rect.left);
-        pointer.y = (e.clientY - rect.top);
-        pointer.active = pointer.x >= 0 && pointer.y >= 0 && pointer.x <= rect.width && pointer.y <= rect.height;
+        pointer.targetX = clamp(e.clientX - rect.left, 0, rect.width);
+        pointer.targetY = clamp(e.clientY - rect.top, 0, rect.height);
+        pointer.inside = true;
+        pointer.lastMove = performance.now();
       }
       
-      function tick(){
-        t += 0.016;
-        // background fill (taupe)
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--_bgTaupe') || '#e4ddcc';
-        ctx.fillRect(0,0,W,H);
-        // soft vignette
-        const g=ctx.createRadialGradient(W*0.5,H*0.5,0, W*0.5,H*0.5, Math.max(W,H)*0.7);
-        g.addColorStop(0,'rgba(255,255,255,0.02)');
-        g.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-        // particles
-        ctx.fillStyle='#2b2f33';
-        for(const p of pts){
-          const flowX = Math.sin(t*p.fx + p.phase) * 0.35;
-          const flowY = Math.cos(t*p.fy + p.phase*1.3) * 0.35;
-          p.x += p.vx + flowX;
-          p.y += p.vy + flowY;
-          if(p.x<0){p.x=0; p.vx*=-1;} else if(p.x>W){p.x=W; p.vx*=-1;}
-          if(p.y<0){p.y=0; p.vy*=-1;} else if(p.y>H){p.y=H; p.vy*=-1;}
-          ctx.globalAlpha=p.a;
-          ctx.fillRect(p.x,p.y,p.s,p.s);
-        }
-        ctx.globalAlpha=1;
+      function handlePointerLeave(){
+        pointer.inside = false;
+        pointer.targetStrength = 0;
+      }
 
-        if (pointer.active){
-          const baseDist = Math.max(70, Math.min(140, Math.sqrt(W*H)*0.075));
-          const focusBoost = baseDist * 1.8;
-          const focusRadius = baseDist * 1.35;
-          const focusBoostSq = focusBoost * focusBoost;
-          const focusRadiusSq = focusRadius * focusRadius;
-          ctx.lineWidth = 1;
-          for (let i=0;i<pts.length;i++){
-            const a = pts[i];
-            const daX = pointer.x - a.x;
-            const daY = pointer.y - a.y;
-            const aNear = (daX*daX + daY*daY) < focusRadiusSq;
-            if (!aNear) continue;
-            for (let j=i+1;j<pts.length;j++){
-              const b = pts[j];
-              const dbX = pointer.x - b.x;
-              const dbY = pointer.y - b.y;
-              const bNear = (dbX*dbX + dbY*dbY) < focusRadiusSq;
-              if (!bNear) continue;
-              const dx = a.x - b.x;
-              const dy = a.y - b.y;
-              const dist2 = dx*dx + dy*dy;
-              const maxDist = focusBoost;
-              const maxDistSq = focusBoostSq;
-              if (dist2 > maxDistSq) continue;
-              const dist = Math.sqrt(dist2) || 1;
-              const closeness = 1 - (dist / maxDist);
-              const alpha = 0.55 * Math.max(0, Math.min(1, closeness + 0.05));
-              ctx.strokeStyle = `rgba(43,47,51,${alpha.toFixed(3)})`;
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.stroke();
+      function resize(){
+        W = bg.clientWidth;
+        H = bg.clientHeight;
+        DPR = Math.min(2, window.devicePixelRatio || 1);
+        bg.width = Math.floor(W * DPR);
+        bg.height = Math.floor(H * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+        const area = Math.max(1, W * H);
+        const desired = reduceMotion ? Math.round(area / 32000) : Math.round(area / 20000);
+        const count = clamp(desired, 60, 220);
+        pts = Array.from({ length: count }, createParticle);
+
+        cellSize = clamp(Math.sqrt(area / count) * 1.6, 120, 220);
+        columns = Math.max(1, Math.ceil(W / cellSize));
+        rows = Math.max(1, Math.ceil(H / cellSize));
+        buckets = Array.from({ length: columns * rows }, () => []);
+
+        if (firstResize){
+          pointer.x = W * 0.5;
+          pointer.y = H * 0.5;
+          pointer.targetX = pointer.x;
+          pointer.targetY = pointer.y;
+          firstResize = false;
+        }
+        }
+
+      function clearBuckets(){
+        for (let i = 0; i < buckets.length; i++) buckets[i].length = 0;
+      }
+
+      function pushToBucket(p){
+        const cx = clamp(Math.floor(p.x / cellSize), 0, columns - 1);
+        const cy = clamp(Math.floor(p.y / cellSize), 0, rows - 1);
+        buckets[cx + cy * columns].push(p);
+      }
+
+      const neighbourOffsets = [
+        [1, 0],
+        [0, 1],
+        [1, 1],
+        [-1, 1],
+        [1, -1]
+      ];
+
+      function drawConnections(maxDistSq, maxDist){
+        ctx.lineWidth = 0.7;
+        for (let cy = 0; cy < rows; cy++){
+          for (let cx = 0; cx < columns; cx++){
+            const bucketIndex = cx + cy * columns;
+            const here = buckets[bucketIndex];
+            if (!here.length) continue;
+
+            for (let i = 0; i < here.length; i++){
+              const a = here[i];
+              for (let j = i + 1; j < here.length; j++){
+                const b = here[j];
+                renderPair(a, b, maxDistSq, maxDist);
+              }
+            }
+
+            for (const [ox, oy] of neighbourOffsets){
+              const nx = cx + ox;
+              const ny = cy + oy;
+              if (nx < 0 || ny < 0 || nx >= columns || ny >= rows) continue;
+              const neighbour = buckets[nx + ny * columns];
+              if (!neighbour.length) continue;
+              for (const a of here){
+                for (const b of neighbour){
+                  renderPair(a, b, maxDistSq, maxDist);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function renderPair(a, b, maxDistSq, maxDist){
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq > maxDistSq) return;
+        const dist = Math.sqrt(distSq) || 1;
+        const closeness = 1 - (dist / maxDist);
+        const alpha = Math.max(0, Math.min(0.55, closeness * 0.75));
+        if (alpha <= 0.01) return;
+        ctx.strokeStyle = `rgba(102,108,115,${alpha.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+
+      function loop(now){
+        const dt = Math.min(0.033, (now - lastFrame) / 1000 || 0.016);
+        lastFrame = now;
+
+        const background = taupe();
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, W, H);
+
+        const vignette = ctx.createRadialGradient(W * 0.5, H * 0.5, Math.max(W, H) * 0.1, W * 0.5, H * 0.5, Math.max(W, H) * 0.9);
+        vignette.addColorStop(0, 'rgba(255,255,255,0.08)');
+        vignette.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, W, H);
+
+        pointer.targetStrength = pointer.inside ? 1 : 0;
+        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.08;
+        const pointerEase = reduceMotion ? 0.25 : 0.14;
+        pointer.x += (pointer.targetX - pointer.x) * pointerEase;
+        pointer.y += (pointer.targetY - pointer.y) * pointerEase;
+
+        clearBuckets();
+
+        const magnetRadius = clamp(Math.max(W, H) * 0.32, 120, 360);
+        const magnetRadiusSq = magnetRadius * magnetRadius;
+        const magnetStrength = reduceMotion ? 0.05 : 0.18;
+        const pointerLinks = [];
+
+        const baseFlow = now * 0.00018;
+
+        for (const p of pts){
+          const flowX = Math.sin(baseFlow * p.flowX + p.seed) * 0.22;
+          const flowY = Math.cos(baseFlow * p.flowY + p.seed * 1.35) * 0.22;
+          p.vx += flowX * dt;
+          p.vy += flowY * dt;
+
+          if (!reduceMotion && pointer.strength > 0.01){
+            const dx = pointer.x - p.x;
+            const dy = pointer.y - p.y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < magnetRadiusSq){
+              const dist = Math.sqrt(distSq) || 1;
+              const influence = (1 - dist / magnetRadius) * pointer.strength;
+              const pull = magnetStrength * influence;
+              p.vx += (dx / dist) * pull;
+              p.vy += (dy / dist) * pull;
+              pointerLinks.push({ particle: p, influence });
             }
           }
 
-          ctx.strokeStyle = 'rgba(43,47,51,0.18)';
-          ctx.setLineDash([4, 6]);
-          ctx.beginPath();
-          ctx.arc(pointer.x, pointer.y, focusRadius, 0, Math.PI*2);
-          ctx.stroke();
-          ctx.setLineDash([]);
+          p.vx *= 0.985;
+          p.vy *= 0.985;
+
+          const jitter = p.jitter * dt;
+          p.vx += (Math.random() - 0.5) * jitter;
+          p.vy += (Math.random() - 0.5) * jitter;
+
+          p.x += p.vx + flowX;
+          p.y += p.vy + flowY;
+
+          if (p.x < -20) p.x = W + 20;
+          else if (p.x > W + 20) p.x = -20;
+          if (p.y < -20) p.y = H + 20;
+          else if (p.y > H + 20) p.y = -20;
+
+          pushToBucket(p);
         }
-        requestAnimationFrame(tick);
+
+        const connectDist = clamp(Math.max(W, H) * 0.28, 160, 320);
+        drawConnections(connectDist * connectDist, connectDist);
+
+        ctx.fillStyle = 'rgba(43,47,51,0.85)';
+        for (const p of pts){
+          const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.9;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, Math.max(0.8, size), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (!reduceMotion && pointer.strength > 0.02){
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, magnetRadius * 0.9);
+          halo.addColorStop(0, `rgba(255,255,255,${0.16 * pointer.strength})`);
+          halo.addColorStop(0.45, `rgba(255,255,255,${0.08 * pointer.strength})`);
+          halo.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(pointer.x, pointer.y, magnetRadius * 0.9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          ctx.lineWidth = 0.9;
+          for (const link of pointerLinks){
+            if (link.influence <= 0) continue;
+            const alpha = clamp(link.influence * pointer.strength * 1.4, 0, 0.85);
+            if (alpha < 0.05) continue;
+            ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
+            ctx.beginPath();
+            ctx.moveTo(pointer.x, pointer.y);
+            ctx.lineTo(link.particle.x, link.particle.y);
+            ctx.stroke();
+          }
+        }
+
+        if (document.visibilityState !== 'hidden'){
+          requestAnimationFrame(loop);
+        } else {
+          lastFrame = performance.now();
+          requestAnimationFrame(loop);
+        }
       }
 
       window.addEventListener('resize', resize);
-      bg.addEventListener('pointermove', handlePointerMove, {passive:true});
+      bg.addEventListener('pointermove', handlePointerMove, { passive: true });
       bg.addEventListener('pointerdown', handlePointerMove);
-      bg.addEventListener('pointerleave', ()=>{ pointer.active=false; });
-      requestAnimationFrame(()=>{ resize(); tick(); });
+      bg.addEventListener('pointerleave', handlePointerLeave);
+      bg.addEventListener('pointerup', handlePointerMove);
+
+      requestAnimationFrame(() => { resize(); loop(performance.now()); });
+    }
+
+    function initRevealAnimations(){
+      const groups = [
+        '.hero-inner > .hero-col',
+        '.panel',
+        '.panel-link',
+        '.about-grid > *',
+        '.about-lower > *',
+        '.workflow-steps .step',
+        '.portfolio-page .hero-content',
+        '.portfolio-page .hero-stats > *',
+        '.portfolio-page .project-card',
+        '.portfolio-page .section-heading',
+        '.resume-body .resume-hero__copy',
+        '.resume-body .resume-hero__meta',
+        '.resume-body .resume-toc__inner',
+        '.resume-body .resume-section'
+      ];
+
+      const selector = groups.join(',');
+      const nodes = selector ? $$(selector) : [];
+      if (!nodes.length) return;
+
+      document.body.classList.add('has-reveal');
+
+      nodes.forEach((el, i) => {
+        el.classList.add('reveal-item');
+        const delay = Math.min(480, (i % 10) * 60 + (Math.random() * 40));
+        el.style.setProperty('--reveal-delay', `${delay.toFixed(0)}ms`);
+      });
+
+      if (!('IntersectionObserver' in window)){
+        nodes.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      }, {
+        rootMargin: '0px 0px -5% 0px',
+        threshold: 0.12
+      });
+
+      nodes.forEach(el => observer.observe(el));
     }
 
     // -------------------- Bubble Network (skills/interests) --------------------
