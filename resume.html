@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Résumé — Tristan Hanford</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="resume.css" />
+  <script src="script.js" defer></script>
+  <script src="resume.js" defer></script>
+</head>
+<body class="resume-body">
+  <nav id="mainNav" class="navbar" aria-label="Primary" hidden data-instant>
+    <div class="nav-inner container">
+      <div id="navTitle" class="nav-title">Digital Résumé</div>
+      <ul class="nav-links" role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html" aria-current="page">Digital Résumé</a></li>
+      </ul>
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">☰</button>
+    </div>
+    <div id="drawer" class="drawer" aria-hidden="true">
+      <ul role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html" aria-current="page">Digital Résumé</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="resume-hero" role="banner">
+    <div class="resume-hero__bg" aria-hidden="true"></div>
+    <div class="container resume-hero__inner">
+      <div class="resume-hero__copy">
+        <p class="eyebrow">Tristan R. Hanford</p>
+        <h1>Engineer. Builder. Systems thinker.</h1>
+        <p class="lede">
+          Mechanical engineer with hands-on experience in automotive integration, CAD, and testing. Passionate about
+          guiding projects from concept to completion and creating reliable, serviceable systems.
+        </p>
+        <div class="resume-hero__cta">
+          <a class="btn-primary" href="assets/resume/tristan-hanford-resume.pdf" download>
+            Download Résumé (PDF)
+          </a>
+          <a class="btn-outline" href="#experience" data-scroll>Jump to Experience</a>
+        </div>
+      </div>
+      <aside class="resume-hero__meta" aria-label="Contact information">
+        <dl>
+          <div>
+            <dt>Location</dt>
+            <dd>West Lafayette, IN</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:tristan@example.com">tristan@example.com</a></dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd><a href="tel:6302352330">(630) 235-2330</a></dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </header>
+
+  <main class="resume-main" role="main">
+    <div class="resume-layout container">
+      <aside class="resume-toc" aria-label="Résumé navigation">
+        <div class="resume-toc__inner">
+          <p class="resume-toc__title">On this page</p>
+          <ol>
+            <li><a href="#summary" data-scroll>Professional Summary</a></li>
+            <li><a href="#experience" data-scroll>Experience</a></li>
+            <li><a href="#education" data-scroll>Education</a></li>
+            <li><a href="#skills" data-scroll>Skills</a></li>
+            <li><a href="#clubs" data-scroll>Clubs & Leadership</a></li>
+          </ol>
+          <div class="resume-progress" role="presentation">
+            <span class="resume-progress__bar" style="width:0%"></span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="resume-content">
+        <section id="summary" class="resume-section">
+          <h2>Professional Summary</h2>
+          <p>
+            Purdue mechanical engineering graduate with deep experience in automotive integration, CAD design, and
+            diagnostics. Adept at transforming customer requirements into engineered solutions, leading cross-functional
+            collaborations, and delivering clean documentation that keeps projects moving. Energized by complex builds,
+            fast-paced environments, and teams that value curiosity and follow-through.
+          </p>
+        </section>
+
+        <section id="experience" class="resume-section">
+          <div class="section-header">
+            <h2>Experience</h2>
+            <span class="section-subtitle">Hands-on leadership across competition, research, and service</span>
+          </div>
+          <div class="timeline">
+            <article class="timeline-item">
+              <header class="timeline-item__header">
+                <h3>Vehicle Build Intern — Co-founder</h3>
+                <span class="timeline-item__meta">Vehicle Build Intern Team — 2022 to Present · West Lafayette, IN</span>
+              </header>
+              <ul class="timeline-item__bullets">
+                <li>Support a multidisciplinary student-led workshop that builds and services custom automotive projects.</li>
+                <li>Manage intake, teardown, and reassembly of vehicles while coordinating volunteer schedules and tasks.</li>
+                <li>Lead wiring harness design, diagnostics, and documentation to keep complex electrical systems reliable.</li>
+              </ul>
+            </article>
+
+            <article class="timeline-item">
+              <header class="timeline-item__header">
+                <h3>Mechanical Engineering Co-op</h3>
+                <span class="timeline-item__meta">Honda Performance Development — 2021 to 2022 · Brownsburg, IN</span>
+              </header>
+              <ul class="timeline-item__bullets">
+                <li>Collaborated with chassis and bodywork teams on CAD packaging, heat shielding, and service tooling.</li>
+                <li>Performed component tear-downs and root-cause analysis to refine testing procedures and documentation.</li>
+                <li>Delivered rapid design iterations using NX, Creo, and MATLAB to improve race-readiness.</li>
+              </ul>
+            </article>
+
+            <article class="timeline-item">
+              <header class="timeline-item__header">
+                <h3>Support Consultant & CAD Technician</h3>
+                <span class="timeline-item__meta">Hanford Engineering — 2018 to 2021 · Naperville, IL</span>
+              </header>
+              <ul class="timeline-item__bullets">
+                <li>Produced CAD models, assemblies, and engineering prints for customer machinery retrofits.</li>
+                <li>Built bills of material and fabrication guides that accelerated production and installation.</li>
+                <li>Partnered with clients to scope work, review designs, and implement revisions in the field.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="education" class="resume-section">
+          <div class="section-header">
+            <h2>Education</h2>
+            <span class="section-subtitle">Grounded in mechanical design and collaborative build culture</span>
+          </div>
+          <div class="education-grid">
+            <article class="education-card">
+              <header>
+                <h3>Purdue University — West Lafayette</h3>
+                <p class="education-meta">B.S. Mechanical Engineering · GPA 3.64/4.00 · 2020 – Present</p>
+              </header>
+              <p>Focused on systems integration, CAD (NX / Creo), and design-for-manufacture across competition teams.</p>
+            </article>
+            <article class="education-card">
+              <header>
+                <h3>Naperville Central High School</h3>
+                <p class="education-meta">GPA 3.54/4.00 · Graduated 2020</p>
+              </header>
+              <p>Robotics, automotive club leadership, and STEM mentoring with a strong emphasis on teamwork.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="skills" class="resume-section">
+          <div class="section-header">
+            <h2>Technical Skills</h2>
+            <span class="section-subtitle">Tools and proficiencies honed through competition builds</span>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-column">
+              <h3>Software & CAD</h3>
+              <ul>
+                <li>Siemens NX / Creo</li>
+                <li>SolidWorks</li>
+                <li>MATLAB</li>
+                <li>Python</li>
+                <li>LabVIEW</li>
+              </ul>
+            </div>
+            <div class="skill-column">
+              <h3>Systems & Fabrication</h3>
+              <ul>
+                <li>Vehicle Wiring & Diagnostics</li>
+                <li>Cooling & Thermal Management</li>
+                <li>Fixture Design</li>
+                <li>Composite Layups</li>
+                <li>Rapid Prototyping</li>
+              </ul>
+            </div>
+            <div class="skill-column">
+              <h3>Collaboration</h3>
+              <ul>
+                <li>Cross-functional leadership</li>
+                <li>Documentation & PDM</li>
+                <li>Test Planning</li>
+                <li>Vendor coordination</li>
+                <li>Mentoring & training</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="clubs" class="resume-section">
+          <div class="section-header">
+            <h2>Clubs & Leadership</h2>
+            <span class="section-subtitle">High-trust teams, competition wins, and community building</span>
+          </div>
+          <div class="clubs-grid">
+            <article class="club-card">
+              <h3>Purdue Baja Racing — Drivetrain Lead</h3>
+              <p>Directed drivetrain packaging, testing, and service documentation; mentored newcomers in CAD best practices.</p>
+            </article>
+            <article class="club-card">
+              <h3>Purdue Electric Racing — Mechanical Member</h3>
+              <p>Collaborated on thermal management, harness routing, and race prep for EV powertrains.</p>
+            </article>
+            <article class="club-card">
+              <h3>DICA — Finance & Outreach</h3>
+              <p>Coordinated fundraising events, sponsorship outreach, and budgeting for student competition travel.</p>
+            </article>
+            <article class="club-card">
+              <h3>FIRST Robotics Mentor</h3>
+              <p>Guided high school robotics students through CAD, prototyping, and competition readiness.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner container">
+      <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
+      <small class="made">Built with care.</small>
+    </div>
+  </footer>
+</body>
+</html>
