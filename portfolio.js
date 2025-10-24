@@ -231,273 +231,30 @@
   function initialiseHeroField(){
     const canvas = document.getElementById('portfolioField');
     if (!(canvas instanceof HTMLCanvasElement)) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let width = 0;
-    let height = 0;
-    let dpr = Math.min(2, window.devicePixelRatio || 1);
-    const particles = [];
-    const PARTICLE_COUNT = 120;
-    const pointer = { x: 0, y: 0, active: false };
+    const factory = window.createFluxField;
+    if (typeof factory !== 'function') return;
     const exclusionElement = document.querySelector('[data-field-exclusion]');
-    const exclusionPadding = 32;
-    let exclusionZone = null;
-    const POINTER_RADIUS = 210;
-    const BASE_CONNECTION = 130;
-    const ENHANCED_CONNECTION = 210;
-
-    const pointerRadiusSq = POINTER_RADIUS * POINTER_RADIUS;
-    const baseConnectionSq = BASE_CONNECTION * BASE_CONNECTION;
-    const enhancedConnectionSq = ENHANCED_CONNECTION * ENHANCED_CONNECTION;
-
-    function updateExclusionZone(){
-      if (!(exclusionElement instanceof HTMLElement)){
-        exclusionZone = null;
-        return;
-      }
-      const elementRect = exclusionElement.getBoundingClientRect();
-      const canvasRect = canvas.getBoundingClientRect();
-      exclusionZone = {
-        left: elementRect.left - canvasRect.left - exclusionPadding,
-        top: elementRect.top - canvasRect.top - exclusionPadding,
-        right: elementRect.right - canvasRect.left + exclusionPadding,
-        bottom: elementRect.bottom - canvasRect.top + exclusionPadding
-      };
-    }
-
-    function isInsideExclusion(x, y){
-      if (!exclusionZone) return false;
-      return x > exclusionZone.left && x < exclusionZone.right && y > exclusionZone.top && y < exclusionZone.bottom;
-    }
-
-    function pushOutOfExclusion(p){
-      if (!exclusionZone || !isInsideExclusion(p.x, p.y)) return;
-      const distances = [
-        { side: 'left', value: p.x - exclusionZone.left },
-        { side: 'right', value: exclusionZone.right - p.x },
-        { side: 'top', value: p.y - exclusionZone.top },
-        { side: 'bottom', value: exclusionZone.bottom - p.y }
-      ];
-      let nearest = distances[0];
-      for (const candidate of distances){
-        if (candidate.value < nearest.value) nearest = candidate;
-      }
-      const buffer = 8;
-      switch (nearest.side){
-        case 'left':
-          p.x = exclusionZone.left - buffer;
-          p.vx = Math.abs(p.vx);
-          break;
-        case 'right':
-          p.x = exclusionZone.right + buffer;
-          p.vx = -Math.abs(p.vx);
-          break;
-        case 'top':
-          p.y = exclusionZone.top - buffer;
-          p.vy = Math.abs(p.vy);
-          break;
-        case 'bottom':
-          p.y = exclusionZone.bottom + buffer;
-          p.vy = -Math.abs(p.vy);
-          break;
-        default:
-          break;
-      }
-    }
-
-    function orientation(ax, ay, bx, by, cx, cy){
-      const value = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-      return Math.abs(value) < 1e-6 ? 0 : value;
-    }
-
-    function onSegment(ax, ay, bx, by, cx, cy){
-      return cx >= Math.min(ax, bx) && cx <= Math.max(ax, bx) && cy >= Math.min(ay, by) && cy <= Math.max(ay, by);
-    }
-
-    function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy){
-      const o1 = orientation(ax, ay, bx, by, cx, cy);
-      const o2 = orientation(ax, ay, bx, by, dx, dy);
-      const o3 = orientation(cx, cy, dx, dy, ax, ay);
-      const o4 = orientation(cx, cy, dx, dy, bx, by);
-
-      if (o1 === 0 && onSegment(ax, ay, bx, by, cx, cy)) return true;
-      if (o2 === 0 && onSegment(ax, ay, bx, by, dx, dy)) return true;
-      if (o3 === 0 && onSegment(cx, cy, dx, dy, ax, ay)) return true;
-      if (o4 === 0 && onSegment(cx, cy, dx, dy, bx, by)) return true;
-
-      return (o1 > 0 && o2 < 0 || o1 < 0 && o2 > 0) && (o3 > 0 && o4 < 0 || o3 < 0 && o4 > 0);
-    }
-
-    function lineIntersectsExclusion(x1, y1, x2, y2){
-      if (!exclusionZone) return false;
-      const { left, right, top, bottom } = exclusionZone;
-      if ((x1 < left && x2 < left) || (x1 > right && x2 > right) || (y1 < top && y2 < top) || (y1 > bottom && y2 > bottom)){
-        return false;
-      }
-      if (isInsideExclusion(x1, y1) || isInsideExclusion(x2, y2)) return true;
-      const edges = [
-        [left, top, right, top],
-        [right, top, right, bottom],
-        [right, bottom, left, bottom],
-        [left, bottom, left, top]
-      ];
-      return edges.some(([ax, ay, bx, by]) => segmentsIntersect(x1, y1, x2, y2, ax, ay, bx, by));
-    }
-
-    function spawnParticle(){
-      const particle = {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() * 2 - 1) * 0.32,
-        vy: (Math.random() * 2 - 1) * 0.32,
-        radius: 1 + Math.random() * 2,
-        alpha: 0.25 + Math.random() * 0.4,
-        hueOffset: Math.random() * 360,
-        noise: Math.random() * Math.PI * 2,
-        pointerDistSq: Infinity,
-        pointerNear: false
-      };
-      let attempts = 0;
-      while (isInsideExclusion(particle.x, particle.y) && attempts < 12){
-        particle.x = Math.random() * width;
-        particle.y = Math.random() * height;
-        attempts++;
-      }
-      return particle;
-    }
-
-    function resize(){
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      updateExclusionZone();
-      particles.length = 0;
-      const count = Math.max(PARTICLE_COUNT, Math.floor((width * height) / 9000));
-      for (let i = 0; i < count; i++) particles.push(spawnParticle());
-    }
-
-    function step(){
-      ctx.clearRect(0, 0, width, height);
-
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, 'rgba(255,255,255,0.96)');
-      gradient.addColorStop(1, 'rgba(231,225,209,0.28)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.fillStyle = 'rgba(43,47,51,0.6)';
-      ctx.lineWidth = 0.6;
-
-      const magnetStrength = pointer.active ? 180 : 130;
-      const pointerActive = pointer.active;
-
-      for (let i = 0; i < particles.length; i++){
-        const p = particles[i];
-        p.x += p.vx + Math.sin(p.noise + performance.now() * 0.00025) * 0.25;
-        p.y += p.vy + Math.cos(p.noise + performance.now() * 0.0002) * 0.25;
-
-        if (p.x < -20) p.x = width + 20;
-        if (p.x > width + 20) p.x = -20;
-        if (p.y < -20) p.y = height + 20;
-        if (p.y > height + 20) p.y = -20;
-
-        if (pointerActive){
-          const dx = pointer.x - p.x;
-          const dy = pointer.y - p.y;
-          const distSq = dx * dx + dy * dy;
-          const dist = Math.sqrt(distSq) || 1;
-          if (dist < magnetStrength){
-            const force = (1 - dist / magnetStrength) * 0.035;
-            p.vx -= dx / dist * force;
-            p.vy -= dy / dist * force;
-          }
-          p.pointerDistSq = distSq;
-          p.pointerNear = distSq < pointerRadiusSq;
-        } else {
-          p.pointerDistSq = Infinity;
-          p.pointerNear = false;
-        }
-
-        p.vx *= 0.995;
-        p.vy *= 0.995;
-        pushOutOfExclusion(p);
-      }
-
-      ctx.globalAlpha = 0.65;
-      for (let i = 0; i < particles.length; i++){
-        const p = particles[i];
-        for (let j = i + 1; j < particles.length; j++){
-          const q = particles[j];
-          const dx = p.x - q.x;
-          const dy = p.y - q.y;
-          const distSq = dx * dx + dy * dy;
-          const nearPointerPair = pointerActive && (p.pointerNear || q.pointerNear);
-          const maxDist = nearPointerPair ? ENHANCED_CONNECTION : BASE_CONNECTION;
-          const maxDistSq = nearPointerPair ? enhancedConnectionSq : baseConnectionSq;
-          if (distSq < maxDistSq){
-            if (lineIntersectsExclusion(p.x, p.y, q.x, q.y)) continue;
-            const dist = Math.sqrt(distSq);
-            const alpha = 1 - dist / maxDist;
-            ctx.globalAlpha = alpha * (nearPointerPair ? 0.55 : 0.35);
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = 'rgba(43,47,51,0.45)';
-            ctx.stroke();
-          }
-        }
-      }
-
-      ctx.globalAlpha = 1;
-      for (const p of particles){
-        const gradientDot = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 3);
-        gradientDot.addColorStop(0, `rgba(43,47,51,${0.3 + p.alpha})`);
-        gradientDot.addColorStop(1, 'rgba(43,47,51,0)');
-        ctx.fillStyle = gradientDot;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * 2.4, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      if (pointerActive){
-        const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, POINTER_RADIUS);
-        halo.addColorStop(0, 'rgba(47,50,54,0.18)');
-        halo.addColorStop(1, 'rgba(47,50,54,0)');
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(pointer.x, pointer.y, POINTER_RADIUS, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      requestAnimationFrame(step);
-    }
-
-    resize();
-    step();
-
-    window.addEventListener('resize', resize);
-
-    const updatePointer = event => {
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = event.clientX - rect.left;
-      pointer.y = event.clientY - rect.top;
-      pointer.active = true;
-    };
-
-    canvas.addEventListener('pointermove', updatePointer);
-    canvas.addEventListener('pointerdown', updatePointer);
-    canvas.addEventListener('pointerleave', () => { pointer.active = false; });
-    canvas.addEventListener('pointerup', () => { pointer.active = false; });
-    canvas.addEventListener('pointercancel', () => { pointer.active = false; });
-
-    if (exclusionElement && 'ResizeObserver' in window){
-      const observer = new ResizeObserver(() => updateExclusionZone());
-      observer.observe(exclusionElement);
-    }
+    factory(canvas, {
+      density: 150,
+      maxDensity: 320,
+      baseConnection: 140,
+      enhancedConnection: 240,
+      pointerRadius: 230,
+      pointerForce: 0.052,
+      pointerLineOpacity: 0.6,
+      driftScale: 0.28,
+      backgroundStops: [
+        ['rgba(255,255,255,0.98)', 0],
+        ['rgba(231,225,209,0.28)', 1]
+      ],
+      lineColor: 'rgba(43,47,51,0.45)',
+      dotColor: 'rgba(43,47,51,0.35)',
+      exclusionElement,
+      exclusionPadding: 36,
+      exclusionMargin: 64,
+      exclusionForce: 0.026,
+      exclusionStep: 10
+    });
   }
 
   function animateHeroStats(){
