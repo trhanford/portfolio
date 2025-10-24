@@ -89,7 +89,7 @@
       title: 'Cow Bell Casting Pattern',
       category: 'CAD',
       model: {
-        src: 'assets/models/cow_bell.glb',
+        src: 'assets/models/cowbell.glb',
         alt: 'Interactive preview of the cow bell casting pattern',
         poster: 'images/placeholders/cad-default.svg',
         message: 'Drop cow_bell.glb into assets/models. Pair halves, cores, and gating as needed; <model-viewer> reads a single GLB bundle.',
