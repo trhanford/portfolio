@@ -146,6 +146,13 @@
         .map(s => s.trim())
         .filter(Boolean);
       let exclusionZones = [];
+
+       const disableMagnetSelectors = [pointerSurface?.dataset.disableMagnet, bg.dataset.disableMagnet]
+        .filter(Boolean)
+        .join(',')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
       
       const taupe = () => getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
 
@@ -174,14 +181,17 @@
       }
 
       function handlePointerMove(e){
-        pointer.inside = true;
-        pointer.targetStrength = 1;
         updatePointerTarget(e.clientX, e.clientY);
+        const suppressed = shouldDisableMagnet(e.target);
+        pointer.inside = !suppressed;
+        pointer.targetStrength = suppressed ? 0 : 1;
+        if (suppressed) pointer.strength *= 0.35;
       }
       
       function handlePointerLeave(){
         pointer.inside = false;
         pointer.targetStrength = 0;
+        pointer.strength *= 0.5;
       }
 
       function computeExclusionZones(){
@@ -283,6 +293,19 @@
           }
         }
         return t1 > t0 && t1 >= 0 && t0 <= 1;
+      }
+
+      function shouldDisableMagnet(target){
+        if (!target || !disableMagnetSelectors.length) return false;
+        for (const selector of disableMagnetSelectors){
+          if (!selector) continue;
+          try {
+            if (target.closest(selector)) return true;
+          } catch (err) {
+            continue;
+          }
+        }
+        return false;
       }
       
       function resize(){
@@ -397,16 +420,16 @@
         ctx.fillRect(0, 0, W, H);
 
         pointer.targetStrength = pointer.inside ? 1 : 0;
-        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.16;
+        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.22;
         const pointerEase = reduceMotion ? 0.25 : 0.18;
         pointer.x += (pointer.targetX - pointer.x) * pointerEase;
         pointer.y += (pointer.targetY - pointer.y) * pointerEase;
 
         clearBuckets();
 
-        const magnetRadius = clamp(Math.max(W, H) * 0.28, 120, 320);
+        const magnetRadius = clamp(Math.max(W, H) * 0.22, 100, 280);
         const magnetRadiusSq = magnetRadius * magnetRadius;
-        const magnetStrength = reduceMotion ? 0.045 : 0.16;
+        const magnetStrength = reduceMotion ? 0.04 : 0.13;
         const pointerLinks = [];
 
         const baseFlow = now * 0.00018;
