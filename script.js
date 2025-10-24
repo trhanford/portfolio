@@ -153,7 +153,10 @@
         .map(s => s.trim())
         .filter(Boolean);
       const fadeDepth = Math.max(6, parseFloat(bg.dataset.fadeDepth) || 42);
+      const fadeDefaultMargin = Math.max(0, parseFloat(bg.dataset.fadeMargin) || 0);
       let fadeZones = [];
+
+      const exclusionDefaultMargin = Math.max(0, parseFloat(bg.dataset.exclusionMargin) || 0);
       
        const disableMagnetSelectors = [pointerSurface?.dataset.disableMagnet, bg.dataset.disableMagnet]
         .filter(Boolean)
@@ -219,11 +222,13 @@
           for (const el of elements){
             if (!(el instanceof Element)) continue;
             const rect = el.getBoundingClientRect();
+            const marginAttr = parseFloat(el.getAttribute('data-particle-exclusion-margin') || '');
+            const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : exclusionDefaultMargin;
             const zone = {
-              x: rect.left - canvasRect.left,
-              y: rect.top - canvasRect.top,
-              w: rect.width,
-              h: rect.height
+              x: rect.left - canvasRect.left - margin,
+              y: rect.top - canvasRect.top - margin,
+              w: rect.width + margin * 2,
+              h: rect.height + margin * 2
             };
             if (zone.w <= 0 || zone.h <= 0) continue;
             zones.push(zone);
@@ -244,12 +249,15 @@
           for (const el of elements){
             if (!(el instanceof Element)) continue;
             const rect = el.getBoundingClientRect();
+            const marginAttr = parseFloat(el.getAttribute('data-particle-fade-margin') || '');
+            const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : fadeDefaultMargin;
             const zone = {
               x: rect.left - canvasRect.left,
               y: rect.top - canvasRect.top,
               w: rect.width,
               h: rect.height,
-              fade: fadeDepth
+              fade: fadeDepth,
+              margin
             };
             if (zone.w <= 0 || zone.h <= 0 || zone.fade <= 0) continue;
             zones.push(zone);
@@ -302,13 +310,33 @@
         if (!fadeZones.length) return 1;
         let factor = 1;
         for (const zone of fadeZones){
-          if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h){
-            const distLeft = x - zone.x;
-            const distRight = zone.x + zone.w - x;
-            const distTop = y - zone.y;
-            const distBottom = zone.y + zone.h - y;
+          const innerX = zone.x;
+          const innerY = zone.y;
+          const innerW = zone.w;
+          const innerH = zone.h;
+          const margin = zone.margin || 0;
+          const outerX = innerX - margin;
+          const outerY = innerY - margin;
+          const outerW = innerW + margin * 2;
+          const outerH = innerH + margin * 2;
+
+          const insideInner = x >= innerX && x <= innerX + innerW && y >= innerY && y <= innerY + innerH;
+          const insideOuter = margin > 0 && x >= outerX && x <= outerX + outerW && y >= outerY && y <= outerY + outerH;
+          if (!insideInner && !insideOuter) continue;
+
+          if (insideInner){
+            const distLeft = x - innerX;
+            const distRight = innerX + innerW - x;
+            const distTop = y - innerY;
+            const distBottom = innerY + innerH - y;
             const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
             const fade = clamp(1 - (distToEdge / zone.fade), 0, 1);
+            factor = Math.min(factor, fade);
+            } else if (insideOuter){
+            const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
+            const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
+            const distToInner = Math.sqrt(dx * dx + dy * dy);
+            const fade = clamp(distToInner / Math.max(1, margin), 0, 1);
             factor = Math.min(factor, fade);
           }
         }
