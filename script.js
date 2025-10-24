@@ -61,16 +61,16 @@
     if (nav){
       nav.removeAttribute('hidden');           // prevent display:none from HTML attr
        
-    if (nav.hasAttribute('data-instant')){
+      if (nav.hasAttribute('data-instant')){
         nav.style.opacity = '1';
         nav.classList.add('nav-active');
       } else {
         nav.style.willChange = 'opacity';
 
-      let ticking = false;
-      let revealEnd   = calcRevealEnd();       // responsive to viewport
+        let ticking = false;
+        let revealEnd   = calcRevealEnd();       // responsive to viewport
 
-      function calcRevealEnd(){
+        function calcRevealEnd(){
           // ~28% of viewport height; clamp for small/large screens
           return clamp(Math.round(window.innerHeight * 0.28), 120, 260);
         }
@@ -85,7 +85,7 @@
           if (op > 0.2) nav.classList.add('nav-active'); else nav.classList.remove('nav-active');
         }
 
-      function onScroll(){ if (!ticking){ ticking=true; requestAnimationFrame(updateNavFade); } }
+        function onScroll(){ if (!ticking){ ticking=true; requestAnimationFrame(updateNavFade); } }
         function onResize(){ revealEnd = calcRevealEnd(); updateNavFade(); }
         requestAnimationFrame(updateNavFade);
         window.addEventListener('scroll', onScroll, {passive:true});
@@ -109,19 +109,65 @@
       }
     });
 
-   // -------------------- Background Particles (hero + portfolio) --------------------
-    const introCanvas = document.getElementById('introField');
-    if (introCanvas) createFluxField(introCanvas, {
-      density: 140,
-      maxDensity: 300,
-      pointerRadius: 220,
-      pointerForce: 0.048,
-      enhancedConnection: 220,
-      backgroundStops: [
-        ['rgba(255,255,255,0.96)', 0],
-        ['rgba(231,225,209,0.32)', 1]
-      ]
-    });
+    // -------------------- Background Particles (hero) --------------------
+    ['introField','portfolioField']
+      .map(id=>document.getElementById(id))
+      .filter(Boolean)
+      .forEach(initFieldBackground);
+
+    function initFieldBackground(bg){
+      const ctx=bg.getContext('2d');
+      let W=0,H=0,DPR=1, pts=[], t=0;
+
+      function resize(){
+        W=bg.clientWidth; H=bg.clientHeight; DPR=Math.min(2, window.devicePixelRatio||1);
+        bg.width=Math.floor(W*DPR); bg.height=Math.floor(H*DPR);
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+        const taupe = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
+        document.documentElement.style.setProperty('--_bgTaupe', taupe);
+        const count = Math.max(120, Math.min(320, Math.round((W*H)/14000)));
+        pts = Array.from({length:count}, ()=>({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          vx: (Math.random()*2-1)*0.18,
+          vy: (Math.random()*2-1)*0.18,
+          s: 1 + Math.random()*1.2,
+          a: 0.35 + Math.random()*0.45,
+          phase: Math.random()*Math.PI*2,
+          fx: 0.15 + Math.random()*0.25,
+          fy: 0.15 + Math.random()*0.25
+        }));
+      }
+
+      function tick(){
+        t += 0.016;
+        // background fill (taupe)
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--_bgTaupe') || '#e4ddcc';
+        ctx.fillRect(0,0,W,H);
+        // soft vignette
+        const g=ctx.createRadialGradient(W*0.5,H*0.5,0, W*0.5,H*0.5, Math.max(W,H)*0.7);
+        g.addColorStop(0,'rgba(255,255,255,0.02)');
+        g.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+        // particles
+        ctx.fillStyle='#2b2f33';
+        for(const p of pts){
+          const flowX = Math.sin(t*p.fx + p.phase) * 0.35;
+          const flowY = Math.cos(t*p.fy + p.phase*1.3) * 0.35;
+          p.x += p.vx + flowX;
+          p.y += p.vy + flowY;
+          if(p.x<0){p.x=0; p.vx*=-1;} else if(p.x>W){p.x=W; p.vx*=-1;}
+          if(p.y<0){p.y=0; p.vy*=-1;} else if(p.y>H){p.y=H; p.vy*=-1;}
+          ctx.globalAlpha=p.a;
+          ctx.fillRect(p.x,p.y,p.s,p.s);
+        }
+        ctx.globalAlpha=1;
+        requestAnimationFrame(tick);
+      }
+
+      window.addEventListener('resize', resize);
+      requestAnimationFrame(()=>{ resize(); tick(); });
+    }
 
     // -------------------- Bubble Network (skills/interests) --------------------
     (function skillsNetwork(){
@@ -201,7 +247,7 @@
         for(let i=0;i<P.length;i++){
           for(let j=i+1;j<P.length;j++){
             const a = P[i], b = P[j];
-            const rx = a.x - b.x, ry = a.y - b.y;
+            const rx = a.x - b.x, ry = b ? (a.y - b.y) : 0;
             const d2 = rx*rx + ry*ry;
             const min = (a.r + b.r) + 16;
             if (d2 > 0 && d2 < (min*min)){
@@ -320,7 +366,7 @@
           }
         }
         if (line) lines.push(line);
-          return lines;
+        return lines;
       }
 
       function measureNodes(){
@@ -362,6 +408,8 @@
     // -------------------- (Optional) Refractive hover  --------------------
     // Disabled for panel links since you’re using the subtle fade effect via CSS.
   }
+
+  // --- keep createFluxField defined in case other pages/components use it ---
   function createFluxField(canvas, options = {}){
     if (!(canvas instanceof HTMLCanvasElement)) return null;
     const ctx = canvas.getContext('2d');
