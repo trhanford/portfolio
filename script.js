@@ -336,7 +336,8 @@
             const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
             const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
             const distToInner = Math.sqrt(dx * dx + dy * dy);
-            const eased = fade * fade * (3 - 2 * fade);
+            const fadeRatio = clamp(1 - distToInner / Math.max(1, margin), 0, 1);
+            const eased = fadeRatio * fadeRatio * (3 - 2 * fadeRatio);
             factor = Math.min(factor, eased);
           }
         }
