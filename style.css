@@ -136,6 +136,7 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
 
 @media (max-width:640px){
   .hero-connections{flex-direction:column;gap:18px;align-items:center;}
+  .hero-cta{flex-direction:column;align-items:stretch;}
 }
 
 .eyebrow{letter-spacing:.26em;text-transform:uppercase;font-weight:800;font-size:.86rem;color:#4d545c}
@@ -147,7 +148,12 @@ h1,h2,h3{margin:0 0 .5rem;line-height:1.15}
   border-right:2px solid rgba(31,35,39,.95);padding-right:8px;animation:blink .9s steps(1) infinite;
 }
 @keyframes blink{50%{border-color:transparent}}
-.hero-cta{display:none}
+hero-cta{
+  margin-top:32px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+}
 
 /* -------------------- Quick-nav panel (Explore) -------------------- */
 .hero-col--panel{display:flex;justify-content:center}
