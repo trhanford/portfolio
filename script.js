@@ -109,65 +109,19 @@
       }
     });
 
-    // -------------------- Background Particles (hero) --------------------
-    ['introField','portfolioField']
-      .map(id=>document.getElementById(id))
-      .filter(Boolean)
-      .forEach(initFieldBackground);
-
-    function initFieldBackground(bg){
-      const ctx=bg.getContext('2d');
-      let W=0,H=0,DPR=1, pts=[], t=0;
-
-      function resize(){
-        W=bg.clientWidth; H=bg.clientHeight; DPR=Math.min(2, window.devicePixelRatio||1);
-        bg.width=Math.floor(W*DPR); bg.height=Math.floor(H*DPR);
-        ctx.setTransform(DPR,0,0,DPR,0,0);
-        const taupe = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
-        document.documentElement.style.setProperty('--_bgTaupe', taupe);
-        const count = Math.max(120, Math.min(320, Math.round((W*H)/14000)));
-        pts = Array.from({length:count}, ()=>({
-          x: Math.random()*W,
-          y: Math.random()*H,
-          vx: (Math.random()*2-1)*0.18,
-          vy: (Math.random()*2-1)*0.18,
-          s: 1 + Math.random()*1.2,
-          a: 0.35 + Math.random()*0.45,
-          phase: Math.random()*Math.PI*2,
-          fx: 0.15 + Math.random()*0.25,
-          fy: 0.15 + Math.random()*0.25
-        }));
-      }
-
-      function tick(){
-        t += 0.016;
-        // background fill (taupe)
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--_bgTaupe') || '#e4ddcc';
-        ctx.fillRect(0,0,W,H);
-        // soft vignette
-        const g=ctx.createRadialGradient(W*0.5,H*0.5,0, W*0.5,H*0.5, Math.max(W,H)*0.7);
-        g.addColorStop(0,'rgba(255,255,255,0.02)');
-        g.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-        // particles
-        ctx.fillStyle='#2b2f33';
-        for(const p of pts){
-          const flowX = Math.sin(t*p.fx + p.phase) * 0.35;
-          const flowY = Math.cos(t*p.fy + p.phase*1.3) * 0.35;
-          p.x += p.vx + flowX;
-          p.y += p.vy + flowY;
-          if(p.x<0){p.x=0; p.vx*=-1;} else if(p.x>W){p.x=W; p.vx*=-1;}
-          if(p.y<0){p.y=0; p.vy*=-1;} else if(p.y>H){p.y=H; p.vy*=-1;}
-          ctx.globalAlpha=p.a;
-          ctx.fillRect(p.x,p.y,p.s,p.s);
-        }
-        ctx.globalAlpha=1;
-        requestAnimationFrame(tick);
-      }
-
-      window.addEventListener('resize', resize);
-      requestAnimationFrame(()=>{ resize(); tick(); });
-    }
+   // -------------------- Background Particles (hero + portfolio) --------------------
+    const introCanvas = document.getElementById('introField');
+    if (introCanvas) createFluxField(introCanvas, {
+      density: 140,
+      maxDensity: 300,
+      pointerRadius: 220,
+      pointerForce: 0.048,
+      enhancedConnection: 220,
+      backgroundStops: [
+        ['rgba(255,255,255,0.96)', 0],
+        ['rgba(231,225,209,0.32)', 1]
+      ]
+    });
 
     // -------------------- Bubble Network (skills/interests) --------------------
     (function skillsNetwork(){
@@ -408,4 +362,333 @@
     // -------------------- (Optional) Refractive hover  --------------------
     // Disabled for panel links since you’re using the subtle fade effect via CSS.
   }
+  function createFluxField(canvas, options = {}){
+    if (!(canvas instanceof HTMLCanvasElement)) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const settings = {
+      density: 130,
+      maxDensity: 260,
+      baseConnection: 130,
+      enhancedConnection: 210,
+      pointerRadius: 210,
+      pointerForce: 0.04,
+      pointerLineOpacity: 0.55,
+      pointerHaloOpacity: 0.18,
+      driftScale: 0.25,
+      velocityDamp: 0.992,
+      backgroundStops: [
+        ['rgba(255,255,255,0.96)', 0],
+        ['rgba(231,225,209,0.28)', 1]
+      ],
+      dotColor: 'rgba(43,47,51,0.35)',
+      lineColor: 'rgba(43,47,51,0.45)',
+      haloColor: 'rgba(47,50,54,0.18)',
+      exclusionElement: null,
+      exclusionPadding: 32,
+      exclusionMargin: 46,
+      exclusionForce: 0.022,
+      exclusionStep: 12
+    };
+
+    Object.assign(settings, options || {});
+
+    const pointer = { x: 0, y: 0, active: false };
+    const particles = [];
+    let width = 0;
+    let height = 0;
+    let dpr = Math.min(2, window.devicePixelRatio || 1);
+    let gradient = null;
+    let exclusionZone = null;
+
+    const pointerRadiusSq = settings.pointerRadius * settings.pointerRadius;
+    const baseConnectionSq = settings.baseConnection * settings.baseConnection;
+    const enhancedConnectionSq = settings.enhancedConnection * settings.enhancedConnection;
+
+    function updateGradient(){
+      gradient = ctx.createLinearGradient(0, 0, width, height);
+      settings.backgroundStops.forEach(([color, stop]) => gradient.addColorStop(stop, color));
+    }
+
+    function updateExclusionZone(){
+      const element = settings.exclusionElement;
+      if (!(element instanceof HTMLElement)){
+        exclusionZone = null;
+        return;
+      }
+      const pad = settings.exclusionPadding || 0;
+      const canvasRect = canvas.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      exclusionZone = {
+        left: elementRect.left - canvasRect.left - pad,
+        right: elementRect.right - canvasRect.left + pad,
+        top: elementRect.top - canvasRect.top - pad,
+        bottom: elementRect.bottom - canvasRect.top + pad
+      };
+    }
+
+    function spawnParticle(){
+      const particle = {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() * 2 - 1) * 0.32,
+        vy: (Math.random() * 2 - 1) * 0.32,
+        radius: 1 + Math.random() * 1.8,
+        alpha: 0.25 + Math.random() * 0.45,
+        noise: Math.random() * Math.PI * 2,
+        driftX: 0.18 + Math.random() * 0.32,
+        driftY: 0.18 + Math.random() * 0.32,
+        pointerNear: false,
+        pointerDistSq: Infinity
+      };
+
+      let attempts = 0;
+      while (exclusionZone && isInsideExclusion(particle.x, particle.y) && attempts < 14){
+        particle.x = Math.random() * width;
+        particle.y = Math.random() * height;
+        attempts++;
+      }
+      return particle;
+    }
+
+    function resize(){
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      updateGradient();
+      updateExclusionZone();
+      particles.length = 0;
+      const area = width * height;
+      const base = settings.density;
+      const max = settings.maxDensity;
+      const count = Math.max(base, Math.min(max, Math.floor(area / 9000)));
+      for (let i = 0; i < count; i++) particles.push(spawnParticle());
+    }
+
+    function isInsideExclusion(x, y){
+      if (!exclusionZone) return false;
+      return x > exclusionZone.left && x < exclusionZone.right && y > exclusionZone.top && y < exclusionZone.bottom;
+    }
+
+    function applyExclusionForces(particle){
+      if (!exclusionZone) return;
+      const margin = settings.exclusionMargin || 0;
+      const left = exclusionZone.left - margin;
+      const right = exclusionZone.right + margin;
+      const top = exclusionZone.top - margin;
+      const bottom = exclusionZone.bottom + margin;
+
+      if (particle.x < left || particle.x > right || particle.y < top || particle.y > bottom) return;
+
+      const distLeft = particle.x - left;
+      const distRight = right - particle.x;
+      const distTop = particle.y - top;
+      const distBottom = bottom - particle.y;
+      const minDist = Math.min(distLeft, distRight, distTop, distBottom);
+
+      const penetration = Math.max(0, margin - minDist);
+      if (penetration <= 0 && !isInsideExclusion(particle.x, particle.y)) return;
+
+      let nx = 0;
+      let ny = 0;
+      switch (minDist){
+        case distLeft: nx = -1; break;
+        case distRight: nx = 1; break;
+        case distTop: ny = -1; break;
+        default: ny = 1; break;
+      }
+
+      const strength = (penetration / Math.max(1, margin)) + (isInsideExclusion(particle.x, particle.y) ? 0.35 : 0);
+      const push = strength * settings.exclusionForce;
+      particle.vx += nx * push;
+      particle.vy += ny * push;
+      particle.x += nx * strength * settings.exclusionStep;
+      particle.y += ny * strength * settings.exclusionStep;
+    }
+
+    function step(){
+      ctx.clearRect(0, 0, width, height);
+      if (gradient){
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      ctx.lineWidth = 0.7;
+      ctx.strokeStyle = settings.lineColor;
+      ctx.fillStyle = settings.dotColor;
+
+      const pointerActive = pointer.active;
+      const magnetStrength = pointerActive ? settings.pointerRadius : settings.baseConnection;
+      const pointerNeighbours = [];
+
+      for (const particle of particles){
+        const drift = performance.now() * 0.00022;
+        particle.x += particle.vx + Math.sin(particle.noise + drift * particle.driftX) * settings.driftScale;
+        particle.y += particle.vy + Math.cos(particle.noise + drift * particle.driftY) * settings.driftScale;
+
+        if (particle.x < -20) particle.x = width + 20;
+        if (particle.x > width + 20) particle.x = -20;
+        if (particle.y < -20) particle.y = height + 20;
+        if (particle.y > height + 20) particle.y = -20;
+
+        if (pointerActive){
+          const dx = pointer.x - particle.x;
+          const dy = pointer.y - particle.y;
+          const distSq = dx * dx + dy * dy;
+          const dist = Math.sqrt(distSq) || 1;
+          if (dist < magnetStrength){
+            const force = (1 - dist / magnetStrength) * settings.pointerForce;
+            particle.vx -= dx / dist * force;
+            particle.vy -= dy / dist * force;
+          }
+          particle.pointerDistSq = distSq;
+          particle.pointerNear = distSq < pointerRadiusSq;
+          if (particle.pointerNear) pointerNeighbours.push(particle);
+        } else {
+          particle.pointerDistSq = Infinity;
+          particle.pointerNear = false;
+        }
+
+        particle.vx *= settings.velocityDamp;
+        particle.vy *= settings.velocityDamp;
+        applyExclusionForces(particle);
+      }
+
+      ctx.globalAlpha = 0.65;
+      for (let i = 0; i < particles.length; i++){
+        const p = particles[i];
+        for (let j = i + 1; j < particles.length; j++){
+          const q = particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const distSq = dx * dx + dy * dy;
+          const nearPointerPair = pointerActive && (p.pointerNear || q.pointerNear);
+          const limit = nearPointerPair ? enhancedConnectionSq : baseConnectionSq;
+          if (distSq > limit) continue;
+          if (exclusionZone && intersectsExclusion(p.x, p.y, q.x, q.y)) continue;
+          const dist = Math.sqrt(distSq);
+          const alpha = 1 - dist / (nearPointerPair ? settings.enhancedConnection : settings.baseConnection);
+          ctx.globalAlpha = alpha * (nearPointerPair ? 0.55 : 0.35);
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+
+      ctx.globalAlpha = 1;
+      for (const particle of particles){
+        const dot = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.radius * 3);
+        dot.addColorStop(0, `rgba(43,47,51,${0.3 + particle.alpha})`);
+        dot.addColorStop(1, 'rgba(43,47,51,0)');
+        ctx.fillStyle = dot;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius * 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (pointerActive && pointerNeighbours.length){
+        ctx.globalAlpha = settings.pointerLineOpacity;
+        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = settings.lineColor;
+        for (const particle of pointerNeighbours){
+          ctx.beginPath();
+          ctx.moveTo(pointer.x, pointer.y);
+          ctx.lineTo(particle.x, particle.y);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, settings.pointerRadius);
+        halo.addColorStop(0, `rgba(47,50,54,${settings.pointerHaloOpacity})`);
+        halo.addColorStop(1, 'rgba(47,50,54,0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(pointer.x, pointer.y, settings.pointerRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    function intersectsExclusion(x1, y1, x2, y2){
+      if (!exclusionZone) return false;
+      const { left, right, top, bottom } = exclusionZone;
+      if ((x1 < left && x2 < left) || (x1 > right && x2 > right) || (y1 < top && y2 < top) || (y1 > bottom && y2 > bottom)){
+        return false;
+      }
+      if (isInsideExclusion(x1, y1) || isInsideExclusion(x2, y2)) return true;
+      const edges = [
+        [left, top, right, top],
+        [right, top, right, bottom],
+        [right, bottom, left, bottom],
+        [left, bottom, left, top]
+      ];
+      return edges.some(([ax, ay, bx, by]) => segmentsIntersect(x1, y1, x2, y2, ax, ay, bx, by));
+    }
+
+    function orientation(ax, ay, bx, by, cx, cy){
+      const value = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+      return Math.abs(value) < 1e-6 ? 0 : value;
+    }
+
+    function onSegment(ax, ay, bx, by, cx, cy){
+      return cx >= Math.min(ax, bx) && cx <= Math.max(ax, bx) && cy >= Math.min(ay, by) && cy <= Math.max(ay, by);
+    }
+
+    function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy){
+      const o1 = orientation(ax, ay, bx, by, cx, cy);
+      const o2 = orientation(ax, ay, bx, by, dx, dy);
+      const o3 = orientation(cx, cy, dx, dy, ax, ay);
+      const o4 = orientation(cx, cy, dx, dy, bx, by);
+
+      if (o1 === 0 && onSegment(ax, ay, bx, by, cx, cy)) return true;
+      if (o2 === 0 && onSegment(ax, ay, bx, by, dx, dy)) return true;
+      if (o3 === 0 && onSegment(cx, cy, dx, dy, ax, ay)) return true;
+      if (o4 === 0 && onSegment(cx, cy, dx, dy, bx, by)) return true;
+
+      return (o1 > 0 && o2 < 0 || o1 < 0 && o2 > 0) && (o3 > 0 && o4 < 0 || o3 < 0 && o4 > 0);
+    }
+
+    function updatePointer(event){
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.y = event.clientY - rect.top;
+      pointer.active = true;
+    }
+
+    function deactivatePointer(){ pointer.active = false; }
+
+    const resizeObserver = (settings.exclusionElement && 'ResizeObserver' in window)
+      ? new ResizeObserver(() => updateExclusionZone())
+      : null;
+    resizeObserver?.observe(settings.exclusionElement);
+
+    window.addEventListener('resize', resize);
+
+    canvas.addEventListener('pointermove', updatePointer);
+    canvas.addEventListener('pointerdown', updatePointer);
+    canvas.addEventListener('pointerup', deactivatePointer);
+    canvas.addEventListener('pointerleave', deactivatePointer);
+    canvas.addEventListener('pointercancel', deactivatePointer);
+
+    resize();
+    requestAnimationFrame(step);
+
+    return {
+      destroy(){
+        resizeObserver?.disconnect();
+        canvas.removeEventListener('pointermove', updatePointer);
+        canvas.removeEventListener('pointerdown', updatePointer);
+        canvas.removeEventListener('pointerup', deactivatePointer);
+        canvas.removeEventListener('pointerleave', deactivatePointer);
+        canvas.removeEventListener('pointercancel', deactivatePointer);
+      }
+    };
+  }
+
+  window.createFluxField = window.createFluxField || createFluxField;
 })();
