@@ -117,8 +117,9 @@
 
     initRevealAnimations();
 
-      function initFieldBackground(bg){
+    function initFieldBackground(bg){
       const ctx = bg.getContext('2d');
+      const pointerSurface = bg.closest('[data-field-surface]') || bg.parentElement?.parentElement || bg;
       const pointer = {
         x: 0,
         y: 0,
@@ -140,16 +141,22 @@
       let lastFrame = performance.now();
       let firstResize = true;
 
+      const exclusionSelectors = (bg.dataset.exclusions || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      let exclusionZones = [];
+      
       const taupe = () => getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
 
       function createParticle(){
-        const speed = (Math.random()*2 - 1) * 0.12;
+        const speed = (Math.random()*2 - 1) * 0.1;
         return {
           x: Math.random() * W,
           y: Math.random() * H,
           vx: speed,
           vy: (Math.random()*2 - 1) * 0.12,
-          baseSize: 1.8 + Math.random() * 2.8,
+          baseSize: 1.2 + Math.random() * 1.9,
           pulse: Math.random() * Math.PI * 2,
           flowX: Math.random() * 0.6 + 0.25,
           flowY: Math.random() * 0.6 + 0.25,
@@ -158,12 +165,18 @@
         };
       }
 
-      function handlePointerMove(e){
+      function updatePointerTarget(clientX, clientY){
         const rect = bg.getBoundingClientRect();
-        pointer.targetX = clamp(e.clientX - rect.left, 0, rect.width);
-        pointer.targetY = clamp(e.clientY - rect.top, 0, rect.height);
-        pointer.inside = true;
+        pointer.targetX = clamp(clientX - rect.left, 0, rect.width);
+        pointer.targetY = clamp(clientY - rect.top, 0, rect.height);
         pointer.lastMove = performance.now();
+        pointer.lastMove = performance.now();
+      }
+
+      function handlePointerMove(e){
+        pointer.inside = true;
+        pointer.targetStrength = 1;
+        updatePointerTarget(e.clientX, e.clientY);
       }
       
       function handlePointerLeave(){
@@ -171,6 +184,107 @@
         pointer.targetStrength = 0;
       }
 
+      function computeExclusionZones(){
+        if (!exclusionSelectors.length){
+          exclusionZones = [];
+          return;
+        }
+        const canvasRect = bg.getBoundingClientRect();
+        const zones = [];
+        for (const selector of exclusionSelectors){
+          const elements = Array.from(document.querySelectorAll(selector));
+          for (const el of elements){
+            if (!(el instanceof Element)) continue;
+            const rect = el.getBoundingClientRect();
+            const zone = {
+              x: rect.left - canvasRect.left,
+              y: rect.top - canvasRect.top,
+              w: rect.width,
+              h: rect.height
+            };
+            if (zone.w <= 0 || zone.h <= 0) continue;
+            zones.push(zone);
+          }
+        }
+        exclusionZones = zones;
+      }
+  
+      function isInsideExclusion(x, y){
+        if (!exclusionZones.length) return false;
+        for (const zone of exclusionZones){
+          if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h) return true;
+        }
+        return false;
+      }
+  
+      function resolveExclusions(p){
+        if (!exclusionZones.length) return;
+        for (const zone of exclusionZones){
+          if (p.x >= zone.x && p.x <= zone.x + zone.w && p.y >= zone.y && p.y <= zone.y + zone.h){
+            const left = Math.abs(p.x - zone.x);
+            const right = Math.abs(zone.x + zone.w - p.x);
+            const top = Math.abs(p.y - zone.y);
+            const bottom = Math.abs(zone.y + zone.h - p.y);
+            const min = Math.min(left, right, top, bottom);
+            if (min === left){
+              p.x = zone.x - 1;
+              p.vx = -Math.abs(p.vx);
+            } else if (min === right){
+              p.x = zone.x + zone.w + 1;
+              p.vx = Math.abs(p.vx);
+            } else if (min === top){
+              p.y = zone.y - 1;
+              p.vy = -Math.abs(p.vy);
+            } else {
+              p.y = zone.y + zone.h + 1;
+              p.vy = Math.abs(p.vy);
+            }
+          }
+        }
+      }
+  
+      function segmentHitsExclusion(ax, ay, bx, by){
+        if (!exclusionZones.length) return false;
+        for (const zone of exclusionZones){
+          if (segmentIntersectsRect(ax, ay, bx, by, zone)) return true;
+        }
+        return false;
+      }
+  
+      function segmentIntersectsRect(ax, ay, bx, by, rect){
+        const minX = rect.x;
+        const maxX = rect.x + rect.w;
+        const minY = rect.y;
+        const maxY = rect.y + rect.h;
+  
+        if (ax >= minX && ax <= maxX && ay >= minY && ay <= maxY) return true;
+        if (bx >= minX && bx <= maxX && by >= minY && by <= maxY) return true;
+  
+        const dx = bx - ax;
+        const dy = by - ay;
+        let t0 = 0;
+        let t1 = 1;
+        const p = [-dx, dx, -dy, dy];
+        const q = [ax - minX, maxX - ax, ay - minY, maxY - ay];
+        for (let i = 0; i < 4; i++){
+          const pi = p[i];
+          const qi = q[i];
+          if (pi === 0){
+            if (qi < 0) return false;
+          } else {
+            const t = qi / pi;
+            if (pi < 0){
+              if (t > t1) return false;
+              if (t > t0) t0 = t;
+            } else {
+              if (t < t0) return false;
+              if (t < t1) t1 = t;
+            }
+          }
+        }
+        return t1 > t0 && t1 >= 0 && t0 <= 1;
+      }
+      
       function resize(){
         W = bg.clientWidth;
         H = bg.clientHeight;
@@ -180,15 +294,17 @@
         ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
         const area = Math.max(1, W * H);
-        const desired = reduceMotion ? Math.round(area / 32000) : Math.round(area / 20000);
-        const count = clamp(desired, 60, 220);
+        const desired = reduceMotion ? Math.round(area / 36000) : Math.round(area / 14000);
+        const count = clamp(desired, 80, 260);
         pts = Array.from({ length: count }, createParticle);
 
-        cellSize = clamp(Math.sqrt(area / count) * 1.6, 120, 220);
+        cellSize = clamp(Math.sqrt(area / count) * 1.6, 110, 200);
         columns = Math.max(1, Math.ceil(W / cellSize));
         rows = Math.max(1, Math.ceil(H / cellSize));
         buckets = Array.from({ length: columns * rows }, () => []);
 
+        computeExclusionZones();
+        
         if (firstResize){
           pointer.x = W * 0.5;
           pointer.y = H * 0.5;
@@ -217,7 +333,7 @@
       ];
 
       function drawConnections(maxDistSq, maxDist){
-        ctx.lineWidth = 0.7;
+        ctx.lineWidth = 0.45;
         for (let cy = 0; cy < rows; cy++){
           for (let cx = 0; cx < columns; cx++){
             const bucketIndex = cx + cy * columns;
@@ -249,13 +365,15 @@
       }
 
       function renderPair(a, b, maxDistSq, maxDist){
+        if (isInsideExclusion(a.x, a.y) || isInsideExclusion(b.x, b.y)) return;
         const dx = a.x - b.x;
         const dy = a.y - b.y;
+        if (segmentHitsExclusion(a.x, a.y, b.x, b.y)) return;
         const distSq = dx * dx + dy * dy;
         if (distSq > maxDistSq) return;
         const dist = Math.sqrt(distSq) || 1;
         const closeness = 1 - (dist / maxDist);
-        const alpha = Math.max(0, Math.min(0.55, closeness * 0.75));
+        const alpha = Math.max(0, Math.min(0.4, closeness * 0.6));
         if (alpha <= 0.01) return;
         ctx.strokeStyle = `rgba(102,108,115,${alpha.toFixed(3)})`;
         ctx.beginPath();
@@ -279,16 +397,16 @@
         ctx.fillRect(0, 0, W, H);
 
         pointer.targetStrength = pointer.inside ? 1 : 0;
-        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.08;
-        const pointerEase = reduceMotion ? 0.25 : 0.14;
+        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.16;
+        const pointerEase = reduceMotion ? 0.25 : 0.18;
         pointer.x += (pointer.targetX - pointer.x) * pointerEase;
         pointer.y += (pointer.targetY - pointer.y) * pointerEase;
 
         clearBuckets();
 
-        const magnetRadius = clamp(Math.max(W, H) * 0.32, 120, 360);
+        const magnetRadius = clamp(Math.max(W, H) * 0.28, 120, 320);
         const magnetRadiusSq = magnetRadius * magnetRadius;
-        const magnetStrength = reduceMotion ? 0.05 : 0.18;
+        const magnetStrength = reduceMotion ? 0.045 : 0.16;
         const pointerLinks = [];
 
         const baseFlow = now * 0.00018;
@@ -309,7 +427,7 @@
               const pull = magnetStrength * influence;
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
-              pointerLinks.push({ particle: p, influence });
+              if (!isInsideExclusion(p.x, p.y)) pointerLinks.push({ particle: p, influence });
             }
           }
 
@@ -328,21 +446,26 @@
           if (p.y < -20) p.y = H + 20;
           else if (p.y > H + 20) p.y = -20;
 
+          resolveExclusions(p);
+          
           pushToBucket(p);
         }
 
-        const connectDist = clamp(Math.max(W, H) * 0.28, 160, 320);
+        const connectDist = clamp(Math.max(W, H) * 0.24, 140, 260);
         drawConnections(connectDist * connectDist, connectDist);
 
         ctx.fillStyle = 'rgba(43,47,51,0.85)';
         for (const p of pts){
-          const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.9;
+          if (isInsideExclusion(p.x, p.y)) continue;
+          const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.7;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, Math.max(0.8, size), 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, Math.max(0.65, size), 0, Math.PI * 2);
           ctx.fill();
         }
 
-        if (!reduceMotion && pointer.strength > 0.02){
+        const pointerInsideExclusion = isInsideExclusion(pointer.x, pointer.y);
+  
+        if (!reduceMotion && pointer.strength > 0.02 && !pointerInsideExclusion){
           ctx.save();
           ctx.globalCompositeOperation = 'lighter';
           const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, magnetRadius * 0.9);
@@ -355,15 +478,18 @@
           ctx.fill();
           ctx.restore();
 
-          ctx.lineWidth = 0.9;
+          ctx.lineWidth = 0.55;
           for (const link of pointerLinks){
             if (link.influence <= 0) continue;
             const alpha = clamp(link.influence * pointer.strength * 1.4, 0, 0.85);
             if (alpha < 0.05) continue;
             ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
             ctx.beginPath();
+            const lx = link.particle.x;
+            const ly = link.particle.y;
+            if (segmentHitsExclusion(pointer.x, pointer.y, lx, ly)) continue;
             ctx.moveTo(pointer.x, pointer.y);
-            ctx.lineTo(link.particle.x, link.particle.y);
+            ctx.lineTo(lx, ly);
             ctx.stroke();
           }
         }
@@ -377,10 +503,11 @@
       }
 
       window.addEventListener('resize', resize);
-      bg.addEventListener('pointermove', handlePointerMove, { passive: true });
-      bg.addEventListener('pointerdown', handlePointerMove);
-      bg.addEventListener('pointerleave', handlePointerLeave);
-      bg.addEventListener('pointerup', handlePointerMove);
+      pointerSurface?.addEventListener('pointermove', handlePointerMove, { passive: true });
+      pointerSurface?.addEventListener('pointerdown', handlePointerMove);
+      pointerSurface?.addEventListener('pointerenter', handlePointerMove);
+      pointerSurface?.addEventListener('pointerleave', handlePointerLeave);
+      pointerSurface?.addEventListener('pointerup', handlePointerMove);
 
       requestAnimationFrame(() => { resize(); loop(performance.now()); });
     }
