@@ -330,15 +330,14 @@
             const distTop = y - innerY;
             const distBottom = innerY + innerH - y;
             const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
-            const fade = clamp(distToEdge / Math.max(1, zone.fade), 0, 1);
-            factor = Math.min(factor, 1 - Math.pow(1 - fade, 2));
+            const fade = clamp(1 - (distToEdge / zone.fade), 0, 1);
+            factor = Math.min(factor, fade);
           } else if (insideOuter){
             const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
             const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
             const distToInner = Math.sqrt(dx * dx + dy * dy);
             const fadeRatio = clamp(1 - distToInner / Math.max(1, margin), 0, 1);
-            const eased = fadeRatio * fadeRatio * (3 - 2 * fadeRatio);
-            factor = Math.min(factor, eased);
+            factor = Math.min(factor, fade);
           }
         }
         return factor;
