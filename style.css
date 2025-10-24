@@ -139,10 +139,10 @@ body.has-reveal .reveal-item.is-visible{
 /* Connections bar (wider span, icons, bigger text, positioned lower) */
 .hero-connections{
   position:absolute;left:50%;transform:translateX(-50%);top:clamp(56px,17vh,190px);
-  display:flex;align-items:flex-start;gap:40px;color:#5b6168;
+  display:flex;align-items:center;gap:40px;color:#5b6168;
 }
-.hero-connections::before,.hero-connections::after{
-  content:"";display:block;height:1px;width:min(34vw,380px);background:rgba(43,47,51,.25);
+.hero-connections__line{
+  display:block;height:1px;width:min(34vw,380px);background:rgba(43,47,51,.25);pointer-events:none;
 }
 .hero-connections a{font-weight:800;font-size:1.06rem;display:flex;flex-direction:column;align-items:center;gap:6px}
 .hero-connections .dot{opacity:.6}
@@ -173,8 +173,7 @@ body.has-reveal .reveal-item.is-visible{
     justify-content:center;
     padding:0 clamp(12px, 4vw, 32px);
   }
-  .hero-connections::before,
-  .hero-connections::after{display:none;}
+  .hero-connections__line{display:none;}
   .hero-inner{margin-top:0;}
 }
 
