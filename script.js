@@ -117,6 +117,7 @@
 
     function initFieldBackground(bg){
       const ctx=bg.getContext('2d');
+      const pointer={x:0,y:0,active:false};
       let W=0,H=0,DPR=1, pts=[], t=0;
 
       function resize(){
@@ -139,6 +140,13 @@
         }));
       }
 
+      function handlePointerMove(e){
+        const rect = bg.getBoundingClientRect();
+        pointer.x = (e.clientX - rect.left);
+        pointer.y = (e.clientY - rect.top);
+        pointer.active = pointer.x >= 0 && pointer.y >= 0 && pointer.x <= rect.width && pointer.y <= rect.height;
+      }
+      
       function tick(){
         t += 0.016;
         // background fill (taupe)
@@ -162,10 +170,57 @@
           ctx.fillRect(p.x,p.y,p.s,p.s);
         }
         ctx.globalAlpha=1;
+
+        if (pointer.active){
+          const baseDist = Math.max(70, Math.min(140, Math.sqrt(W*H)*0.075));
+          const focusBoost = baseDist * 1.8;
+          const focusRadius = baseDist * 1.35;
+          const focusBoostSq = focusBoost * focusBoost;
+          const focusRadiusSq = focusRadius * focusRadius;
+          ctx.lineWidth = 1;
+          for (let i=0;i<pts.length;i++){
+            const a = pts[i];
+            const daX = pointer.x - a.x;
+            const daY = pointer.y - a.y;
+            const aNear = (daX*daX + daY*daY) < focusRadiusSq;
+            if (!aNear) continue;
+            for (let j=i+1;j<pts.length;j++){
+              const b = pts[j];
+              const dbX = pointer.x - b.x;
+              const dbY = pointer.y - b.y;
+              const bNear = (dbX*dbX + dbY*dbY) < focusRadiusSq;
+              if (!bNear) continue;
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const dist2 = dx*dx + dy*dy;
+              const maxDist = focusBoost;
+              const maxDistSq = focusBoostSq;
+              if (dist2 > maxDistSq) continue;
+              const dist = Math.sqrt(dist2) || 1;
+              const closeness = 1 - (dist / maxDist);
+              const alpha = 0.55 * Math.max(0, Math.min(1, closeness + 0.05));
+              ctx.strokeStyle = `rgba(43,47,51,${alpha.toFixed(3)})`;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+
+          ctx.strokeStyle = 'rgba(43,47,51,0.18)';
+          ctx.setLineDash([4, 6]);
+          ctx.beginPath();
+          ctx.arc(pointer.x, pointer.y, focusRadius, 0, Math.PI*2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
         requestAnimationFrame(tick);
       }
 
       window.addEventListener('resize', resize);
+      bg.addEventListener('pointermove', handlePointerMove, {passive:true});
+      bg.addEventListener('pointerdown', handlePointerMove);
+      bg.addEventListener('pointerleave', ()=>{ pointer.active=false; });
       requestAnimationFrame(()=>{ resize(); tick(); });
     }
 
