@@ -251,7 +251,8 @@
         targetX: 0,
         targetY: 0,
         active: false,
-        strength: 0
+        strength: 0,
+        lastMove: 0
       },
       frame: 0
     };
@@ -264,7 +265,7 @@
     const surface = canvas.closest('[data-field-surface]') || canvas.parentElement || canvas;
 
     function createParticle() {
-      const baseSpeed = reduceMotion ? 16 : 28;
+      const baseSpeed = reduceMotion ? 22 : 40;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
       return {
@@ -349,10 +350,13 @@
       state.pointer.targetX = event.clientX - bounds.left;
       state.pointer.targetY = event.clientY - bounds.top;
       state.pointer.active = true;
+      const nowStamp = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+      state.pointer.lastMove = event.timeStamp || nowStamp;
     }
 
     function onPointerLeave() {
       state.pointer.active = false;
+      state.pointer.lastMove = 0;
     }
 
     function computeFade(x, y) {
@@ -414,20 +418,23 @@
       const pointerEase = reduceMotion ? 0.18 : 0.12;
       state.pointer.x += (state.pointer.targetX - state.pointer.x) * pointerEase;
       state.pointer.y += (state.pointer.targetY - state.pointer.y) * pointerEase;
+      if (state.pointer.active && now - state.pointer.lastMove > 1000) {
+        state.pointer.active = false;
+      }
       const pointerStrengthTarget = state.pointer.active ? 1 : 0;
       state.pointer.strength += (pointerStrengthTarget - state.pointer.strength) * 0.12;
 
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
-      const pointerForce = reduceMotion ? 26 : 48;
+      const pointerForce = reduceMotion ? 42 : 76;
 
       const baseTime = now * 0.00018;
 
       for (const particle of state.particles) {
         // Subtle flow noise
-        particle.vx += Math.cos(baseTime + particle.pulse) * 24 * dt;
-        particle.vy += Math.sin(baseTime * 0.8 + particle.pulse * 1.2) * 24 * dt;
-
+        particle.vx += Math.cos(baseTime + particle.pulse) * 32 * dt;
+        particle.vy += Math.sin(baseTime * 0.8 + particle.pulse * 1.2) * 32 * dt;
+        
         if (state.pointer.strength > 0.01) {
           const dx = state.pointer.x - particle.x;
           const dy = state.pointer.y - particle.y;
@@ -441,7 +448,7 @@
           }
         }
 
-        const drag = reduceMotion ? 0.96 : 0.985;
+        const drag = reduceMotion ? 0.965 : 0.99;
         const dragFactor = Math.pow(drag, dt * 60);
         particle.vx *= dragFactor;
         particle.vy *= dragFactor;
