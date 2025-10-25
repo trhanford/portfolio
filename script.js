@@ -271,14 +271,12 @@ qz    ];
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
       const baseSize = 0.7 + Math.random() * 1.2;
       const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
-      const baseSize = 0.7 + Math.random() * 1.2;
-      const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
       return {
         x: Math.random() * state.width,
         y: Math.random() * state.height,
         vx: Math.cos(direction) * speed,
         vy: Math.sin(direction) * speed,
-        size: baseSize + sizeBoost,
+        size: 0.8 + Math.random() * 1.6,
         pulse: Math.random() * Math.PI * 2,
         fade: 1
       };
@@ -357,7 +355,7 @@ qz    ];
       const nowStamp = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
       const eventStamp = event.timeStamp || nowStamp;
       state.pointer.lastMove = eventStamp;
-      state.pointer.releaseAt = eventStamp + 2000;
+      state.pointer.releaseAt = eventStamp + 1000;
     }
 
     function onPointerLeave() {
@@ -434,7 +432,7 @@ qz    ];
 
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
-      const pointerForce = reduceMotion ? 150 : 290;
+      const pointerForce = reduceMotion ? 110 : 210;
       
       const baseTime = now * 0.00018;
 
