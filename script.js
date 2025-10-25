@@ -65,7 +65,7 @@
       'Problem Solver',
       'Curious Mind',
       'Doer'
-    ];
+qz    ];
 
     const typeDelay = 70;
     const eraseDelay = 45;
@@ -269,6 +269,8 @@
       const baseSpeed = reduceMotion ? 22 : 40;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
+      const baseSize = 0.7 + Math.random() * 1.2;
+      const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
       const baseSize = 0.7 + Math.random() * 1.2;
       const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
       return {
