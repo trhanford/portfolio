@@ -344,7 +344,11 @@
             const distBottom = innerY + innerH - y;
             const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
             const fade = clamp(distToEdge / Math.max(1, zone.fade), 0, 1);
-            factor = Math.min(factor, 1 - Math.pow(1 - fade, 2));
+            // Blend two easings so particles are effectively invisible anywhere behind the text,
+            // while still using the provided fade depth to create a soft transition near the edges.
+            const interiorFade = Math.pow(fade, 2);
+            const vanish = Math.pow(1 - fade, 4);
+            factor = Math.min(factor, interiorFade, vanish);
           } else if (insideOuter){
             const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
             const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
