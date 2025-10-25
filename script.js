@@ -147,6 +147,7 @@
         .map(s => s.trim())
         .filter(Boolean);
       let exclusionZones = [];
+      let softExclusionZones = [];
 
       const fadeSelectors = (bg.dataset.fadeZones || bg.dataset.fadezones || '')
         .split(',')
@@ -213,10 +214,12 @@
       function computeExclusionZones(){
         if (!exclusionSelectors.length){
           exclusionZones = [];
+          softExclusionZones = [];
           return;
         }
         const canvasRect = bg.getBoundingClientRect();
-        const zones = [];
+        const solidZones = [];
+        const softZones = [];
         for (const selector of exclusionSelectors){
           const elements = Array.from(document.querySelectorAll(selector));
           for (const el of elements){
@@ -230,14 +233,15 @@
               x: rect.left - canvasRect.left - margin,
               y: rect.top - canvasRect.top - margin,
               w: rect.width + margin * 2,
-              h: rect.height + margin * 2,
-              behavior
+              h: rect.height + margin * 2
             };
             if (zone.w <= 0 || zone.h <= 0) continue;
-            zones.push(zone);
+            if (behavior === 'solid') solidZones.push(zone);
+            else softZones.push(zone);
           }
         }
-        exclusionZones = zones;
+        exclusionZones = solidZones;
+        softExclusionZones = softZones;
       }
 
       function computeFadeZones(){
@@ -269,19 +273,23 @@
         fadeZones = zones;
       }
       
-      function isInsideExclusion(x, y, { includeSoft = true } = {}){
-        if (!exclusionZones.length) return false;
-        for (const zone of exclusionZones){
-          if (!includeSoft && zone.behavior !== 'solid') continue;
+      function zoneContains(zones, x, y){
+        for (const zone of zones){
           if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h) return true;
         }
         return false;
       }
-  
+
+      function isInsideExclusion(x, y, { includeSoft = true } = {}){
+        if (exclusionZones.length && zoneContains(exclusionZones, x, y)) return true;
+        if (!includeSoft) return false;
+        if (softExclusionZones.length && zoneContains(softExclusionZones, x, y)) return true;
+        return false;
+      }
+      
       function resolveExclusions(p){
         if (!exclusionZones.length) return;
         for (const zone of exclusionZones){
-          if (zone.behavior !== 'solid') continue;
           if (p.x >= zone.x && p.x <= zone.x + zone.w && p.y >= zone.y && p.y <= zone.y + zone.h){
             const left = Math.abs(p.x - zone.x);
             const right = Math.abs(zone.x + zone.w - p.x);
@@ -351,7 +359,6 @@
       function segmentHitsExclusion(ax, ay, bx, by){
         if (!exclusionZones.length) return false;
         for (const zone of exclusionZones){
-          if (zone.behavior !== 'solid') continue;
           if (segmentIntersectsRect(ax, ay, bx, by, zone)) return true;
         }
         return false;
