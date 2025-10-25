@@ -264,7 +264,7 @@
     const surface = canvas.closest('[data-field-surface]') || canvas.parentElement || canvas;
 
     function createParticle() {
-      const baseSpeed = reduceMotion ? 12 : 20;
+      const baseSpeed = reduceMotion ? 16 : 28;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
       return {
@@ -337,7 +337,7 @@
       ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
       const area = Math.max(1, state.width * state.height);
-      const targetCount = clamp(Math.round(area / (reduceMotion ? 22000 : 16000)), 60, 160);
+      const targetCount = clamp(Math.round(area / (reduceMotion ? 19000 : 12000)), 80, 220);
       state.particles = Array.from({ length: targetCount }, createParticle);
 
       bindZoneObserver();
@@ -419,14 +419,14 @@
 
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
-      const pointerForce = reduceMotion ? 18 : 32;
+      const pointerForce = reduceMotion ? 26 : 48;
 
       const baseTime = now * 0.00018;
 
       for (const particle of state.particles) {
         // Subtle flow noise
-        particle.vx += Math.cos(baseTime + particle.pulse) * 18 * dt;
-        particle.vy += Math.sin(baseTime * 0.8 + particle.pulse * 1.2) * 18 * dt;
+        particle.vx += Math.cos(baseTime + particle.pulse) * 24 * dt;
+        particle.vy += Math.sin(baseTime * 0.8 + particle.pulse * 1.2) * 24 * dt;
 
         if (state.pointer.strength > 0.01) {
           const dx = state.pointer.x - particle.x;
