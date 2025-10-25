@@ -342,7 +342,6 @@ qz    ];
       canvas.height = Math.max(1, Math.floor(state.height * state.dpr));
       ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
-      const area = Math.max(1, state.width * state.height);
       const targetCount = clamp(Math.round(area / (reduceMotion ? 17000 : 10000)), 90, 260);
       state.particles = Array.from({ length: targetCount }, createParticle);
 
@@ -436,7 +435,7 @@ qz    ];
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
       const pointerForce = reduceMotion ? 150 : 290;
-
+      
       const baseTime = now * 0.00018;
 
       for (const particle of state.particles) {
