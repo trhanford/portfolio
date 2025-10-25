@@ -252,7 +252,8 @@
         targetY: 0,
         active: false,
         strength: 0,
-        lastMove: 0
+        lastMove: 0,
+        releaseAt: 0
       },
       frame: 0
     };
@@ -351,12 +352,15 @@
       state.pointer.targetY = event.clientY - bounds.top;
       state.pointer.active = true;
       const nowStamp = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
-      state.pointer.lastMove = event.timeStamp || nowStamp;
+      const eventStamp = event.timeStamp || nowStamp;
+      state.pointer.lastMove = eventStamp;
+      state.pointer.releaseAt = eventStamp + 1000;
     }
 
     function onPointerLeave() {
       state.pointer.active = false;
       state.pointer.lastMove = 0;
+      state.pointer.releaseAt = 0;
     }
 
     function computeFade(x, y) {
@@ -418,15 +422,16 @@
       const pointerEase = reduceMotion ? 0.18 : 0.12;
       state.pointer.x += (state.pointer.targetX - state.pointer.x) * pointerEase;
       state.pointer.y += (state.pointer.targetY - state.pointer.y) * pointerEase;
-      if (state.pointer.active && now - state.pointer.lastMove > 1000) {
+      if (state.pointer.active && now >= state.pointer.releaseAt) {
         state.pointer.active = false;
       }
       const pointerStrengthTarget = state.pointer.active ? 1 : 0;
-      state.pointer.strength += (pointerStrengthTarget - state.pointer.strength) * 0.12;
+      state.pointer.strength += (pointerStrengthTarget - state.pointer.strength) * 0.28;
+      if (state.pointer.strength < 0.001) state.pointer.strength = 0;
 
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
-      const pointerForce = reduceMotion ? 42 : 76;
+      const pointerForce = reduceMotion ? 110 : 210;
 
       const baseTime = now * 0.00018;
 
