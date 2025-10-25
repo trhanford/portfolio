@@ -269,12 +269,14 @@
       const baseSpeed = reduceMotion ? 22 : 40;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
+      const baseSize = 0.7 + Math.random() * 1.2;
+      const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
       return {
         x: Math.random() * state.width,
         y: Math.random() * state.height,
         vx: Math.cos(direction) * speed,
         vy: Math.sin(direction) * speed,
-        size: 0.8 + Math.random() * 1.6,
+        size: baseSize + sizeBoost,
         pulse: Math.random() * Math.PI * 2,
         fade: 1
       };
@@ -339,7 +341,7 @@
       ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
       const area = Math.max(1, state.width * state.height);
-      const targetCount = clamp(Math.round(area / (reduceMotion ? 19000 : 12000)), 80, 220);
+      const targetCount = clamp(Math.round(area / (reduceMotion ? 17000 : 10000)), 90, 260);
       state.particles = Array.from({ length: targetCount }, createParticle);
 
       bindZoneObserver();
@@ -354,7 +356,7 @@
       const nowStamp = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
       const eventStamp = event.timeStamp || nowStamp;
       state.pointer.lastMove = eventStamp;
-      state.pointer.releaseAt = eventStamp + 1000;
+      state.pointer.releaseAt = eventStamp + 2000;
     }
 
     function onPointerLeave() {
@@ -431,7 +433,7 @@
 
       const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
       const pointerRadiusSq = pointerRadius * pointerRadius;
-      const pointerForce = reduceMotion ? 110 : 210;
+      const pointerForce = reduceMotion ? 150 : 290;
 
       const baseTime = now * 0.00018;
 
