@@ -224,11 +224,14 @@
             const rect = el.getBoundingClientRect();
             const marginAttr = parseFloat(el.getAttribute('data-particle-exclusion-margin') || '');
             const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : exclusionDefaultMargin;
+            const behaviorAttr = (el.getAttribute('data-particle-barrier') || el.getAttribute('data-particle-behavior') || el.dataset.particleBarrier || '').toLowerCase();
+            const behavior = behaviorAttr === 'solid' || behaviorAttr === 'hard' || behaviorAttr === 'bounce' ? 'solid' : 'soft';
             const zone = {
               x: rect.left - canvasRect.left - margin,
               y: rect.top - canvasRect.top - margin,
               w: rect.width + margin * 2,
-              h: rect.height + margin * 2
+              h: rect.height + margin * 2,
+              behavior
             };
             if (zone.w <= 0 || zone.h <= 0) continue;
             zones.push(zone);
@@ -266,9 +269,10 @@
         fadeZones = zones;
       }
       
-      function isInsideExclusion(x, y){
+      function isInsideExclusion(x, y, { includeSoft = true } = {}){
         if (!exclusionZones.length) return false;
         for (const zone of exclusionZones){
+          if (!includeSoft && zone.behavior !== 'solid') continue;
           if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h) return true;
         }
         return false;
@@ -277,6 +281,7 @@
       function resolveExclusions(p){
         if (!exclusionZones.length) return;
         for (const zone of exclusionZones){
+          if (zone.behavior !== 'solid') continue;
           if (p.x >= zone.x && p.x <= zone.x + zone.w && p.y >= zone.y && p.y <= zone.y + zone.h){
             const left = Math.abs(p.x - zone.x);
             const right = Math.abs(zone.x + zone.w - p.x);
@@ -346,6 +351,7 @@
       function segmentHitsExclusion(ax, ay, bx, by){
         if (!exclusionZones.length) return false;
         for (const zone of exclusionZones){
+          if (zone.behavior !== 'solid') continue;
           if (segmentIntersectsRect(ax, ay, bx, by, zone)) return true;
         }
         return false;
@@ -480,7 +486,7 @@
       }
 
       function renderPair(a, b, maxDistSq, maxDist){
-        if (isInsideExclusion(a.x, a.y) || isInsideExclusion(b.x, b.y)) return;
+        if (isInsideExclusion(a.x, a.y, { includeSoft: false }) || isInsideExclusion(b.x, b.y, { includeSoft: false })) return;
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         if (segmentHitsExclusion(a.x, a.y, b.x, b.y)) return;
@@ -547,7 +553,7 @@
               const pull = magnetStrength * influence;
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
-              if (!isInsideExclusion(p.x, p.y)){
+              if (!isInsideExclusion(p.x, p.y, { includeSoft: false })){
                 const fade = fadeFactor(p.x, p.y);
                 if (fade > 0.01) pointerLinks.push({ particle: p, influence });
               }
@@ -579,7 +585,7 @@
         
         ctx.fillStyle = 'rgba(43,47,51,0.85)';
         for (const p of pts){
-          if (isInsideExclusion(p.x, p.y)) continue;
+          if (isInsideExclusion(p.x, p.y, { includeSoft: false })) continue;
           const fade = fadeFactor(p.x, p.y);
           if (fade <= 0.01) continue;
           const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.7;
