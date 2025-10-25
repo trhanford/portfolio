@@ -230,23 +230,6 @@
     const canvases = selectAll('canvas.magnetic-field');
     if (!canvases.length) return;
 
-    const disableForSmallScreens = window.matchMedia('(max-width: 1024px)').matches;
-    const disableForTouch = window.matchMedia('(pointer: coarse)').matches;
-
-    if (disableForSmallScreens || disableForTouch) {
-      canvases.forEach(canvas => {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width || 0, canvas.height || 0);
-        }
-        canvas.width = 0;
-        canvas.height = 0;
-        canvas.classList.add('particles-disabled');
-      });
-      return;
-    }
-
-
     canvases.forEach(setupField);
   }
 
