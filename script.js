@@ -65,7 +65,7 @@
       'Problem Solver',
       'Curious Mind',
       'Doer'
-qz    ];
+      ];
 
     const typeDelay = 70;
     const eraseDelay = 45;
@@ -340,6 +340,7 @@ qz    ];
       canvas.height = Math.max(1, Math.floor(state.height * state.dpr));
       ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
+      const area = state.width * state.height;
       const targetCount = clamp(Math.round(area / (reduceMotion ? 17000 : 10000)), 90, 260);
       state.particles = Array.from({ length: targetCount }, createParticle);
 
