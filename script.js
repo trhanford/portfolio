@@ -1,952 +1,750 @@
-// script.js — full site logic (typewriter, nav fade-in, smooth scroll, particles, drawer, skills bubbles)
+// script.js — rebuilt site interactions
+// -----------------------------------------------------------------------------
+// This script rebuilds the interactive behaviours for the site from the ground
+// up while keeping the existing visual design intact. It provides:
+//   • Automatic year stamping in the footer
+//   • Typewriter copy for the hero headline
+//   • Smooth-scrolling anchor navigation with a fading sticky nav bar
+//   • Mobile drawer toggling
+//   • Intersection powered reveal effects
+//   • Background particle canvas with soft exclusion borders around hero copy
+//   • Skills network canvas rendering
+// The code favours readability and clear separation of concerns so future
+// maintenance is straightforward.
+// -----------------------------------------------------------------------------
 
-(function(){
-  const $  = (s, r=document)=>r.querySelector(s);
-  const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
-  const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
-  const sleep = ms => new Promise(r=>setTimeout(r,ms));
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-
-  function init(){
-    // -------------------- Footer year --------------------
-    const y=$('#year'); if (y) y.textContent = new Date().getFullYear();
-
-    // -------------------- Typewriter (robust) --------------------
-    (function typewriter(){
-      const el = $('#typed'); if (!el) return;
-      const words = [
-        'Mechanical Engineer',
-        'Team Player',
-        'Car enthusiast',
-        'CAD Specialist',
-        'Design Engineer',
-        'Innovator',
-        'Problem Solver',
-        'Curious Mind',
-        'Doer'
-      ];
-      const TYPE=70, ERASE=45, HOLD=1100;
-
-      async function typeOne(word){
-        for (let i=1;i<=word.length;i++){ el.textContent = word.slice(0,i); await sleep(TYPE); }
-        await sleep(HOLD);
-        for (let i=word.length-1;i>=0;i--){ el.textContent = word.slice(0,i); await sleep(ERASE); }
-      }
-      // Ensure caret visible even if CSS loads late
-      el.style.borderRight = '2px solid rgba(31,35,39,.95)';
-      el.style.paddingRight = '8px';
-
-      (async function loop(){ while(true){ for(const w of words) await typeOne(w); } })();
-    })();
-
-    // -------------------- Smooth Scroll (subtract fixed nav height) --------------------
-    document.addEventListener('click', (e)=>{
-      const a = e.target.closest('[data-scroll]');
-      if (!a) return;
-      const href = a.getAttribute('href')||'';
-      if (!href.startsWith('#')) return;
-      const target = document.querySelector(href);
-      if (!target) return;
-      e.preventDefault();
-      const nav = $('#mainNav');
-      const navH = nav ? nav.offsetHeight : 0;
-      const top = target.getBoundingClientRect().top + window.scrollY - navH;
-      window.scrollTo({ top, behavior:'smooth' });
-    });
-
-    // -------------------- Navbar fade-in on scroll (fixed at top) --------------------
-    const nav = $('#mainNav');
-    if (nav){
-      nav.removeAttribute('hidden');           // prevent display:none from HTML attr
-       
-      if (nav.hasAttribute('data-instant')){
-        nav.style.opacity = '1';
-        nav.classList.add('nav-active');
+(() => {
+  const ready = () =>
+    new Promise(resolve => {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', resolve, { once: true });
       } else {
-        nav.style.willChange = 'opacity';
+        resolve();
+      }
+  });
 
-        let ticking = false;
-        let revealEnd   = calcRevealEnd();       // responsive to viewport
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        function calcRevealEnd(){
-          // ~28% of viewport height; clamp for small/large screens
-          return clamp(Math.round(window.innerHeight * 0.28), 120, 260);
-        }
+  function select(selector, root = document) {
+    return root.querySelector(selector);
+  }
 
-        function updateNavFade(){
-          ticking=false;
-          const y = window.scrollY || 0;
-          let t = (y) / Math.max(1, revealEnd);
-          t = clamp(t, 0, 1);
-          const op = Math.max(0.0, t); // start from 0 and ramp to 1
-          nav.style.opacity = op.toFixed(3);
-          if (op > 0.2) nav.classList.add('nav-active'); else nav.classList.remove('nav-active');
-        }
+  function selectAll(selector, root = document) {
+    return Array.from(root.querySelectorAll(selector));
+  }
 
-        function onScroll(){ if (!ticking){ ticking=true; requestAnimationFrame(updateNavFade); } }
-        function onResize(){ revealEnd = calcRevealEnd(); updateNavFade(); }
-        requestAnimationFrame(updateNavFade);
-        window.addEventListener('scroll', onScroll, {passive:true});
-        window.addEventListener('resize', onResize);
+  function parseList(value = '') {
+    return value
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  function prefersReducedMotion() {
+    if (!('matchMedia' in window)) return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function setYear() {
+    const yearEl = select('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  }
+
+  async function initTypewriter() {
+    const target = select('#typed');
+    if (!target) return;
+
+    const words = [
+      'Mechanical Engineer',
+      'Team Player',
+      'Car enthusiast',
+      'CAD Specialist',
+      'Design Engineer',
+      'Innovator',
+      'Problem Solver',
+      'Curious Mind',
+      'Doer'
+    ];
+
+    const typeDelay = 70;
+    const eraseDelay = 45;
+    const holdDelay = 1100;
+
+    target.style.borderRight = '2px solid rgba(31,35,39,.95)';
+    target.style.paddingRight = '8px';
+
+    async function typeWord(word) {
+      for (let i = 1; i <= word.length; i++) {
+        target.textContent = word.slice(0, i);
+        await sleep(typeDelay);
+      }
+      await sleep(holdDelay);
+      for (let i = word.length - 1; i >= 0; i--) {
+        target.textContent = word.slice(0, i);
+        await sleep(eraseDelay);
       }
     }
 
-    // -------------------- Mobile Drawer --------------------
-    const drawer=$('#drawer'); const menuBtn=$('#menuBtn');
-    menuBtn?.addEventListener('click', ()=>{
+    while (true) {
+      for (const word of words) {
+        await typeWord(word);
+      }
+    }
+  }
+
+  function initSmoothScroll() {
+    document.addEventListener('click', event => {
+      const anchor = event.target.closest('[data-scroll]');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href') || '';
+      if (!href.startsWith('#')) return;
+      
+      const target = document.querySelector(href);
+      if (!target) return;
+      
+      event.preventDefault();
+      const nav = select('#mainNav');
+      const offset = nav ? nav.offsetHeight : 0;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  }
+
+  function initNavFade() {
+    const nav = select('#mainNav');
+    if (!nav) return;
+    
+    nav.removeAttribute('hidden');
+
+    if (nav.hasAttribute('data-instant')) {
+      nav.style.opacity = '1';
+      nav.classList.add('nav-active');
+      return;
+    }
+
+    const revealRatio = () => clamp(window.innerHeight * 0.28, 120, 260);
+    let revealEnd = revealRatio();
+    let ticking = false;
+    
+    function update() {
+      ticking = false;
+      const progress = clamp((window.scrollY || 0) / Math.max(1, revealEnd), 0, 1);
+      nav.style.opacity = progress.toFixed(3);
+      if (progress > 0.2) nav.classList.add('nav-active');
+      else nav.classList.remove('nav-active');
+    }
+
+    function requestTick() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+   window.addEventListener('scroll', requestTick, { passive: true });
+   window.addEventListener('resize', () => {
+      revealEnd = revealRatio();
+      update();
+    });
+
+    requestAnimationFrame(update);
+  }
+
+  function initDrawer() {
+    const drawer = select('#drawer');
+    const button = select('#menuBtn');
+    if (!drawer || !button) return;
+
+    button.addEventListener('click', () => {
       const open = !drawer.classList.contains('open');
       drawer.classList.toggle('open', open);
       drawer.setAttribute('aria-hidden', String(!open));
-      menuBtn.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-expanded', String(open));
     });
-    drawer?.addEventListener('click', e=>{
-      if (e.target.matches('[data-scroll], a[href^="/"]')){
-        drawer.classList.remove('open');
-        drawer.setAttribute('aria-hidden','true');
-        menuBtn?.setAttribute('aria-expanded','false');
+    
+    drawer.addEventListener('click', event => {
+      if (!event.target.closest('[data-scroll], a[href^="/"]')) return;
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      button.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function initReveals() {
+    const selectors = [
+      '.hero-inner > .hero-col',
+      '.panel',
+      '.panel-link',
+      '.about-grid > *',
+      '.about-lower > *',
+      '.workflow-steps .step',
+      '.portfolio-page .hero-content',
+      '.portfolio-page .hero-stats > *',
+      '.portfolio-page .project-card',
+      '.portfolio-page .section-heading',
+      '.resume-body .resume-hero__copy',
+      '.resume-body .resume-hero__meta',
+      '.resume-body .resume-toc__inner',
+      '.resume-body .resume-section'
+    ];
+
+    const elements = selectAll(selectors.join(','));
+    if (!elements.length) return;
+
+    document.body.classList.add('has-reveal');
+
+    elements.forEach((el, index) => {
+      el.classList.add('reveal-item');
+      const delay = Math.min(480, (index % 10) * 60 + Math.random() * 40);
+      el.style.setProperty('--reveal-delay', `${delay.toFixed(0)}ms`);
+    });
+
+   if (!('IntersectionObserver' in window)) {
+      elements.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        rootMargin: '0px 0px -5% 0px',
+        threshold: 0.12
       }
-    });
+    );
 
-    // -------------------- Background Particles (hero) --------------------
-    ['introField','portfolioField']
-      .map(id=>document.getElementById(id))
-      .filter(Boolean)
-      .forEach(initFieldBackground);
+    elements.forEach(el => observer.observe(el));
+  }
 
-    initRevealAnimations();
+  // ---------------------------------------------------------------------------
+  // Background particles with soft exclusions
+  // ---------------------------------------------------------------------------
 
-    function initFieldBackground(bg){
-      const ctx = bg.getContext('2d');
-      const pointerSurface = bg.closest('[data-field-surface]') || bg.parentElement?.parentElement || bg;
-      const pointer = {
+  function initParticleFields() {
+    const canvases = selectAll('canvas.magnetic-field');
+    if (!canvases.length) return;
+
+    canvases.forEach(setupField);
+  }
+
+  function setupField(canvas) {
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = prefersReducedMotion();
+
+    const state = {
+      width: 0,
+      height: 0,
+      dpr: 1,
+      particles: [],
+      fadeZones: [],
+      zoneElements: new Set(),
+      zoneObserver: null,
+      pointer: {
         x: 0,
         y: 0,
         targetX: 0,
         targetY: 0,
-        inside: false,
-        strength: 0,
-        targetStrength: 0,
-        lastMove: 0,
-        magnetExpireAt: 0
+        active: false,
+        strength: 0
+      },
+      frame: 0
+    };
+
+    const fadeSelectors = parseList(canvas.dataset.fadeZones || canvas.dataset.fadezones || '');
+    const fadeDefaultMargin = Number.isFinite(parseFloat(canvas.dataset.fadeMargin))
+      ? Math.max(0, parseFloat(canvas.dataset.fadeMargin))
+      : 28;
+
+    const surface = canvas.closest('[data-field-surface]') || canvas.parentElement || canvas;
+
+    function createParticle() {
+      const baseSpeed = reduceMotion ? 12 : 20;
+      const direction = Math.random() * Math.PI * 2;
+      const speed = baseSpeed * (0.4 + Math.random() * 0.8);
+      return {
+        x: Math.random() * state.width,
+        y: Math.random() * state.height,
+        vx: Math.cos(direction) * speed,
+        vy: Math.sin(direction) * speed,
+        size: 0.8 + Math.random() * 1.6,
+        pulse: Math.random() * Math.PI * 2,
+        fade: 1
       };
-
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      let reduceMotion = mediaQuery.matches;
-      mediaQuery.addEventListener?.('change', e => { reduceMotion = e.matches; });
-
-      let W = 0, H = 0, DPR = 1;
-      let pts = [];
-      let columns = 0, rows = 0, cellSize = 160, buckets = [];
-      let lastFrame = performance.now();
-      let firstResize = true;
-
-      const exclusionSelectors = (bg.dataset.exclusions || '')
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean);
-      let exclusionZones = [];
-      let softExclusionZones = [];
-
-      const fadeSelectors = (bg.dataset.fadeZones || bg.dataset.fadezones || '')
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean);
-      const fadeDepth = Math.max(6, parseFloat(bg.dataset.fadeDepth) || 42);
-      const fadeDefaultMargin = Math.max(0, parseFloat(bg.dataset.fadeMargin) || 0);
-      let fadeZones = [];
-
-      const exclusionDefaultMargin = Math.max(0, parseFloat(bg.dataset.exclusionMargin) || 0);
-      
-       const disableMagnetSelectors = [pointerSurface?.dataset.disableMagnet, bg.dataset.disableMagnet]
-        .filter(Boolean)
-        .join(',')
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean);
-      
-      const taupe = () => getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
-
-      function createParticle(){
-        const speed = (Math.random()*2 - 1) * 0.1;
-        return {
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: speed,
-          vy: (Math.random()*2 - 1) * 0.12,
-          baseSize: 1.2 + Math.random() * 1.9,
-          pulse: Math.random() * Math.PI * 2,
-          flowX: Math.random() * 0.6 + 0.25,
-          flowY: Math.random() * 0.6 + 0.25,
-          jitter: Math.random() * 0.4 + 0.1,
-          seed: Math.random() * 1000
-        };
-      }
-
-      function updatePointerTarget(clientX, clientY){
-        const rect = bg.getBoundingClientRect();
-        pointer.targetX = clamp(clientX - rect.left, 0, rect.width);
-        pointer.targetY = clamp(clientY - rect.top, 0, rect.height);
-        pointer.lastMove = performance.now();
-      }
-
-      function handlePointerMove(e){
-        updatePointerTarget(e.clientX, e.clientY);
-        const suppressed = shouldDisableMagnet(e.target);
-        pointer.inside = !suppressed;
-        pointer.targetStrength = suppressed ? 0 : 1;
-        if (suppressed){
-          pointer.strength *= 0.35;
-          pointer.magnetExpireAt = 0;
-        } else {
-          pointer.magnetExpireAt = pointer.lastMove + 1000;
-        }
-      }
-      
-      function handlePointerLeave(){
-        pointer.inside = false;
-        pointer.targetStrength = 0;
-        pointer.strength *= 0.5;
-        pointer.magnetExpireAt = 0;
-      }
-
-      function computeExclusionZones(){
-        if (!exclusionSelectors.length){
-          exclusionZones = [];
-          softExclusionZones = [];
-          return;
-        }
-        const canvasRect = bg.getBoundingClientRect();
-        const solidZones = [];
-        const softZones = [];
-        for (const selector of exclusionSelectors){
-          const elements = Array.from(document.querySelectorAll(selector));
-          for (const el of elements){
-            if (!(el instanceof Element)) continue;
-            const rect = el.getBoundingClientRect();
-            const marginAttr = parseFloat(el.getAttribute('data-particle-exclusion-margin') || '');
-            const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : exclusionDefaultMargin;
-            const behaviorAttr = (el.getAttribute('data-particle-barrier') || el.getAttribute('data-particle-behavior') || el.dataset.particleBarrier || '').toLowerCase();
-            const behavior = behaviorAttr === 'solid' || behaviorAttr === 'hard' || behaviorAttr === 'bounce' ? 'solid' : 'soft';
-            const zone = {
-              x: rect.left - canvasRect.left - margin,
-              y: rect.top - canvasRect.top - margin,
-              w: rect.width + margin * 2,
-              h: rect.height + margin * 2
-            };
-            if (zone.w <= 0 || zone.h <= 0) continue;
-            if (behavior === 'solid') solidZones.push(zone);
-            else softZones.push(zone);
-          }
-        }
-        exclusionZones = solidZones;
-        softExclusionZones = softZones;
-      }
-
-      function computeFadeZones(){
-        if (!fadeSelectors.length){
-          fadeZones = [];
-          return;
-        }
-        const canvasRect = bg.getBoundingClientRect();
-        const zones = [];
-        for (const selector of fadeSelectors){
-          const elements = Array.from(document.querySelectorAll(selector));
-          for (const el of elements){
-            if (!(el instanceof Element)) continue;
-            const rect = el.getBoundingClientRect();
-            const marginAttr = parseFloat(el.getAttribute('data-particle-fade-margin') || '');
-            const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : fadeDefaultMargin;
-            const zone = {
-              x: rect.left - canvasRect.left,
-              y: rect.top - canvasRect.top,
-              w: rect.width,
-              h: rect.height,
-              fade: fadeDepth,
-              margin
-            };
-            if (zone.w <= 0 || zone.h <= 0 || zone.fade <= 0) continue;
-            zones.push(zone);
-          }
-        }
-        fadeZones = zones;
-      }
-      
-      function zoneContains(zones, x, y){
-        for (const zone of zones){
-          if (x >= zone.x && x <= zone.x + zone.w && y >= zone.y && y <= zone.y + zone.h) return true;
-        }
-        return false;
-      }
-
-      function isInsideExclusion(x, y, { includeSoft = true } = {}){
-        if (exclusionZones.length && zoneContains(exclusionZones, x, y)) return true;
-        if (!includeSoft) return false;
-        if (softExclusionZones.length && zoneContains(softExclusionZones, x, y)) return true;
-        return false;
-      }
-      
-      function resolveExclusions(p){
-        if (!exclusionZones.length) return;
-        for (const zone of exclusionZones){
-          if (p.x >= zone.x && p.x <= zone.x + zone.w && p.y >= zone.y && p.y <= zone.y + zone.h){
-            const left = Math.abs(p.x - zone.x);
-            const right = Math.abs(zone.x + zone.w - p.x);
-            const top = Math.abs(p.y - zone.y);
-            const bottom = Math.abs(zone.y + zone.h - p.y);
-            const min = Math.min(left, right, top, bottom);
-            const buffer = 6 + Math.random() * 6;
-            const tangentKick = (Math.random() - 0.5) * 0.8;
-            if (min === left){
-              p.x = zone.x - buffer;
-              p.vx = -Math.abs(p.vx) * 0.75 - 0.05;
-              p.vy += tangentKick;
-            } else if (min === right){
-              p.x = zone.x + zone.w + buffer;
-              p.vx = Math.abs(p.vx) * 0.75 + 0.05;
-              p.vy += tangentKick;
-            } else if (min === top){
-              p.y = zone.y - buffer;
-              p.vy = -Math.abs(p.vy) * 0.75 - 0.05;
-              p.vx += tangentKick;
-            } else {
-              p.y = zone.y + zone.h + buffer;
-              p.vy = Math.abs(p.vy) * 0.75 + 0.05;
-              p.vx += tangentKick;
-            }
-          }
-        }
-      }
-
-      function fadeFactor(x, y){
-        if (!fadeZones.length) return 1;
-        let factor = 1;
-        for (const zone of fadeZones){
-          const innerX = zone.x;
-          const innerY = zone.y;
-          const innerW = zone.w;
-          const innerH = zone.h;
-          const margin = zone.margin || 0;
-          const outerX = innerX - margin;
-          const outerY = innerY - margin;
-          const outerW = innerW + margin * 2;
-          const outerH = innerH + margin * 2;
-
-          const insideInner = x >= innerX && x <= innerX + innerW && y >= innerY && y <= innerY + innerH;
-          const insideOuter = margin > 0 && x >= outerX && x <= outerX + outerW && y >= outerY && y <= outerY + outerH;
-          if (!insideInner && !insideOuter) continue;
-
-          if (insideInner){
-            const distLeft = x - innerX;
-            const distRight = innerX + innerW - x;
-            const distTop = y - innerY;
-            const distBottom = innerY + innerH - y;
-            const distToEdge = Math.min(distLeft, distRight, distTop, distBottom);
-            const fade = clamp(distToEdge / Math.max(1, zone.fade), 0, 1);
-            // Blend two easings so particles are effectively invisible anywhere behind the text,
-            // while still using the provided fade depth to create a soft transition near the edges.
-            const interiorFade = Math.pow(fade, 2);
-            const vanish = Math.pow(1 - fade, 4);
-            factor = Math.min(factor, interiorFade, vanish);
-          } else if (insideOuter){
-            const dx = x < innerX ? innerX - x : (x > innerX + innerW ? x - (innerX + innerW) : 0);
-            const dy = y < innerY ? innerY - y : (y > innerY + innerH ? y - (innerY + innerH) : 0);
-            const distToInner = Math.sqrt(dx * dx + dy * dy);
-            const fadeRatio = clamp(distToInner / Math.max(1, margin), 0, 1);
-            factor = Math.min(factor, fadeRatio);
-          }
-        }
-        return factor;
-      }
-      
-      function segmentHitsExclusion(ax, ay, bx, by){
-        if (!exclusionZones.length) return false;
-        for (const zone of exclusionZones){
-          if (segmentIntersectsRect(ax, ay, bx, by, zone)) return true;
-        }
-        return false;
-      }
-  
-      function segmentIntersectsRect(ax, ay, bx, by, rect){
-        const minX = rect.x;
-        const maxX = rect.x + rect.w;
-        const minY = rect.y;
-        const maxY = rect.y + rect.h;
-  
-        if (ax >= minX && ax <= maxX && ay >= minY && ay <= maxY) return true;
-        if (bx >= minX && bx <= maxX && by >= minY && by <= maxY) return true;
-  
-        const dx = bx - ax;
-        const dy = by - ay;
-        let t0 = 0;
-        let t1 = 1;
-        const p = [-dx, dx, -dy, dy];
-        const q = [ax - minX, maxX - ax, ay - minY, maxY - ay];
-        for (let i = 0; i < 4; i++){
-          const pi = p[i];
-          const qi = q[i];
-          if (pi === 0){
-            if (qi < 0) return false;
-          } else {
-            const t = qi / pi;
-            if (pi < 0){
-              if (t > t1) return false;
-              if (t > t0) t0 = t;
-            } else {
-              if (t < t0) return false;
-              if (t < t1) t1 = t;
-            }
-          }
-        }
-        return t1 > t0 && t1 >= 0 && t0 <= 1;
-      }
-
-      function shouldDisableMagnet(target){
-        if (!target || !disableMagnetSelectors.length) return false;
-        for (const selector of disableMagnetSelectors){
-          if (!selector) continue;
-          try {
-            if (target.closest(selector)) return true;
-          } catch (err) {
-            continue;
-          }
-        }
-        return false;
-      }
-      
-      function resize(){
-        W = bg.clientWidth;
-        H = bg.clientHeight;
-        DPR = Math.min(2, window.devicePixelRatio || 1);
-        bg.width = Math.floor(W * DPR);
-        bg.height = Math.floor(H * DPR);
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-        const area = Math.max(1, W * H);
-        const desired = reduceMotion ? Math.round(area / 36000) : Math.round(area / 14000);
-        const count = clamp(desired, 80, 260);
-        pts = Array.from({ length: count }, createParticle);
-
-        cellSize = clamp(Math.sqrt(area / count) * 1.6, 110, 200);
-        columns = Math.max(1, Math.ceil(W / cellSize));
-        rows = Math.max(1, Math.ceil(H / cellSize));
-        buckets = Array.from({ length: columns * rows }, () => []);
-
-        computeExclusionZones();
-
-        computeFadeZones();
-        
-        if (firstResize){
-          pointer.x = W * 0.5;
-          pointer.y = H * 0.5;
-          pointer.targetX = pointer.x;
-          pointer.targetY = pointer.y;
-          firstResize = false;
-        }
-        }
-
-      function clearBuckets(){
-        for (let i = 0; i < buckets.length; i++) buckets[i].length = 0;
-      }
-
-      function pushToBucket(p){
-        const cx = clamp(Math.floor(p.x / cellSize), 0, columns - 1);
-        const cy = clamp(Math.floor(p.y / cellSize), 0, rows - 1);
-        buckets[cx + cy * columns].push(p);
-      }
-
-      const neighbourOffsets = [
-        [1, 0],
-        [0, 1],
-        [1, 1],
-        [-1, 1],
-        [1, -1]
-      ];
-
-      function drawConnections(maxDistSq, maxDist){
-        ctx.lineWidth = 0.45;
-        for (let cy = 0; cy < rows; cy++){
-          for (let cx = 0; cx < columns; cx++){
-            const bucketIndex = cx + cy * columns;
-            const here = buckets[bucketIndex];
-            if (!here.length) continue;
-
-            for (let i = 0; i < here.length; i++){
-              const a = here[i];
-              for (let j = i + 1; j < here.length; j++){
-                const b = here[j];
-                renderPair(a, b, maxDistSq, maxDist);
-              }
-            }
-
-            for (const [ox, oy] of neighbourOffsets){
-              const nx = cx + ox;
-              const ny = cy + oy;
-              if (nx < 0 || ny < 0 || nx >= columns || ny >= rows) continue;
-              const neighbour = buckets[nx + ny * columns];
-              if (!neighbour.length) continue;
-              for (const a of here){
-                for (const b of neighbour){
-                  renderPair(a, b, maxDistSq, maxDist);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      function renderPair(a, b, maxDistSq, maxDist){
-        if (isInsideExclusion(a.x, a.y, { includeSoft: false }) || isInsideExclusion(b.x, b.y, { includeSoft: false })) return;
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        if (segmentHitsExclusion(a.x, a.y, b.x, b.y)) return;
-        const distSq = dx * dx + dy * dy;
-        if (distSq > maxDistSq) return;
-        const dist = Math.sqrt(distSq) || 1;
-        const closeness = 1 - (dist / maxDist);
-        const midFade = fadeFactor((a.x + b.x) * 0.5, (a.y + b.y) * 0.5);
-        const fade = Math.min(fadeFactor(a.x, a.y), fadeFactor(b.x, b.y), midFade);
-        if (fade <= 0.01) return;
-        const alpha = Math.max(0, Math.min(0.4, closeness * 0.6 * fade));
-        if (alpha <= 0.01) return;
-        ctx.strokeStyle = `rgba(102,108,115,${alpha.toFixed(3)})`;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-      }
-      
-      function loop(now){
-        const dt = Math.min(0.033, (now - lastFrame) / 1000 || 0.016);
-        lastFrame = now;
-
-        const background = taupe();
-        ctx.fillStyle = background;
-        ctx.fillRect(0, 0, W, H);
-
-        const vignette = ctx.createRadialGradient(W * 0.5, H * 0.5, Math.max(W, H) * 0.1, W * 0.5, H * 0.5, Math.max(W, H) * 0.9);
-        vignette.addColorStop(0, 'rgba(255,255,255,0.08)');
-        vignette.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, W, H);
-
-        const hasExpiry = pointer.magnetExpireAt > 0;
-        const magnetActive = pointer.inside && (!hasExpiry || now <= pointer.magnetExpireAt);
-        pointer.targetStrength = magnetActive ? 1 : 0;
-        pointer.strength += (pointer.targetStrength - pointer.strength) * 0.22;
-        const pointerEase = reduceMotion ? 0.25 : 0.18;
-        pointer.x += (pointer.targetX - pointer.x) * pointerEase;
-        pointer.y += (pointer.targetY - pointer.y) * pointerEase;
-
-        clearBuckets();
-
-        const magnetRadius = clamp(Math.max(W, H) * 0.22, 100, 280);
-        const magnetRadiusSq = magnetRadius * magnetRadius;
-        const magnetStrength = reduceMotion ? 0.04 : 0.13;
-        const pointerLinks = [];
-
-        const baseFlow = now * 0.00018;
-
-        for (const p of pts){
-          const flowX = Math.sin(baseFlow * p.flowX + p.seed) * 0.22;
-          const flowY = Math.cos(baseFlow * p.flowY + p.seed * 1.35) * 0.22;
-          p.vx += flowX * dt;
-          p.vy += flowY * dt;
-
-          if (!reduceMotion && pointer.strength > 0.01){
-            const dx = pointer.x - p.x;
-            const dy = pointer.y - p.y;
-            const distSq = dx * dx + dy * dy;
-            if (distSq < magnetRadiusSq){
-              const dist = Math.sqrt(distSq) || 1;
-              const influence = (1 - dist / magnetRadius) * pointer.strength;
-              const pull = magnetStrength * influence;
-              p.vx += (dx / dist) * pull;
-              p.vy += (dy / dist) * pull;
-              if (!isInsideExclusion(p.x, p.y, { includeSoft: false })){
-                const fade = fadeFactor(p.x, p.y);
-                if (fade > 0.01) pointerLinks.push({ particle: p, influence });
-              }
-            }
-          }
-
-          p.vx *= 0.985;
-          p.vy *= 0.985;
-
-          const jitter = p.jitter * dt;
-          p.vx += (Math.random() - 0.5) * jitter;
-          p.vy += (Math.random() - 0.5) * jitter;
-
-          p.x += p.vx + flowX;
-          p.y += p.vy + flowY;
-
-          if (p.x < -20) p.x = W + 20;
-          else if (p.x > W + 20) p.x = -20;
-          if (p.y < -20) p.y = H + 20;
-          else if (p.y > H + 20) p.y = -20;
-
-          resolveExclusions(p);
-          
-          pushToBucket(p);
-        }
-
-        const connectDist = clamp(Math.max(W, H) * 0.24, 140, 260);
-        drawConnections(connectDist * connectDist, connectDist);
-        
-        ctx.fillStyle = 'rgba(43,47,51,0.85)';
-        for (const p of pts){
-          if (isInsideExclusion(p.x, p.y, { includeSoft: false })) continue;
-          const fade = fadeFactor(p.x, p.y);
-          if (fade <= 0.01) continue;
-          const size = p.baseSize + Math.sin(baseFlow + p.pulse) * 0.7;
-          ctx.save();
-          ctx.globalAlpha = fade;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, Math.max(0.65, size), 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-
-        const pointerInsideExclusion = isInsideExclusion(pointer.x, pointer.y);
-        
-        if (!reduceMotion && pointer.strength > 0.02 && !pointerInsideExclusion){
-          ctx.save();
-          ctx.globalCompositeOperation = 'lighter';
-          const halo = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, magnetRadius * 0.9);
-          halo.addColorStop(0, `rgba(255,255,255,${0.16 * pointer.strength})`);
-          halo.addColorStop(0.45, `rgba(255,255,255,${0.08 * pointer.strength})`);
-          halo.addColorStop(1, 'rgba(255,255,255,0)');
-          ctx.fillStyle = halo;
-          ctx.beginPath();
-          ctx.arc(pointer.x, pointer.y, magnetRadius * 0.9, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-          
-          ctx.lineWidth = 0.55;
-          for (const link of pointerLinks){
-            if (link.influence <= 0) continue;
-            const linkFade = fadeFactor(link.particle.x, link.particle.y);
-            const midFade = fadeFactor((pointer.x + link.particle.x) * 0.5, (pointer.y + link.particle.y) * 0.5);
-            const fade = Math.min(linkFade, midFade);
-            if (fade <= 0.01) continue;
-            const alpha = clamp(link.influence * pointer.strength * 1.4 * fade, 0, 0.85);
-            if (alpha < 0.05) continue;
-            ctx.strokeStyle = `rgba(74,78,84,${alpha.toFixed(3)})`;
-            ctx.beginPath();
-            const lx = link.particle.x;
-            const ly = link.particle.y;
-            if (segmentHitsExclusion(pointer.x, pointer.y, lx, ly)) continue;
-            ctx.moveTo(pointer.x, pointer.y);
-            ctx.lineTo(lx, ly);
-            ctx.stroke();
-          }
-        }
-
-        if (document.visibilityState !== 'hidden'){
-          requestAnimationFrame(loop);
-        } else {
-          lastFrame = performance.now();
-          requestAnimationFrame(loop);
-        }
-      }
-
-      window.addEventListener('resize', resize);
-      pointerSurface?.addEventListener('pointermove', handlePointerMove, { passive: true });
-      pointerSurface?.addEventListener('pointerdown', handlePointerMove);
-      pointerSurface?.addEventListener('pointerenter', handlePointerMove);
-      pointerSurface?.addEventListener('pointerleave', handlePointerLeave);
-      pointerSurface?.addEventListener('pointerup', handlePointerMove);
-
-      requestAnimationFrame(() => { resize(); loop(performance.now()); });
     }
 
-    function initRevealAnimations(){
-      const groups = [
-        '.hero-inner > .hero-col',
-        '.panel',
-        '.panel-link',
-        '.about-grid > *',
-        '.about-lower > *',
-        '.workflow-steps .step',
-        '.portfolio-page .hero-content',
-        '.portfolio-page .hero-stats > *',
-        '.portfolio-page .project-card',
-        '.portfolio-page .section-heading',
-        '.resume-body .resume-hero__copy',
-        '.resume-body .resume-hero__meta',
-        '.resume-body .resume-toc__inner',
-        '.resume-body .resume-section'
-      ];
-
-      const selector = groups.join(',');
-      const nodes = selector ? $$(selector) : [];
-      if (!nodes.length) return;
-
-      document.body.classList.add('has-reveal');
-
-      nodes.forEach((el, i) => {
-        el.classList.add('reveal-item');
-        const delay = Math.min(480, (i % 10) * 60 + (Math.random() * 40));
-        el.style.setProperty('--reveal-delay', `${delay.toFixed(0)}ms`);
+    function gatherZoneElements() {
+      const elements = new Set();
+      fadeSelectors.forEach(selector => {
+        selectAll(selector).forEach(el => {
+          if (el instanceof Element) elements.add(el);
+        });
       });
+      return elements;
+    }
 
-      if (!('IntersectionObserver' in window)){
-        nodes.forEach(el => el.classList.add('is-visible'));
+    function measureFadeZones() {
+      const rect = canvas.getBoundingClientRect();
+      const zones = [];
+      state.zoneElements.forEach(el => {
+        const zoneRect = el.getBoundingClientRect();
+        const marginAttr = parseFloat(el.getAttribute('data-particle-fade-margin'));
+        const margin = Number.isFinite(marginAttr) ? Math.max(0, marginAttr) : fadeDefaultMargin;
+        zones.push({
+          innerX: zoneRect.left - rect.left,
+          innerY: zoneRect.top - rect.top,
+          innerW: zoneRect.width,
+          innerH: zoneRect.height,
+          margin
+        });
+      });
+      state.fadeZones = zones;
+    }
+
+    function bindZoneObserver() {
+      const elements = gatherZoneElements();
+      state.zoneElements = elements;
+      if (!elements.size) {
+        if (state.zoneObserver) state.zoneObserver.disconnect();
+        state.zoneObserver = null;
+        state.fadeZones = [];
         return;
       }
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        });
-      }, {
-        rootMargin: '0px 0px -5% 0px',
-        threshold: 0.12
-      });
+      if (!state.zoneObserver && 'ResizeObserver' in window) {
+        state.zoneObserver = new ResizeObserver(() => measureFadeZones());
+      }
 
-      nodes.forEach(el => observer.observe(el));
+      if (state.zoneObserver) {
+        state.zoneObserver.disconnect();
+        elements.forEach(el => state.zoneObserver.observe(el));
+      }
+
+       measureFadeZones();
+    }
+    
+    function updateDimensions() {
+      state.dpr = Math.min(2, window.devicePixelRatio || 1);
+      state.width = canvas.clientWidth;
+      state.height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.floor(state.width * state.dpr));
+      canvas.height = Math.max(1, Math.floor(state.height * state.dpr));
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+
+      const area = Math.max(1, state.width * state.height);
+      const targetCount = clamp(Math.round(area / (reduceMotion ? 22000 : 16000)), 60, 160);
+      state.particles = Array.from({ length: targetCount }, createParticle);
+
+      bindZoneObserver();
+      measureFadeZones();
     }
 
-    // -------------------- Bubble Network (skills/interests) --------------------
-    (function skillsNetwork(){
-      const cvs = document.getElementById('skillsGraph'); if (!cvs) return;
-      const ctx = cvs.getContext('2d');
+    function onPointerMove(event) {
+      const bounds = canvas.getBoundingClientRect();
+      state.pointer.targetX = event.clientX - bounds.left;
+      state.pointer.targetY = event.clientY - bounds.top;
+      state.pointer.active = true;
+    }
 
-      // Labels + radii (bigger for readability)
-      const center = { label:'Tristan', r: 60 };
-      const nodes = [
-        { label:'CAD (NX / Creo)', r: 40 },
-        { label:'Automotive', r: 36 },
-        { label:'Wiring & PDM', r: 34 },
-        { label:'Cooling & Thermals', r: 36 },
-        { label:'Testing & Docs', r: 34 },
-        { label:'MATLAB / Python', r: 36 },
-        { label:'Snowboarding', r: 32 },
-        { label:'Pets', r: 30 },
-        { label:'Tinkering', r: 32 },
-      ];
+    function onPointerLeave() {
+      state.pointer.active = false;
+    }
 
-      let DPR=1, W=0, H=0, CX=0, CY=0, hoverIndex=-1;
-      const P = [{...center, x:0,y:0, baseX:0, baseY:0, center:true, wobX:0, wobY:0, seedX:Math.random()*1000, seedY:Math.random()*1000}]
-        .concat(nodes.map(n=>({ ...n, x:0,y:0, baseX:0, baseY:0, center:false, wobX:0, wobY:0, seedX:Math.random()*1000, seedY:Math.random()*1000 })));
+    function computeFade(x, y) {
+      if (!state.fadeZones.length) return 1;
+      let alpha = 1;
+      for (const zone of state.fadeZones) {
+        const { innerX, innerY, innerW, innerH, margin } = zone;
+        if (
+          x >= innerX &&
+          x <= innerX + innerW &&
+          y >= innerY &&
+          y <= innerY + innerH
+        ) {
+          return 0;
+        }
+        if (margin <= 0) continue;
+        const outerX = innerX - margin;
+        const outerY = innerY - margin;
+        const outerW = innerW + margin * 2;
+        const outerH = innerH + margin * 2;
+        if (
+          x >= outerX &&
+          x <= outerX + outerW &&
+          y >= outerY &&
+          y <= outerY + outerH
+        ) {
+          const dx = Math.max(innerX - x, 0, x - (innerX + innerW));
+          const dy = Math.max(innerY - y, 0, y - (innerY + innerH));
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const ratio = clamp(dist / Math.max(1, margin), 0, 1);
+          alpha = Math.min(alpha, ratio * ratio);
+        }
+      }
+      return alpha;
+    }
 
-      function fit(){
-        DPR = Math.min(2, window.devicePixelRatio||1);
-        const cssW = cvs.clientWidth, cssH = cvs.clientHeight;
-        cvs.width = Math.floor(cssW*DPR); cvs.height = Math.floor(cssH*DPR);
-        ctx.setTransform(DPR,0,0,DPR,0,0);
-        W = cssW; H = cssH;
-        CX = W*0.5; CY = H*0.5;
+    function tick(now) {
+      const delta = (now - state.frame) / 1000 || 0.016;
+      const dt = Math.min(0.05, delta);
+      state.frame = now;
 
-        // place center
-        P[0].baseX = CX; P[0].baseY = CY;
+      const background = getComputedStyle(document.documentElement).getPropertyValue('--taupe').trim() || '#e4ddcc';
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, state.width, state.height);
 
-        // satellites: random non-overlapping-ish positions (relax if too close)
-        const pad = 26;
-        measureNodes();
-        for(let i=1;i<P.length;i++){
-          let placed=false, tries=0;
-          while(!placed && tries<500){
-            const x = pad + Math.random()*(W - pad*2);
-            const y = pad + Math.random()*(H - pad*2);
-            const r = P[i].r;
-            let ok = true;
-            for(let j=0;j<i;j++){
-              const dx = x - (P[j].baseX||P[j].x), dy = y - (P[j].baseY||P[j].y);
-              const min = r + (P[j].r) + 20;
-              if (dx*dx + dy*dy < min*min){ ok=false; break; }
-            }
-            if (ok){ P[i].baseX = x; P[i].baseY = y; placed=true; }
-            tries++;
+      const gradient = ctx.createRadialGradient(
+        state.width * 0.5,
+        state.height * 0.5,
+        Math.max(state.width, state.height) * 0.08,
+        state.width * 0.5,
+        state.height * 0.5,
+        Math.max(state.width, state.height) * 0.9
+      );
+      gradient.addColorStop(0, 'rgba(255,255,255,0.07)');
+      gradient.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, state.width, state.height);
+
+      const pointerEase = reduceMotion ? 0.18 : 0.12;
+      state.pointer.x += (state.pointer.targetX - state.pointer.x) * pointerEase;
+      state.pointer.y += (state.pointer.targetY - state.pointer.y) * pointerEase;
+      const pointerStrengthTarget = state.pointer.active ? 1 : 0;
+      state.pointer.strength += (pointerStrengthTarget - state.pointer.strength) * 0.12;
+
+      const pointerRadius = clamp(Math.max(state.width, state.height) * 0.22, 120, 280);
+      const pointerRadiusSq = pointerRadius * pointerRadius;
+      const pointerForce = reduceMotion ? 18 : 32;
+
+      const baseTime = now * 0.00018;
+
+      for (const particle of state.particles) {
+        // Subtle flow noise
+        particle.vx += Math.cos(baseTime + particle.pulse) * 18 * dt;
+        particle.vy += Math.sin(baseTime * 0.8 + particle.pulse * 1.2) * 18 * dt;
+
+        if (state.pointer.strength > 0.01) {
+          const dx = state.pointer.x - particle.x;
+          const dy = state.pointer.y - particle.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < pointerRadiusSq) {
+            const dist = Math.sqrt(distSq) || 1;
+            const influence = (1 - dist / pointerRadius) * state.pointer.strength;
+            const accel = pointerForce * influence;
+            particle.vx += (dx / dist) * accel * dt;
+            particle.vy += (dy / dist) * accel * dt;
           }
-          // fallback if too many tries
-          if (!placed){ P[i].baseX = pad + Math.random()*(W - pad*2); P[i].baseY = pad + Math.random()*(H - pad*2); }
+        }
+
+        const drag = reduceMotion ? 0.96 : 0.985;
+        const dragFactor = Math.pow(drag, dt * 60);
+        particle.vx *= dragFactor;
+        particle.vy *= dragFactor;
+
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        if (particle.x < -20) particle.x = state.width + 20;
+        else if (particle.x > state.width + 20) particle.x = -20;
+        if (particle.y < -20) particle.y = state.height + 20;
+        else if (particle.y > state.height + 20) particle.y = -20;
+
+        particle.fade = computeFade(particle.x, particle.y);
+      }
+
+      // Connections
+      const maxDistance = clamp(Math.max(state.width, state.height) * 0.24, 130, 260);
+      const maxDistanceSq = maxDistance * maxDistance;
+      ctx.lineWidth = 0.6;
+      ctx.strokeStyle = 'rgba(74,78,84,0.22)';
+      for (let i = 0; i < state.particles.length; i++) {
+        const a = state.particles[i];
+        if (a.fade <= 0.01) continue;
+        for (let j = i + 1; j < state.particles.length; j++) {
+          const b = state.particles[j];
+          if (b.fade <= 0.01) continue;
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > maxDistanceSq) continue;
+          const ratio = 1 - distSq / maxDistanceSq;
+          const alpha = Math.min(a.fade, b.fade) * ratio * 0.65;
+          if (alpha < 0.02) continue;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+          ctx.restore();
         }
       }
 
-      const perfNow = ()=> (performance && performance.now ? performance.now() : Date.now());
-
-      function step(){
-        const t = perfNow()*0.001;
-
-        // gentle wobble around base positions (do NOT reorganize into a ring)
-        for(let i=0;i<P.length;i++){
-          const p = P[i];
-          const amp = p.center ? 2.5 : 4.5;        // wobble amplitude
-          const spdX = 0.25 + (p.seedX % 0.35);     // slower variation
-          const spdY = 0.25 + (p.seedY % 0.35);
-          p.wobX = Math.sin(t * (0.6 + spdX) + p.seedX) * amp;
-          p.wobY = Math.cos(t * (0.55 + spdY) + p.seedY) * amp;
-          p.x = p.baseX + p.wobX;
-          p.y = p.baseY + p.wobY;
-        }
-
-        // light repulsion to keep separation if they drift too close
-        for(let i=0;i<P.length;i++){
-          for(let j=i+1;j<P.length;j++){
-            const a = P[i], b = P[j];
-            const rx = a.x - b.x, ry = b ? (a.y - b.y) : 0;
-            const d2 = rx*rx + ry*ry;
-            const min = (a.r + b.r) + 16;
-            if (d2 > 0 && d2 < (min*min)){
-              const d = Math.sqrt(d2) || 1;
-              const push = (min - d) * 0.02;
-              const ux = rx/d, uy = ry/d;
-              a.baseX += ux * push; a.baseY += uy * push;
-              b.baseX -= ux * push; b.baseY -= uy * push;
-            }
-          }
-        }
-
-        // clamp bases to canvas (keep padding)
-        const pad = 20;
-        for(const p of P){
-          p.baseX = clamp(p.baseX, pad, W - pad);
-          p.baseY = clamp(p.baseY, pad, H - pad);
-        }
-      }
-
-      function draw(){
-        ctx.clearRect(0,0,W,H);
-        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(43,47,51,.22)';
-
-        // edges from center to satellites (branch-like)
-        for(let i=1;i<P.length;i++) line(P[0], P[i]);
-
-        // nodes
-        for(let i=0;i<P.length;i++){
-          const p = P[i];
-          const isHover = (i===hoverIndex);
-          const fill = p.center ? '#e9e4d7' : '#ffffff';
-          const stroke = 'rgba(43,47,51,.28)';
-          const weight = isHover ? 700 : (p.center ? 600 : 700);
-          const metrics = measureLabel(p, weight);
-          const boxX = p.x - metrics.boxW/2;
-          const boxY = p.y - metrics.boxH/2;
-          roundedRect(boxX, boxY, metrics.boxW, metrics.boxH, 18, fill, stroke, isHover ? 1.0 : 0.95);
-          drawLabel(p, metrics.lines, weight, isHover);
-        }
-      }
-
-      function line(a,b){
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      }
-      function roundedRect(x,y,width,height,radius,fill,stroke,alpha){
-        const r = Math.min(radius, width/2, height/2);
-        ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = fill; ctx.strokeStyle = stroke;
+      ctx.fillStyle = 'rgba(43,47,51,0.9)';
+      for (const particle of state.particles) {
+        if (particle.fade <= 0.01) continue;
+        const size = particle.size + Math.sin(baseTime + particle.pulse) * 0.5;
+        ctx.save();
+        ctx.globalAlpha = clamp(particle.fade, 0, 1);
         ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + width - r, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-        ctx.lineTo(x + width, y + height - r);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-        ctx.lineTo(x + r, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-        ctx.fill(); ctx.stroke(); ctx.restore();
-      }
-
-      function measureLabel(p, weight){
-        const MAX_WIDTH = 140;
-        const LINE_HEIGHT = 16;
-        const PAD_X = 18;
-        const PAD_Y = 12;
-        const baseFont = `${weight} 13px Inter, system-ui, sans-serif`;
-        ctx.save();
-        ctx.setTransform(1,0,0,1,0,0);
-        ctx.font = baseFont;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const lines = wrapLines(p.label, MAX_WIDTH);
-        let maxWidth = 0;
-        for (const line of lines){
-          maxWidth = Math.max(maxWidth, ctx.measureText(line).width);
-        }
-        const minWidth = p.center ? 170 : 150;
-        const boxW = Math.max(minWidth, maxWidth + PAD_X*2);
-        const boxH = lines.length * LINE_HEIGHT + PAD_Y*2;
-        ctx.restore();
-        p.boxW = boxW;
-        p.boxH = boxH;
-        p.r = Math.max(boxW, boxH) * 0.5;
-        return { lines, boxW, boxH, lineHeight: LINE_HEIGHT, font: baseFont };
-      }
-      
-      function drawLabel(p, lines, weight, isHover){
-        const LINE_HEIGHT = 16;
-        ctx.save();
-        ctx.fillStyle = isHover ? '#1f2327' : '#2b2f33';
-        ctx.font = `${weight} 13px Inter, system-ui, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const totalHeight = (lines.length - 1) * LINE_HEIGHT;
-        let yy = p.y - totalHeight / 2;
-        for (const line of lines){
-          ctx.fillText(line, p.x, yy);
-          yy += LINE_HEIGHT;
-        }
+        ctx.arc(particle.x, particle.y, Math.max(0.6, size), 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       }
-      
-      function wrapLines(text, maxWidth){
-        const words = text.split(' ');
-        const lines = [];
-        let line = '';
-        for (const word of words){
-          const test = line ? `${line} ${word}` : word;
-          if (line && ctx.measureText(test).width > maxWidth){
-            lines.push(line);
-            line = word;
-          } else {
-            line = test;
-          }
-        }
-        if (line) lines.push(line);
-        return lines;
-      }
 
-      function measureNodes(){
-        for(const p of P){
-          const weight = p.center ? 600 : 700;
-          const metrics = measureLabel(p, weight);
-          p.boxW = metrics.boxW;
-          p.boxH = metrics.boxH;
-          p.r = Math.max(metrics.boxW, metrics.boxH) * 0.5;
-        }
-      }
+      requestAnimationFrame(tick);
+    }
 
-      function pointer(e){
-        const r = cvs.getBoundingClientRect();
-        const mx = (e.clientX - r.left);
-        const my = (e.clientY - r.top);
-        hoverIndex = -1;
-        for(let i=0;i<P.length;i++){
-          const p = P[i];
-          const halfW = (p.boxW || (p.r*2)) / 2;
-          const halfH = (p.boxH || (p.r*2)) / 2;
-          if (mx >= p.x - halfW && mx <= p.x + halfW && my >= p.y - halfH && my <= p.y + halfH) {
-            hoverIndex = i;
-            break;
-          }
-        }
-        cvs.style.cursor = (hoverIndex>0 ? 'pointer' : 'default');
-      }
+    window.addEventListener('resize', updateDimensions);
+    if (surface) {
+      surface.addEventListener('pointermove', onPointerMove, { passive: true });
+      surface.addEventListener('pointerdown', onPointerMove);
+      surface.addEventListener('pointerenter', onPointerMove);
+      surface.addEventListener('pointerleave', onPointerLeave);
+    }
 
-      function loop(){
-        step(); draw(); requestAnimationFrame(loop);
-      }
-
-      window.addEventListener('resize', fit);
-      cvs.addEventListener('pointermove', pointer);
-      fit(); loop();
-    })();
-
-    // -------------------- (Optional) Refractive hover  --------------------
-    // Disabled for panel links since you’re using the subtle fade effect via CSS.
+    updateDimensions();
+    requestAnimationFrame(time => {
+      state.frame = time;
+      requestAnimationFrame(tick);
+    });
   }
+
+  // ---------------------------------------------------------------------------
+  // Skills network canvas
+  // ---------------------------------------------------------------------------
+
+  function initSkillsNetwork() {
+    const canvas = select('#skillsGraph');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = prefersReducedMotion();
+
+    const nodes = [
+      { label: 'Tristan', weight: 600, radius: 64, center: true },
+      { label: 'CAD (NX / Creo)', weight: 700, radius: 42 },
+      { label: 'Automotive', weight: 700, radius: 38 },
+      { label: 'Wiring & PDM', weight: 700, radius: 36 },
+      { label: 'Cooling & Thermals', weight: 700, radius: 36 },
+      { label: 'Testing & Docs', weight: 700, radius: 34 },
+      { label: 'MATLAB / Python', weight: 700, radius: 36 },
+      { label: 'Snowboarding', weight: 700, radius: 32 },
+      { label: 'Pets', weight: 700, radius: 30 },
+      { label: 'Tinkering', weight: 700, radius: 32 }
+    ];
+
+    const state = {
+      width: 0,
+      height: 0,
+      dpr: 1,
+      nodes: [],
+      pointer: { x: 0, y: 0, over: -1 }
+    };
+
+    function cloneNodes() {
+      state.nodes = nodes.map((node, index) => ({
+        ...node,
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        wobbleSeed: Math.random() * 1000,
+        hoverable: index !== 0
+      }));
+    }
+
+    function layoutNodes() {
+      cloneNodes();
+      const center = state.nodes[0];
+      center.x = state.width / 2;
+      center.y = state.height / 2;
+
+      const ringRadius = Math.min(state.width, state.height) * 0.36;
+      const angleStep = (Math.PI * 2) / (state.nodes.length - 1);
+      for (let i = 1; i < state.nodes.length; i++) {
+        const node = state.nodes[i];
+        const angle = angleStep * (i - 1);
+        node.x = center.x + Math.cos(angle) * ringRadius * (0.75 + Math.random() * 0.25);
+        node.y = center.y + Math.sin(angle) * ringRadius * (0.75 + Math.random() * 0.25);
+      }
+    }
+
+    function updateSize() {
+      state.dpr = Math.min(2, window.devicePixelRatio || 1);
+      state.width = canvas.clientWidth;
+      state.height = canvas.clientHeight;
+      canvas.width = Math.max(1, Math.floor(state.width * state.dpr));
+      canvas.height = Math.max(1, Math.floor(state.height * state.dpr));
+      ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+      layoutNodes();
+    }
+    
+    function wrapLines(text, font) {
+      const words = text.split(' ');
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.font = font;
+      const maxWidth = 160;
+      const lines = [];
+      let line = '';
+      let widest = 0;
+      for (const word of words) {
+        const next = line ? `${line} ${word}` : word;
+        const width = ctx.measureText(next).width;
+        if (width > maxWidth && line) {
+          const lineWidth = ctx.measureText(line).width;
+          widest = Math.max(widest, lineWidth);
+          lines.push(line);
+          line = word;
+        } else {
+          line = next;
+          widest = Math.max(widest, width);
+        }
+      }
+      
+      if (line) {
+        widest = Math.max(widest, ctx.measureText(line).width);
+        lines.push(line);
+      }
+      ctx.restore();
+      return { lines, widest };
+    }
+
+    function drawNode(node, index, time) {
+      const font = `${node.weight} 13px Inter, system-ui, sans-serif`;
+      const wrapped = wrapLines(node.label, font);
+      const lines = wrapped.lines;
+      const lineHeight = 16;
+      const paddingX = 20;
+      const paddingY = 12;
+      const boxWidth = Math.max(node.center ? 180 : 150, wrapped.widest + paddingX * 2);
+      const boxHeight = lines.length * lineHeight + paddingY * 2;
+
+      const wobble = reduceMotion ? 0 : Math.sin(time * 0.001 + node.wobbleSeed) * 4;
+      const wobbleY = reduceMotion ? 0 : Math.cos(time * 0.001 + node.wobbleSeed) * 4;
+
+      const x = node.x + wobble;
+      const y = node.y + wobbleY;
+
+      const isHover = state.pointer.over === index && node.hoverable;
+
+      const radius = Math.min(22, Math.min(boxWidth, boxHeight) / 2);
+      ctx.save();
+      ctx.fillStyle = isHover ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.9)';
+      ctx.strokeStyle = 'rgba(43,47,51,0.18)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const left = x - boxWidth / 2;
+      const top = y - boxHeight / 2;
+      const right = left + boxWidth;
+      const bottom = top + boxHeight;
+      ctx.moveTo(left + radius, top);
+      ctx.lineTo(right - radius, top);
+      ctx.quadraticCurveTo(right, top, right, top + radius);
+      ctx.lineTo(right, bottom - radius);
+      ctx.quadraticCurveTo(right, bottom, right - radius, bottom);
+      ctx.lineTo(left + radius, bottom);
+      ctx.quadraticCurveTo(left, bottom, left, bottom - radius);
+      ctx.lineTo(left, top + radius);
+      ctx.quadraticCurveTo(left, top, left + radius, top);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = '#2b2f33';
+      ctx.font = font;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      let textY = y - ((lines.length - 1) * lineHeight) / 2;
+      for (const line of lines) {
+        ctx.fillText(line, x, textY);
+        textY += lineHeight;
+      }
+      ctx.restore();
+
+      node.renderX = x;
+      node.renderY = y;
+      node.renderWidth = boxWidth;
+      node.renderHeight = boxHeight;
+    }
+
+    function drawConnections(time) {
+      const nodesToUse = state.nodes;
+      if (!nodesToUse.length) return;
+      const center = nodesToUse[0];
+      const centerOffset = reduceMotion
+        ? { x: center.x, y: center.y }
+        : {
+            x: center.x + Math.sin(time * 0.001 + center.wobbleSeed) * 4,
+            y: center.y + Math.cos(time * 0.001 + center.wobbleSeed) * 4
+          };
+      ctx.save();
+      ctx.strokeStyle = 'rgba(74,78,84,0.2)';
+      ctx.lineWidth = 1;
+      for (let i = 1; i < nodesToUse.length; i++) {
+        const node = nodesToUse[i];
+        const wobble = reduceMotion ? 0 : Math.sin(time * 0.001 + node.wobbleSeed) * 4;
+        const wobbleY = reduceMotion ? 0 : Math.cos(time * 0.001 + node.wobbleSeed) * 4;
+        ctx.beginPath();
+        ctx.moveTo(centerOffset.x, centerOffset.y);
+        ctx.lineTo(node.x + wobble, node.y + wobbleY);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function draw(time) {
+      ctx.clearRect(0, 0, state.width, state.height);
+      drawConnections(time);
+      state.nodes.forEach((node, index) => drawNode(node, index, time));
+      requestAnimationFrame(draw);
+    }
+
+    function pointer(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      state.pointer.x = x;
+      state.pointer.y = y;
+      state.pointer.over = -1;
+      state.nodes.forEach((node, index) => {
+        const w = node.renderWidth || node.radius * 2;
+        const h = node.renderHeight || node.radius * 2;
+        const left = (node.renderX || node.x) - w / 2;
+        const top = (node.renderY || node.y) - h / 2;
+        if (x >= left && x <= left + w && y >= top && y <= top + h && node.hoverable) {
+          state.pointer.over = index;
+        }
+      });
+      canvas.style.cursor = state.pointer.over > 0 ? 'pointer' : 'default';
+    }
+
+
+    window.addEventListener('resize', updateSize);
+    canvas.addEventListener('pointermove', pointer);
+    canvas.addEventListener('pointerleave', () => {
+      state.pointer.over = -1;
+      canvas.style.cursor = 'default';
+    });
+    updateSize();
+    requestAnimationFrame(draw);
+  }
+
+  ready().then(() => {
+    setYear();
+    initTypewriter();
+    initSmoothScroll();
+    initNavFade();
+    initDrawer();
+    initReveals();
+    initParticleFields();
+    initSkillsNetwork();
+  });
 })();
