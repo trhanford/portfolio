@@ -242,8 +242,6 @@
       height: 0,
       dpr: 1,
       particles: [],
-      baseCount: 0,
-      extraCount: 0,
       fadeZones: [],
       zoneElements: new Set(),
       zoneObserver: null,
@@ -267,33 +265,22 @@
 
     const surface = canvas.closest('[data-field-surface]') || canvas.parentElement || canvas;
 
-    function createParticle(spawnOptions = null) {
+    function createParticle() {
       const baseSpeed = reduceMotion ? 22 : 40;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
       const baseSize = 0.7 + Math.random() * 1.2;
       const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
-      let x = Math.random() * state.width;
-      let y = Math.random() * state.height;
-
-      if (spawnOptions && Number.isFinite(spawnOptions.x) && Number.isFinite(spawnOptions.y)) {
-        const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * Math.max(12, spawnOptions.radius || 0);
-        const candidateX = spawnOptions.x + Math.cos(angle) * radius;
-        const candidateY = spawnOptions.y + Math.sin(angle) * radius;
-        x = clamp(candidateX, -20, state.width + 20);
-        y = clamp(candidateY, -20, state.height + 20);
       }
       
       return {
-        x,
-        y,
+        x: Math.random() * state.width,
+        y: Math.random() * state.height,
         vx: Math.cos(direction) * speed,
         vy: Math.sin(direction) * speed,
         size: 0.8 + Math.random() * 1.6,
         pulse: Math.random() * Math.PI * 2,
-        fade: 1,
-        transient: Boolean(spawnOptions && spawnOptions.transient)
+        fade: 1
       };
     }
 
@@ -356,9 +343,8 @@
       ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 
       const area = state.width * state.height;
-      state.baseCount = clamp(Math.round(area / (reduceMotion ? 24000 : 15000)), 60, 200);
-      state.extraCount = Math.max(8, Math.round(state.baseCount * (reduceMotion ? 0.25 : 0.45)));
-      state.particles = Array.from({ length: state.baseCount }, () => createParticle());
+      const targetCount = clamp(Math.round(area / (reduceMotion ? 17000 : 10000)), 90, 260);
+      state.particles = Array.from({ length: targetCount }, createParticle);
 
       bindZoneObserver();
       measureFadeZones();
@@ -451,38 +437,6 @@
       const pointerRadiusSq = pointerRadius * pointerRadius;
       const pointerForce = reduceMotion ? 110 : 210;
 
-      const pointerBoostActive = state.pointer.strength > 0.25;
-      const pointerRelaxed = state.pointer.strength < 0.14;
-      const desiredCount = pointerBoostActive ? state.baseCount + state.extraCount : state.baseCount;
-
-      if (pointerBoostActive && state.particles.length < desiredCount) {
-        const spawnCount = Math.min(desiredCount - state.particles.length, 6);
-        const spawnX = Number.isFinite(state.pointer.targetX) ? state.pointer.targetX : state.pointer.x;
-        const spawnY = Number.isFinite(state.pointer.targetY) ? state.pointer.targetY : state.pointer.y;
-        for (let i = 0; i < spawnCount; i++) {
-          state.particles.push(
-            createParticle({
-              x: spawnX,
-              y: spawnY,
-              radius: pointerRadius * 0.45,
-              transient: true
-            })
-          );
-        }
-      } else if (!pointerBoostActive && pointerRelaxed && state.particles.length > desiredCount) {
-        let removeCount = Math.min(state.particles.length - desiredCount, 6);
-        for (let i = state.particles.length - 1; i >= 0 && removeCount > 0; i--) {
-          if (state.particles[i].transient) {
-            state.particles.splice(i, 1);
-            removeCount--;
-          }
-        }
-        while (removeCount > 0 && state.particles.length > desiredCount) {
-          state.particles.pop();
-          removeCount--;
-        }
-      }
-      
       const baseTime = now * 0.00018;
 
       for (const particle of state.particles) {
