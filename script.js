@@ -242,9 +242,9 @@
       height: 0,
       dpr: 1,
       particles: [],
-      fadeZones: [],
       baseCount: 0,
       extraCount: 0,
+      fadeZones: [],
       zoneElements: new Set(),
       zoneObserver: null,
       pointer: {
@@ -267,8 +267,7 @@
 
     const surface = canvas.closest('[data-field-surface]') || canvas.parentElement || canvas;
 
-    function createParticle() {
-      function createParticle(spawnOptions = null) {
+    function createParticle(spawnOptions = null) {
       const baseSpeed = reduceMotion ? 22 : 40;
       const direction = Math.random() * Math.PI * 2;
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
