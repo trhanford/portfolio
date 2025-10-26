@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery — Tristan Hanford</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="gallery.css" />
+  <script src="script.js" defer></script>
+  <script src="projects-data.js" defer></script>
+  <script src="gallery.js" defer></script>
+</head>
+<body class="gallery-page">
+  <nav id="mainNav" class="navbar nav-active" aria-label="Primary" data-instant>
+    <div class="nav-inner container">
+      <div id="navTitle" class="nav-title">Gallery</div>
+      <ul class="nav-links" role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/index.html#about">About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
+      </ul>
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">☰</button>
+    </div>
+    <div id="drawer" class="drawer" aria-hidden="true">
+      <ul role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/index.html#about">About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <header class="gallery-hero" data-field-surface>
+      <div class="container">
+        <nav class="gallery-breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="portfolio.html#automotive">Portfolio</a></li>
+            <li id="galleryCrumb" aria-current="page">Automotive Build</li>
+          </ol>
+        </nav>
+        <p id="galleryCategory" class="gallery-kicker"></p>
+        <h1 id="galleryTitle">Automotive Build</h1>
+        <p id="gallerySummary" class="gallery-summary"></p>
+        <div class="gallery-actions">
+          <a id="galleryBackLink" class="btn-outline" href="portfolio.html#automotive">← Back to portfolio</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="gallery-section">
+      <div class="container">
+        <div id="galleryStatus" class="gallery-status" role="status" aria-live="polite"></div>
+        <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner container">
+      <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
+      <small class="made">Built with care.</small>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript container">Enable JavaScript to view project galleries.</div>
+  </noscript>
+</body>
+</html>
