@@ -247,6 +247,21 @@ body.has-reveal .reveal-item.is-visible{
   justify-content:center;
 }
 
+.hero-cta .btn-primary,
+.hero-cta .btn-outline{
+  flex:1 1 clamp(220px, 24vw, 260px);
+  justify-content:center;
+  padding-inline:clamp(26px, 5vw, 38px);
+  text-align:center;
+}
+
+@media (max-width:640px){
+  .hero-cta .btn-primary,
+  .hero-cta .btn-outline{
+    flex:1 1 100%;
+  }
+}
+
 /* -------------------- Quick-nav panel (Explore) -------------------- */
 .hero-col--panel{display:flex;justify-content:center}
 .hero-col--text{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
