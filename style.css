@@ -300,6 +300,7 @@ body.has-reveal .reveal-item.is-visible{
 .workflow-steps::before{
   content:""; position:absolute; left:16px; top:0; bottom:0; width:2px; background:rgba(43,47,51,.18);
   box-shadow:0 0 12px rgba(43,47,51,.1);
+}
 
 .step{
   position:relative; display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:flex-start;
