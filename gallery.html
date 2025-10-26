@@ -1,0 +1,122 @@
+/* =============================================================
+   Tristan Hanford — Gallery Styles
+   - Dedicated masonry-like grid for build galleries
+   - Hero section reuses site typography with subdued backdrop
+   ============================================================= */
+
+.gallery-page main{padding-top:var(--nav-h);}
+
+.gallery-hero{
+  position:relative;
+  padding:calc(var(--nav-h) + 36px) 0 48px;
+  background:linear-gradient(140deg, rgba(255,255,255,0.92) 0%, rgba(232,225,210,0.65) 52%, rgba(216,207,188,0.6) 100%);
+}
+
+.gallery-breadcrumb{margin:0 0 12px;}
+.gallery-breadcrumb ol{
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-size:.9rem;
+  color:rgba(43,47,51,.65);
+}
+
+.gallery-breadcrumb a{color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;}
+.gallery-breadcrumb li+li::before{content:'›';margin-right:8px;color:rgba(43,47,51,.4);}
+
+.gallery-kicker{
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  font-weight:800;
+  font-size:.8rem;
+  color:rgba(43,47,51,.6);
+}
+
+.gallery-hero h1{
+  margin:12px 0 14px;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:clamp(2.2rem,5vw,3.6rem);
+  color:var(--slate-strong);
+}
+
+.gallery-summary{
+  margin:0;
+  max-width:68ch;
+  font-size:1.05rem;
+  color:rgba(43,47,51,.72);
+}
+
+.gallery-actions{
+  margin-top:28px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.gallery-section{
+  padding:52px 0 80px;
+  background:linear-gradient(180deg, rgba(250,248,243,0.6) 0%, rgba(255,255,255,0.9) 100%);
+}
+
+.gallery-status{
+  margin-bottom:24px;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(43,47,51,.08);
+  color:rgba(43,47,51,.75);
+  font-weight:600;
+  display:none;
+}
+
+.gallery-status.is-visible{display:block;}
+
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:22px;
+}
+
+.gallery-card{
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 18px 34px rgba(0,0,0,.12);
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+}
+
+.gallery-card img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.gallery-card figcaption{
+  margin:0;
+  padding:12px 14px 14px;
+  font-size:.88rem;
+  color:rgba(43,47,51,.7);
+  background:rgba(255,255,255,.92);
+}
+
+.gallery-grid[data-empty="true"]::before{
+  content:'Gallery coming soon — check back for updated photos.';
+  display:block;
+  padding:26px 28px;
+  border-radius:18px;
+  background:rgba(43,47,51,.08);
+  color:rgba(43,47,51,.72);
+  text-align:center;
+  font-weight:600;
+  grid-column:1 / -1;
+}
+
+@media (max-width:640px){
+  .gallery-hero{padding:calc(var(--nav-h) + 24px) 0 36px;}
+  .gallery-actions .btn-outline{width:100%;justify-content:center;}
+}
