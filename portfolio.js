@@ -138,7 +138,7 @@
       category: 'CAD',
       summary: 'Inspect the split pattern and draft considerations for a cast aluminum cow bell concept.',
       model: {
-        src: 'assets/models/cow_bell.glb',
+        src: 'assets/models/cowbell.glb',
         alt: 'Interactive preview of the cow bell casting pattern',
         poster: 'images/placeholders/cad-default.svg',
         autoRotate: true,
