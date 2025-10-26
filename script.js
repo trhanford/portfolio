@@ -271,14 +271,13 @@
       const speed = baseSpeed * (0.4 + Math.random() * 0.8);
       const baseSize = 0.7 + Math.random() * 1.2;
       const sizeBoost = Math.random() < 0.22 ? 1.2 + Math.random() * 1.4 : 0;
-      }
       
       return {
         x: Math.random() * state.width,
         y: Math.random() * state.height,
         vx: Math.cos(direction) * speed,
         vy: Math.sin(direction) * speed,
-        size: 0.8 + Math.random() * 1.6,
+        size: baseSize + sizeBoost,
         pulse: Math.random() * Math.PI * 2,
         fade: 1
       };
