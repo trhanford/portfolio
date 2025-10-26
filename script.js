@@ -46,6 +46,8 @@
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
+  const PARTICLE_PREF_KEY = 'particle-effect-preference';
+  
   function setYear() {
     const yearEl = select('#year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -228,7 +230,10 @@
 
   function initParticleFields() {
     const canvases = selectAll('canvas.magnetic-field');
-    if (!canvases.length) return;
+    if (!canvases.length) {
+      initParticleToggle([]);
+      return;
+    }
 
     const disableForSmallScreens = window.matchMedia('(max-width: 1024px)').matches;
     const disableForTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -243,10 +248,15 @@
         canvas.height = 0;
         canvas.classList.add('particles-disabled');
       });
+      initParticleToggle([]);
       return;
     }
 
-    canvases.forEach(setupField);
+    const controllers = canvases
+      .map(canvas => setupField(canvas))
+      .filter(Boolean);
+
+    initParticleToggle(controllers);
   }
 
   function setupField(canvas) {
@@ -261,6 +271,8 @@
       fadeZones: [],
       zoneElements: new Set(),
       zoneObserver: null,
+      enabled: false,
+      animationId: null,
       pointer: {
         x: 0,
         y: 0,
@@ -350,6 +362,7 @@
     }
     
     function updateDimensions() {
+      if (!state.enabled) return;
       state.dpr = Math.min(2, window.devicePixelRatio || 1);
       state.width = canvas.clientWidth;
       state.height = canvas.clientHeight;
@@ -366,6 +379,7 @@
     }
 
     function onPointerMove(event) {
+      if (!state.enabled) return;
       const bounds = canvas.getBoundingClientRect();
       state.pointer.targetX = event.clientX - bounds.left;
       state.pointer.targetY = event.clientY - bounds.top;
@@ -377,6 +391,7 @@
     }
 
     function onPointerLeave() {
+      if (!state.enabled) return;
       state.pointer.active = false;
       state.pointer.lastMove = 0;
       state.pointer.releaseAt = 0;
@@ -417,6 +432,10 @@
     }
 
     function tick(now) {
+      if (!state.enabled) {
+        state.animationId = null;
+        return;
+      }
       const delta = (now - state.frame) / 1000 || 0.016;
       const dt = Math.min(0.05, delta);
       state.frame = now;
@@ -528,7 +547,7 @@
         ctx.restore();
       }
 
-      requestAnimationFrame(tick);
+      state.animationId = requestAnimationFrame(tick);
     }
 
     window.addEventListener('resize', updateDimensions);
@@ -539,10 +558,102 @@
       surface.addEventListener('pointerleave', onPointerLeave);
     }
 
-    updateDimensions();
-    requestAnimationFrame(time => {
-      state.frame = time;
-      requestAnimationFrame(tick);
+    function activate() {
+      if (state.enabled) return;
+      state.enabled = true;
+      canvas.classList.remove('particles-disabled');
+      updateDimensions();
+      state.frame = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+      state.animationId = requestAnimationFrame(tick);
+    }
+
+    function deactivate() {
+      if (!state.enabled) return;
+      state.enabled = false;
+      state.pointer.active = false;
+      state.pointer.strength = 0;
+      state.particles = [];
+      if (state.zoneObserver) state.zoneObserver.disconnect();
+      if (state.animationId) {
+        cancelAnimationFrame(state.animationId);
+        state.animationId = null;
+      }
+      ctx.clearRect(0, 0, state.width, state.height);
+      canvas.width = 0;
+      canvas.height = 0;
+      canvas.classList.add('particles-disabled');
+    }
+
+    activate();
+
+    return {
+      activate,
+      deactivate,
+      setEnabled(value) {
+        if (value) activate();
+        else deactivate();
+      },
+      isActive() {
+        return state.enabled;
+      }
+    };
+  }
+
+  function initParticleToggle(controllers) {
+    const toggle = select('#particleToggle');
+    if (!toggle) return;
+
+    if (!controllers.length) {
+      toggle.hidden = true;
+      return;
+    }
+
+    const label = select('.particle-toggle__text', toggle);
+
+    const getStoredPreference = () => {
+      if (typeof window === 'undefined' || !('localStorage' in window)) return null;
+      try {
+        return window.localStorage.getItem(PARTICLE_PREF_KEY);
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const setStoredPreference = value => {
+      if (typeof window === 'undefined' || !('localStorage' in window)) return;
+      try {
+        window.localStorage.setItem(PARTICLE_PREF_KEY, value);
+      } catch (error) {
+        /* no-op */
+      }
+    };
+
+    const applyState = enabled => {
+      toggle.setAttribute('aria-pressed', String(enabled));
+      toggle.classList.toggle('is-off', !enabled);
+      const labelText = enabled ? 'Particles On' : 'Particles Off';
+      toggle.setAttribute('aria-label', `Toggle particle background (currently ${enabled ? 'on' : 'off'})`);
+      toggle.setAttribute('title', enabled ? 'Turn particle background off' : 'Turn particle background on');
+      if (label) label.textContent = labelText;
+    };
+
+    let enabled = controllers.some(controller => controller.isActive());
+
+    const stored = getStoredPreference();
+    if (stored === 'off') enabled = false;
+    else if (stored === 'on') enabled = true;
+
+    controllers.forEach(controller => controller.setEnabled(enabled));
+
+    applyState(enabled);
+    toggle.hidden = false;
+    toggle.removeAttribute('hidden');
+
+    toggle.addEventListener('click', () => {
+      enabled = !enabled;
+      controllers.forEach(controller => controller.setEnabled(enabled));
+      applyState(enabled);
+      setStoredPreference(enabled ? 'on' : 'off');
     });
   }
 
