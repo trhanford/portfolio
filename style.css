@@ -249,7 +249,7 @@ body.has-reveal .reveal-item.is-visible{
   .site-connections__inner{flex-direction:column;gap:18px;padding:28px 20px 24px;}
 }
 
-.hero-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:center;justify-items:center;text-align:center}
+.hero-inner{display:grid;grid-template-columns:0.8fr 1.2fr;gap:32px;align-items:center;justify-items:center;text-align:center}
 @media (max-width:980px){.hero-inner{grid-template-columns:1fr}}
 
 @media (max-width:1360px), (max-height:820px){
