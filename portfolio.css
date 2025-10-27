@@ -776,20 +776,30 @@ body.modal-open{overflow:hidden;}
     0 2px 6px rgba(0,0,0,.06);
 }
 
-/* Lightbox cards: swap base/hover shadow styles */
-.modal-gallery figure{
-  /* use the previous HOVER (inward) look as the baseline */
+/* === Lightbox card shadows — force reverse with higher specificity === */
+
+/* 1) Neutralize earlier shadows so we start clean */
+.portfolio-modal .modal-gallery figure,
+.portfolio-modal .modal-gallery figure:hover{
+  box-shadow: none;
+}
+
+/* 2) Baseline = inward (previous hover look) */
+.portfolio-modal .modal-gallery figure{
+  /* tight, controlled inset so it won't clip the modal corners */
   box-shadow:
     inset 0 8px 18px rgba(0,0,0,.14),
     inset 0 2px 6px  rgba(0,0,0,.08);
-  transition: box-shadow .18s ease, transform .18s ease;
   transform: translateY(-2px);
+  transition: box-shadow .18s ease, transform .18s ease;
 }
 
-.modal-gallery figure:hover{
-  /* use the previous BASE (outer) look on hover */
+/* 3) Hover = outward (previous base look) */
+.portfolio-modal .modal-gallery figure:hover{
   box-shadow:
     0 10px 20px rgba(0,0,0,.14),
     0 3px 8px  rgba(0,0,0,.08);
+  transform: translateY(0);
 }
+
 
