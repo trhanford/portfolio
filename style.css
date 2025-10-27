@@ -266,7 +266,7 @@ body.has-reveal .reveal-item.is-visible{
 .hero-col--panel{display:flex;justify-content:center}
 .hero-col--text{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
 .panel{
-  position:relative;width:min(560px,100%);border-radius:var(--radius-xl);
+  width:min(820px,100%);margin: 0 auto; 
   border:1px solid rgba(43,47,51,.14);
   background:linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.7) 55%, rgba(255,255,255,.4) 100%);
   box-shadow:0 24px 48px rgba(0,0,0,.12);padding:26px 20px;overflow:hidden; /* clip any effects */
