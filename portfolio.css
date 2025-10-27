@@ -742,3 +742,36 @@ body.modal-open{overflow:hidden;}
   transform: none;
   box-shadow: none;
 }
+
+/* --- Lightbox (modal) — make inner shadows tighter + avoid clipping --- */
+
+/* Give more air at the bottom so shadows don't hit the rounded corner */
+.portfolio-modal__body{
+  padding-bottom: 64px; /* was 40px */
+}
+
+/* The gallery cards inside the modal: smaller, darker-but-tighter shadow */
+.modal-gallery figure{
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.14),
+    0 2px 6px  rgba(0,0,0,.08);
+}
+
+/* Slightly stronger on hover, but still compact */
+.modal-gallery figure:hover{
+  box-shadow:
+    0 12px 22px rgba(0,0,0,.16),
+    0 3px 8px  rgba(0,0,0,.10);
+}
+
+/* If any rail cards still feel heavy on the main page, dial them back one more step */
+.project-card{
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.08),
+    0 1px 4px rgba(0,0,0,.05);
+}
+.project-card:hover{
+  box-shadow:
+    0 8px 16px rgba(0,0,0,.10),
+    0 2px 6px rgba(0,0,0,.06);
+}
