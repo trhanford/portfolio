@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Digital Résumé — Tristan Hanford</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <!-- Site theme + resume styles (assumes you already have these) -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="resume.css" />
+  <!-- Site scripts -->
   <script src="script.js" defer></script>
   <script src="resume.js" defer></script>
 </head>
 <body class="resume-body">
+  <!-- Top nav (auto-fades via script.js) -->
   <nav id="mainNav" class="navbar" aria-label="Primary" hidden data-instant>
     <div class="nav-inner container">
       <div id="navTitle" class="nav-title">Digital Résumé</div>
@@ -30,20 +33,19 @@
     </div>
   </nav>
 
+  <!-- Hero -->
   <header class="resume-hero" role="banner">
     <div class="resume-hero__bg" aria-hidden="true"></div>
     <div class="container resume-hero__inner">
       <div class="resume-hero__copy">
         <p class="eyebrow">Tristan R. Hanford</p>
-        <h1>Engineer. Builder. Systems thinker.</h1>
+        <h1>Mechanical Engineer & Builder</h1>
         <p class="lede">
-          Mechanical engineer with hands-on experience in automotive integration, CAD, and testing. Passionate about
-          guiding projects from concept to completion and creating reliable, serviceable systems.
+          Hands-on engineer with deep exposure to automotive integration, CAD, and electrical systems — from concept and supplier coordination to assembly, diagnostics, and documentation. I like taking ambiguous builds and turning them into clean, serviceable machines.
         </p>
         <div class="resume-hero__cta">
-          <a class="btn-primary" href="assets/resume/tristan-hanford-resume.pdf" download>
-            Download Résumé (PDF)
-          </a>
+          <!-- Update the href to your repo path if different -->
+          <a class="btn-primary" href="Resume - Up to Date - Black & White (1).pdf" download>Download Résumé (PDF)</a>
           <a class="btn-outline" href="#experience" data-scroll>Jump to Experience</a>
         </div>
       </div>
@@ -55,11 +57,12 @@
           </div>
           <div>
             <dt>Email</dt>
+            <!-- Replace with your real address when ready -->
             <dd><a href="mailto:tristan@example.com">tristan@example.com</a></dd>
           </div>
           <div>
             <dt>Phone</dt>
-            <dd><a href="tel:6302352330">(630) 235-2330</a></dd>
+            <dd><a href="tel:16302352330">(630) 235-2330</a></dd>
           </div>
         </dl>
       </aside>
@@ -68,14 +71,17 @@
 
   <main class="resume-main" role="main">
     <div class="resume-layout container">
+      <!-- In-page TOC with scroll progress (resume.js handles highlighting) -->
       <aside class="resume-toc" aria-label="Résumé navigation">
         <div class="resume-toc__inner">
           <p class="resume-toc__title">On this page</p>
           <ol>
             <li><a href="#summary" data-scroll>Professional Summary</a></li>
             <li><a href="#experience" data-scroll>Experience</a></li>
+            <li><a href="#projects" data-scroll>Selected Projects</a></li>
             <li><a href="#education" data-scroll>Education</a></li>
             <li><a href="#skills" data-scroll>Skills</a></li>
+            <li><a href="#awards" data-scroll>Awards & Certifications</a></li>
             <li><a href="#clubs" data-scroll>Clubs & Leadership</a></li>
           </ol>
           <div class="resume-progress" role="presentation">
@@ -84,144 +90,171 @@
         </div>
       </aside>
 
+      <!-- Main content -->
       <div class="resume-content">
+        <!-- Summary -->
         <section id="summary" class="resume-section">
           <h2>Professional Summary</h2>
           <p>
-            Purdue mechanical engineering graduate with deep experience in automotive integration, CAD design, and
-            diagnostics. Adept at transforming customer requirements into engineered solutions, leading cross-functional
-            collaborations, and delivering clean documentation that keeps projects moving. Energized by complex builds,
-            fast-paced environments, and teams that value curiosity and follow-through.
+            Final-year mechanical engineering student with a builder’s mindset and multi-year experience in automotive wiring, CAD packaging, and end-to-end project execution. Comfortable switching between hands-on fabrication and structured documentation to keep teams aligned and builds moving quickly.
           </p>
         </section>
 
+        <!-- Experience -->
         <section id="experience" class="resume-section">
           <div class="section-header">
             <h2>Experience</h2>
-            <span class="section-subtitle">Hands-on leadership across competition, research, and service</span>
+            <span class="section-subtitle">Delivering reliable systems from CAD to assembly</span>
           </div>
+
           <div class="timeline">
             <article class="timeline-item">
               <header class="timeline-item__header">
-                <h3>Vehicle Build Intern — Co-founder</h3>
-                <span class="timeline-item__meta">Vehicle Build Intern Team — 2022 to Present · West Lafayette, IN</span>
+                <h3>Vehicle Build Intern → Co-Founder</h3>
+                <span class="timeline-item__meta">Summit Metal Products · May 2022 – Present · Batavia, IL</span>
               </header>
               <ul class="timeline-item__bullets">
-                <li>Support a multidisciplinary student-led workshop that builds and services custom automotive projects.</li>
-                <li>Manage intake, teardown, and reassembly of vehicles while coordinating volunteer schedules and tasks.</li>
-                <li>Lead wiring harness design, diagnostics, and documentation to keep complex electrical systems reliable.</li>
+                <li>Lead the construction of a pilot <strong>1968 Ford Bronco</strong>: integration planning, custom brackets, harness routing, and subsystem bring-up.</li>
+                <li>Own the <strong>CAD→manufacture→assembly</strong> loop: create parts/fixtures, coordinate outsourced work, and manage supplier timelines.</li>
+                <li>Write service documentation and owner’s guides (schematics, BOMs, warranty docs) to make complex systems maintainable.</li>
               </ul>
             </article>
 
             <article class="timeline-item">
               <header class="timeline-item__header">
-                <h3>Mechanical Engineering Co-op</h3>
-                <span class="timeline-item__meta">Honda Performance Development — 2021 to 2022 · Brownsburg, IN</span>
+                <h3>Store Manager</h3>
+                <span class="timeline-item__meta">Sweet Home Gelato · Jun 2018 – May 2021 · Naperville, IL</span>
               </header>
               <ul class="timeline-item__bullets">
-                <li>Collaborated with chassis and bodywork teams on CAD packaging, heat shielding, and service tooling.</li>
-                <li>Performed component tear-downs and root-cause analysis to refine testing procedures and documentation.</li>
-                <li>Delivered rapid design iterations using NX, Creo, and MATLAB to improve race-readiness.</li>
-              </ul>
-            </article>
-
-            <article class="timeline-item">
-              <header class="timeline-item__header">
-                <h3>Support Consultant & CAD Technician</h3>
-                <span class="timeline-item__meta">Hanford Engineering — 2018 to 2021 · Naperville, IL</span>
-              </header>
-              <ul class="timeline-item__bullets">
-                <li>Produced CAD models, assemblies, and engineering prints for customer machinery retrofits.</li>
-                <li>Built bills of material and fabrication guides that accelerated production and installation.</li>
-                <li>Partnered with clients to scope work, review designs, and implement revisions in the field.</li>
+                <li>Supervised a ~15-person team; responsible for hiring, training, scheduling, and on-shift leadership.</li>
+                <li>Managed daily cash ops ($1–7k), maintenance, and workflow improvements that reduced wait times and boosted throughput.</li>
               </ul>
             </article>
           </div>
         </section>
 
+        <!-- Projects -->
+        <section id="projects" class="resume-section">
+          <div class="section-header">
+            <h2>Selected Projects</h2>
+            <span class="section-subtitle">Highlights spanning restoration, wiring, and EFI integration</span>
+          </div>
+          <div class="projects-grid">
+            <article class="project-card project-card--compact">
+              <h3>First-Gen Bronco Pilot Build</h3>
+              <ul>
+                <li>Full-vehicle systems integration: EFI (Edelbrock Pro-Flo 4), serpentine conversion, cooling/thermals, and harness design.</li>
+                <li>Built a modernized electrical architecture with relay logic, fused distribution, in-tank pump, pressure regulation, and CAN-based controls.</li>
+                <li>Produced an owner’s manual package with schematics, BOMs, vendor references, and maintenance plans.</li>
+              </ul>
+            </article>
+
+            <article class="project-card project-card--compact">
+              <h3>1974 Jeep CJ5 — Show Winner</h3>
+              <ul>
+                <li>Restoration recognized for design & craftsmanship; earned <strong>2nd Place at the Chicago Auto Show (2022)</strong>.</li>
+                <li>Electrical refresh, exhaust/header work, and documentation for future serviceability.</li>
+              </ul>
+            </article>
+
+            <article class="project-card project-card--compact">
+              <h3>Smart Lighting Controller (ECE)</h3>
+              <ul>
+                <li>LDR-threshold lighting with op-amp comparator and relay actuation; tuned for stable switching and noise immunity.</li>
+                <li>Bench-tested with adjustable thresholds; designed PCB and enclosure layout for durability and ease of wiring.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- Education -->
         <section id="education" class="resume-section">
           <div class="section-header">
             <h2>Education</h2>
-            <span class="section-subtitle">Grounded in mechanical design and collaborative build culture</span>
+            <span class="section-subtitle">Purdue University — Mechanical Engineering</span>
           </div>
           <div class="education-grid">
             <article class="education-card">
               <header>
                 <h3>Purdue University — West Lafayette</h3>
-                <p class="education-meta">B.S. Mechanical Engineering · GPA 3.64/4.00 · 2020 – Present</p>
+                <p class="education-meta">B.S. Mechanical Engineering · GPA 2.86/4.00 · 2022 – Present</p>
               </header>
-              <p>Focused on systems integration, CAD (NX / Creo), and design-for-manufacture across competition teams.</p>
+              <p>Focus areas: systems integration, CAD (NX / Creo), electrical, documentation.</p>
             </article>
             <article class="education-card">
               <header>
                 <h3>Naperville Central High School</h3>
-                <p class="education-meta">GPA 3.54/4.00 · Graduated 2020</p>
+                <p class="education-meta">GPA 3.4/4.0 · Graduated 2022</p>
               </header>
-              <p>Robotics, automotive club leadership, and STEM mentoring with a strong emphasis on teamwork.</p>
+              <p>Robotics & automotive leadership; STEM mentoring.</p>
             </article>
           </div>
         </section>
 
+        <!-- Skills -->
         <section id="skills" class="resume-section">
           <div class="section-header">
             <h2>Technical Skills</h2>
-            <span class="section-subtitle">Tools and proficiencies honed through competition builds</span>
+            <span class="section-subtitle">Design tools, wiring, and documentation</span>
           </div>
           <div class="skills-grid">
             <div class="skill-column">
-              <h3>Software & CAD</h3>
+              <h3>Design & Software</h3>
               <ul>
-                <li>Siemens NX / Creo</li>
-                <li>SolidWorks</li>
-                <li>MATLAB</li>
-                <li>Python</li>
-                <li>LabVIEW</li>
+                <li>Siemens NX, Creo Parametric, SolidWorks</li>
+                <li>MATLAB, Python, LTSpice</li>
+                <li>SketchUp, Excel/PDM</li>
               </ul>
             </div>
             <div class="skill-column">
               <h3>Systems & Fabrication</h3>
               <ul>
-                <li>Vehicle Wiring & Diagnostics</li>
-                <li>Cooling & Thermal Management</li>
-                <li>Fixture Design</li>
-                <li>Composite Layups</li>
-                <li>Rapid Prototyping</li>
+                <li>Vehicle wiring & diagnostics</li>
+                <li>Cooling & thermal management</li>
+                <li>Fixture design & rapid prototyping</li>
               </ul>
             </div>
             <div class="skill-column">
-              <h3>Collaboration</h3>
+              <h3>Operations</h3>
               <ul>
-                <li>Cross-functional leadership</li>
-                <li>Documentation & PDM</li>
-                <li>Test Planning</li>
-                <li>Vendor coordination</li>
-                <li>Mentoring & training</li>
+                <li>Supplier & vendor coordination</li>
+                <li>Documentation, BOMs, and service manuals</li>
+                <li>Mentoring and team leadership</li>
               </ul>
             </div>
           </div>
         </section>
 
+        <!-- Awards & Certifications -->
+        <section id="awards" class="resume-section">
+          <div class="section-header">
+            <h2>Awards & Certifications</h2>
+          </div>
+          <ul class="awards-list">
+            <li><strong>Chicago Auto Show — 2nd Place (2022)</strong> · 1974 Jeep CJ5 restoration</li>
+            <li><strong>OSHA Safety Certification</strong> · valid 10/2023–10/2026</li>
+            <li><strong>FAA Part 107 Small UAS Pilot License</strong> · valid 10/2023–10/2026</li>
+          </ul>
+        </section>
+
+        <!-- Clubs & Leadership -->
         <section id="clubs" class="resume-section">
           <div class="section-header">
             <h2>Clubs & Leadership</h2>
-            <span class="section-subtitle">High-trust teams, competition wins, and community building</span>
+            <span class="section-subtitle">High-trust teams & community building</span>
           </div>
           <div class="clubs-grid">
             <article class="club-card">
-              <h3>Purdue Baja Racing — Drivetrain Lead</h3>
-              <p>Directed drivetrain packaging, testing, and service documentation; mentored newcomers in CAD best practices.</p>
+              <h3>Purdue ASME — Member</h3>
+              <p>Joined Aug 2024; collaborate on design activities and peer mentorship.</p>
             </article>
             <article class="club-card">
-              <h3>Purdue Electric Racing — Mechanical Member</h3>
-              <p>Collaborated on thermal management, harness routing, and race prep for EV powertrains.</p>
-            </article>
-            <article class="club-card">
-              <h3>DICA — Finance & Outreach</h3>
-              <p>Coordinated fundraising events, sponsorship outreach, and budgeting for student competition travel.</p>
+              <h3>DECA — Member</h3>
+              <p>Joined Aug 2019; developed business communication and presentation skills.</p>
             </article>
             <article class="club-card">
               <h3>FIRST Robotics Mentor</h3>
-              <p>Guided high school robotics students through CAD, prototyping, and competition readiness.</p>
+              <p>Guided students in CAD, prototyping, and competition readiness.</p>
             </article>
           </div>
         </section>
@@ -240,7 +273,7 @@
       <span class="site-connections__line" aria-hidden="true"></span>
     </div>
   </section>
-  
+
   <footer class="footer">
     <div class="footer-inner container">
       <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
