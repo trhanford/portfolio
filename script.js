@@ -246,7 +246,7 @@
         }
         canvas.width = 0;
         canvas.height = 0;
-        canvas.classList.add('particles-disabled');
+            canvas.classList.add('particles-disabled');
       });
       initParticleToggle([]);
       return;
@@ -262,6 +262,12 @@
   function setupField(canvas) {
     const ctx = canvas.getContext('2d');
     const reduceMotion = prefersReducedMotion();
+
+    // NEW: theme-aware colors for particles (≈25% brand red)
+    const brandRed = getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent-soft')
+      .trim() || '#b45858';
+    const slateDot = 'rgba(43,47,51,0.9)';
 
     const state = {
       width: 0,
@@ -307,7 +313,9 @@
         vy: Math.sin(direction) * speed,
         size: baseSize + sizeBoost,
         pulse: Math.random() * Math.PI * 2,
-        fade: 1
+        fade: 1,
+        // NEW: per-particle color — ~25% brand red
+        color: Math.random() < 0.25 ? brandRed : slateDot
       };
     }
 
@@ -535,12 +543,13 @@
         }
       }
 
-      ctx.fillStyle = 'rgba(43,47,51,0.9)';
+      // Draw dots (per-particle color; ~25% brand red)
       for (const particle of state.particles) {
         if (particle.fade <= 0.01) continue;
         const size = particle.size + Math.sin(baseTime + particle.pulse) * 0.5;
         ctx.save();
         ctx.globalAlpha = clamp(particle.fade, 0, 1);
+        ctx.fillStyle = particle.color;             // ← use per-particle color
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, Math.max(0.6, size), 0, Math.PI * 2);
         ctx.fill();
