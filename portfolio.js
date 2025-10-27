@@ -313,7 +313,7 @@
           if (hasGallery){
             body.appendChild(renderGallery(project.gallery, project.title));
           }
-          if (hasGallery && project.category === 'Automotive'){
+          if (hasGallery && shouldShowGalleryCTA(project)){
             body.appendChild(renderGalleryCTA(project));
           }
           if (project.model){
@@ -404,6 +404,13 @@
     link.setAttribute('aria-label', `View the full gallery for ${project.title}`);
     wrapper.appendChild(link);
     return wrapper;
+  }
+
+  function shouldShowGalleryCTA(project){
+    if (!project) return false;
+    if (project.showGalleryCTA === false) return false;
+    if (project.showGalleryCTA === true) return true;
+    return project.category === 'Automotive';
   }
   
   function renderModel(project){
