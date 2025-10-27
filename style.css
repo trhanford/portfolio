@@ -510,3 +510,41 @@ body.has-reveal .reveal-item.is-visible{
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important;filter:none !important}
 }
+
+/* === Fix alignment on hero + about (overrides) === */
+
+/* Stop global centering in the hero grid */
+.hero-inner{
+  justify-items: stretch;      /* was center */
+  text-align: initial;         /* let children control their own alignment */
+}
+
+/* Left-align the text column and keep the CTA left */
+.hero-col--text{
+  align-items: flex-start;     /* was center */
+  text-align: left;            /* was center */
+}
+.hero-cta{ justify-content: flex-start; }
+
+/* Keep the typewriter prefix fixed on the left */
+.typed-wrap{
+  display: inline-flex;        /* keeps prefix + typed on one line without centering shift */
+  align-items: baseline;
+  text-align: left;
+}
+
+/* About-me: left-align grid cell and text */
+.about-grid{
+  justify-items: start;        /* was center */
+  text-align: left;            /* was center */
+}
+.about-body{ text-align: left; }
+.about-cta{ justify-content: flex-start; }
+
+/* On narrow screens, re-center if you prefer the original stacking look */
+@media (max-width: 640px){
+  .hero-col--text{ align-items: center; text-align: center; }
+  .hero-cta{ justify-content: center; }
+  .about-grid{ justify-items: center; text-align: center; }
+  .about-cta{ justify-content: center; }
+}
