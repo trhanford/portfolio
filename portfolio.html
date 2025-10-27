@@ -147,6 +147,26 @@
         <div class="project-rail" data-project-rail data-rail-label="CAD projects">
           <div class="rail-window">
             <div class="rail-track">
+              <article class="project-card" data-project-id="cad-butterfly-valve">
+                <div class="project-media project-media--viewer">
+                  <model-viewer
+                    src="assets/models/Butterfly_assembly.glb"
+                    poster="images/placeholders/cad-default.svg"
+                    alt="Interactive preview of the butterfly valve assembly"
+                    camera-controls
+                    touch-action="pan-y"
+                    auto-rotate
+                    rotation-per-second="15deg"
+                    shadow-intensity="0.85"
+                  ></model-viewer>
+                </div>
+                <div class="project-body">
+                  <span class="project-kicker">Butterfly Valve Assembly</span>
+                  <p class="project-summary">Inspect the full valve assembly complete with hardware and seals in an interactive viewer.</p>
+                  <button class="project-action" type="button" data-project="cad-butterfly-valve">View full gallery<span aria-hidden="true"> →</span></button>
+                </div>
+              </article>
+
               <article class="project-card" data-project-id="cad-1">
                 <div class="project-media project-media--viewer">
                   <model-viewer
