@@ -567,3 +567,17 @@ body.has-reveal .reveal-item.is-visible{
   }
 }
 
+/* Skills graph container — remove hard box/border */
+.skills, .skills-panel, .skills-card, .skills-surface {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Canvas itself—no outlines/borders, transparent bg */
+#skillsGraph{
+  display: block;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+}
