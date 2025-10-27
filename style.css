@@ -548,3 +548,22 @@ body.has-reveal .reveal-item.is-visible{
   .about-grid{ justify-items: center; text-align: center; }
   .about-cta{ justify-content: center; }
 }
+
+/* Explore panel: dial width back */
+.panel{
+  width: min(480px, 100%);   /* was 560px */
+}
+
+/* Keep hero CTAs on one row on roomy screens */
+@media (min-width: 760px){
+  .hero-cta{
+    flex-wrap: nowrap;          /* prevent stacking */
+    justify-content: flex-start;
+  }
+  .hero-cta .btn-primary,
+  .hero-cta .btn-outline{
+    flex: 0 0 auto;             /* size to content */
+    max-width: none;            /* remove 360px clamp if present */
+  }
+}
+
