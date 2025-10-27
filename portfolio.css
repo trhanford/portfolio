@@ -269,6 +269,8 @@ body.portfolio-page main{
   border-radius:999px;
 }
 
+.rail-window { padding-bottom: 16px; }
+
 @media (min-width:960px){
   .rail-window{margin:0; padding-left:0;}
 }
@@ -305,6 +307,8 @@ body.portfolio-page main{
   transition:opacity .35s ease;
   pointer-events:none;
 }
+
+.project-card::after { border-radius: inherit; }
 
 .project-card:focus-within::after,
 .project-card:hover::after{opacity:1;}
@@ -624,8 +628,12 @@ body.modal-open{overflow:hidden;}
   box-shadow:0 10px 22px rgba(0,0,0,.14);
 }
 
-.modal-viewer{min-height:360px;border-radius:22px;overflow:hidden;box-shadow:0 22px 40px rgba(0,0,0,.14);background:#f3eee2;}
-.modal-viewer model-viewer{width:100%;height:100%;display:block;}
+/* Override: give the viewer a real box */
+.modal-viewer {
+  height: min(65vh, 560px);
+  min-height: 360px; /* keep your floor */
+}
+.modal-viewer model-viewer { width:100%; height:100%; }
 
 .viewer-placeholder{
   padding:40px 32px;
@@ -652,3 +660,6 @@ body.modal-open{overflow:hidden;}
   .portfolio-modal__dialog{border-radius:0;max-width:100%;max-height:100vh;}
   .portfolio-modal__header{padding-top:72px;}
 }
+
+.project-action { cursor: pointer; }
+
