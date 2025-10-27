@@ -677,16 +677,25 @@
     const reduceMotion = prefersReducedMotion();
 
     const nodes = [
-      { label: 'Tristan', weight: 600, radius: 64, center: true },
-      { label: 'CAD (NX / Creo)', weight: 700, radius: 42 },
-      { label: 'Automotive', weight: 700, radius: 38 },
-      { label: 'Wiring & PDM', weight: 700, radius: 36 },
-      { label: 'Cooling & Thermals', weight: 700, radius: 36 },
-      { label: 'Testing & Docs', weight: 700, radius: 34 },
-      { label: 'MATLAB / Python', weight: 700, radius: 36 },
-      { label: 'Snowboarding', weight: 700, radius: 32 },
-      { label: 'Pets', weight: 700, radius: 30 },
-      { label: 'Tinkering', weight: 700, radius: 32 }
+  // 0 — center
+      { label: 'Tristan', weight: 700, radius: 64, center: true, id: 0 },
+    
+      // 1 — categories
+      { label: 'Core skills', weight: 700, radius: 40, id: 1, parent: 0 },
+      { label: 'Interests',  weight: 700, radius: 40, id: 2, parent: 0 },
+    
+      // 1.x — core skills children (parent: 1)
+      { label: 'CAD (NX / Creo)',    weight: 700, radius: 34, parent: 1 },
+      { label: 'Automotive',         weight: 700, radius: 32, parent: 1 },
+      { label: 'Wiring & PDM',       weight: 700, radius: 30, parent: 1 },
+      { label: 'Cooling & Thermals', weight: 700, radius: 30, parent: 1 },
+      { label: 'Testing & Docs',     weight: 700, radius: 30, parent: 1 },
+      { label: 'MATLAB / Python',    weight: 700, radius: 30, parent: 1 },
+    
+      // 2.x — interests children (parent: 2)
+      { label: 'Snowboarding', weight: 700, radius: 30, parent: 2 },
+      { label: 'Pets',         weight: 700, radius: 28, parent: 2 },
+      { label: 'Tinkering',    weight: 700, radius: 30, parent: 2 }
     ];
 
     const state = {
@@ -709,20 +718,46 @@
       }));
     }
 
-    function layoutNodes() {
+    function layoutNodes(){
       cloneNodes();
-      const center = state.nodes[0];
+    
+      const center = state.nodes.find(n => n.center);
       center.x = state.width / 2;
       center.y = state.height / 2;
-
-      const ringRadius = Math.min(state.width, state.height) * 0.36;
-      const angleStep = (Math.PI * 2) / (state.nodes.length - 1);
-      for (let i = 1; i < state.nodes.length; i++) {
-        const node = state.nodes[i];
-        const angle = angleStep * (i - 1);
-        node.x = center.x + Math.cos(angle) * ringRadius * (0.75 + Math.random() * 0.25);
-        node.y = center.y + Math.sin(angle) * ringRadius * (0.75 + Math.random() * 0.25);
+    
+      // category anchors (left / right of center)
+      const span = Math.min(state.width, state.height) * 0.28;
+      const leftAnchor  = { x: center.x - span, y: center.y - 6 };
+      const rightAnchor = { x: center.x + span, y: center.y + 6 };
+    
+      // helper to get children of a parent id
+      const childrenOf = pid => state.nodes.filter(n => n.parent === pid);
+    
+      // place the two category nodes near anchors with small jitter
+      const nodeCore = state.nodes.find(n => n.id === 1);
+      const nodeInt  = state.nodes.find(n => n.id === 2);
+    
+      const jitter = (amt=18) => (Math.random() * 2 - 1) * amt;
+    
+      nodeCore.x = leftAnchor.x  + jitter(12);
+      nodeCore.y = leftAnchor.y  + jitter(12);
+    
+      nodeInt.x  = rightAnchor.x + jitter(12);
+      nodeInt.y  = rightAnchor.y + jitter(12);
+    
+      // arrange children in loose clusters around their category
+      function placeCluster(parentNode, kids, radiusBase){
+        const angleStep = (Math.PI * 2) / Math.max(4, kids.length);
+        kids.forEach((kid, i) => {
+          const angle = angleStep * i + Math.random() * 0.6;
+          const r = radiusBase * (0.9 + Math.random() * 0.3);
+          kid.x = parentNode.x + Math.cos(angle) * r + jitter(10);
+          kid.y = parentNode.y + Math.sin(angle) * r + jitter(10);
+        });
       }
+    
+      placeCluster(nodeCore, childrenOf(1), Math.min(state.width, state.height) * 0.16);
+      placeCluster(nodeInt,  childrenOf(2), Math.min(state.width, state.height) * 0.16);
     }
 
     function updateSize() {
@@ -826,30 +861,30 @@
       node.renderHeight = boxHeight;
     }
 
-    function drawConnections(time) {
-      const nodesToUse = state.nodes;
-      if (!nodesToUse.length) return;
-      const center = nodesToUse[0];
-      const centerOffset = reduceMotion
-        ? { x: center.x, y: center.y }
-        : {
-            x: center.x + Math.sin(time * 0.001 + center.wobbleSeed) * 4,
-            y: center.y + Math.cos(time * 0.001 + center.wobbleSeed) * 4
-          };
+    function drawConnections(time){
+      const byId = new Map(state.nodes.map(n => [n.id ?? n.label, n]));
       ctx.save();
       ctx.strokeStyle = 'rgba(74,78,84,0.2)';
       ctx.lineWidth = 1;
-      for (let i = 1; i < nodesToUse.length; i++) {
-        const node = nodesToUse[i];
-        const wobble = reduceMotion ? 0 : Math.sin(time * 0.001 + node.wobbleSeed) * 4;
-        const wobbleY = reduceMotion ? 0 : Math.cos(time * 0.001 + node.wobbleSeed) * 4;
+    
+      state.nodes.forEach(node => {
+        if (node.parent == null) return;
+        const parent = byId.get(node.parent);
+        if (!parent) return;
+    
+        // small wobble for organic feel (not a perfect circle layout)
+        const wobble = reduceMotion ? 0 : Math.sin(time * 0.001 + (node.wobbleSeed || 0)) * 3;
+        const wobbleY = reduceMotion ? 0 : Math.cos(time * 0.001 + (node.wobbleSeed || 0)) * 3;
+    
         ctx.beginPath();
-        ctx.moveTo(centerOffset.x, centerOffset.y);
+        ctx.moveTo(parent.x, parent.y);
         ctx.lineTo(node.x + wobble, node.y + wobbleY);
         ctx.stroke();
-      }
+      });
+    
       ctx.restore();
     }
+
 
     function draw(time) {
       ctx.clearRect(0, 0, state.width, state.height);
