@@ -783,6 +783,7 @@ body.modal-open{overflow:hidden;}
     inset 0 8px 18px rgba(0,0,0,.14),
     inset 0 2px 6px  rgba(0,0,0,.08);
   transition: box-shadow .18s ease, transform .18s ease;
+  transform: translateY(-2px);
 }
 
 .modal-gallery figure:hover{
@@ -790,6 +791,5 @@ body.modal-open{overflow:hidden;}
   box-shadow:
     0 10px 20px rgba(0,0,0,.14),
     0 3px 8px  rgba(0,0,0,.08);
-  transform: translateY(-2px);
 }
 
