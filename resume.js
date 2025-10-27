@@ -1,4 +1,4 @@
-// resume.js — Digital résumé enhancements (section highlighting, progress)
+// resume.js — Digital résumé enhancements (section highlighting + progress)
 (function(){
   const ready = document.readyState === 'loading'
     ? new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, {once:true}))
