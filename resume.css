@@ -341,7 +341,7 @@ body.resume-body::after{opacity:.45;}
 
 @media (max-width:1080px){
   .resume-layout{grid-template-columns:1fr;gap:40px;}
-  .resume-toc{position:static;}
+  .resume-toc{position:sticky;}
   .resume-toc__inner{display:flex;flex-direction:column;align-items:flex-start;gap:18px;}
   .resume-progress{width:100%;}
 }
