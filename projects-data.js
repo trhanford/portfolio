@@ -59,16 +59,16 @@
       gallery: [
         { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
       ],
       note: 'Drop high-resolution images into an appropriate folder (for example images/bronco-coyote/) and update the entries in projects-data.js to point to them.'
@@ -80,16 +80,16 @@
       gallery: [
         { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
         { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' }
+        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
         { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
       ],
       note: 'Add fabrication and trail-testing photos here to emphasize durability upgrades.'
