@@ -105,6 +105,37 @@
       ],
       note: 'Replace with track-day shots, detail photos, and instrumentation close-ups to tell the full story.'
     },
+    'cad-butterfly-valve': {
+      title: 'Butterfly Valve Assembly',
+      category: 'CAD',
+      summary: 'Inspect the complete butterfly valve assembly with interchangeable hardware and seals.',
+      model: {
+        src: 'assets/models/Butterfly_assembly.glb',
+        alt: 'Interactive preview of the butterfly valve assembly',
+        poster: 'images/placeholders/cad-default.svg',
+        autoRotate: true,
+        rotationPerSecond: '15deg',
+        shadowIntensity: '0.85',
+        exposure: '1.05',
+        message: 'Place Butterfly_assembly.glb alongside its supporting parts in assets/models to enable the viewer.'
+      },
+      gallery: [
+        { type: 'model', src: 'assets/models/Handle_arm.glb', alt: 'Handle arm component for the butterfly valve assembly', caption: 'Handle arm' },
+        { type: 'model', src: 'assets/models/handle_seal_plate.glb', alt: 'Handle seal plate for the butterfly valve assembly', caption: 'Handle seal plate' },
+        { type: 'model', src: 'assets/models/M10_nut.glb', alt: 'M10 nut from the butterfly valve assembly', caption: 'M10 nut' },
+        { type: 'model', src: 'assets/models/m12Bolt.glb', alt: 'M12 bolt for the butterfly valve assembly', caption: 'M12 bolt' },
+        { type: 'model', src: 'assets/models/m12Nut.glb', alt: 'M12 nut for the butterfly valve assembly', caption: 'M12 nut' },
+        { type: 'model', src: 'assets/models/m3screw.glb', alt: 'M3 screw for the butterfly valve assembly', caption: 'M3 screw' },
+        { type: 'model', src: 'assets/models/panhead_m5.glb', alt: 'Pan head M5 fastener for the butterfly valve assembly', caption: 'Pan head M5 screw' },
+        { type: 'model', src: 'assets/models/Pipe.glb', alt: 'Pipe section for the butterfly valve assembly', caption: 'Pipe section' },
+        { type: 'model', src: 'assets/models/valve_blade.glb', alt: 'Valve blade component of the butterfly valve', caption: 'Valve blade' },
+        { type: 'model', src: 'assets/models/valve_body.glb', alt: 'Valve body for the butterfly valve assembly', caption: 'Valve body' },
+        { type: 'model', src: 'assets/models/valve_shaft.glb', alt: 'Valve shaft for the butterfly valve assembly', caption: 'Valve shaft' },
+        { type: 'model', src: 'assets/models/Woodruff_key.glb', alt: 'Woodruff key for the butterfly valve assembly', caption: 'Woodruff key' }
+      ],
+      showGalleryCTA: true,
+      note: 'Upload each supporting GLB part listed here into assets/models/ so the mini viewers can render in the gallery overlay.'
+    },
     'cad-1': {
       title: 'Custom Horn Assembly',
       category: 'CAD',
