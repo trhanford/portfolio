@@ -686,3 +686,59 @@ body.modal-open{overflow:hidden;}
     0 10px 20px rgba(0,0,0,.12),
     0 3px 8px rgba(0,0,0,.07);
 }
+
+/* ===================== Rail card shadow — softer ===================== */
+/* Base (not hovered): very soft, close-to-card */
+.project-card{
+  box-shadow:
+    0 4px 12px rgba(0,0,0,.08),
+    0 1px 4px rgba(0,0,0,.05);
+}
+
+/* Hover: a touch stronger but still feathered */
+.project-card:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.12),
+    0 2px 6px rgba(0,0,0,.06);
+}
+
+/* The top-to-bottom overlay was a bit strong; ease it back */
+.project-card::after{
+  /* was 55%/100% with .12 alpha — soften and lower contrast */
+  background: linear-gradient(180deg, rgba(0,0,0,0) 68%, rgba(0,0,0,.08) 100%);
+  border-radius: inherit;
+}
+
+/* ===================== Rail arrows — bigger + brand red ===================== */
+.rail-buttons button{
+  width: 52px;                   /* was 44px */
+  height: 52px;
+  border-radius: 50%;
+  border: 0;                     /* remove thin grey border */
+  background: var(--accent-soft, #b45858);  /* brand red fallback */
+  color: #fff;
+  box-shadow: 0 16px 28px rgba(0,0,0,.16);
+  font-size: 1.2rem;
+}
+
+.rail-buttons button:hover{
+  transform: translateY(-2px);
+  background: color-mix(in oklab, var(--accent-soft, #b45858) 88%, black); /* subtle darken */
+  box-shadow: 0 20px 36px rgba(0,0,0,.18);
+  color: #fff;
+}
+
+.rail-buttons button:focus-visible{
+  outline: 0;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px color-mix(in oklab, var(--accent-soft, #b45858) 70%, white);
+}
+
+.rail-buttons button:disabled{
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
