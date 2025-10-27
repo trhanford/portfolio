@@ -693,9 +693,9 @@
       { label: 'MATLAB / Python',    weight: 700, radius: 30, parent: 1 },
     
       // 2.x — interests children (parent: 2)
-      { label: 'Snowboarding', weight: 700, radius: 30, parent: 2 },
-      { label: 'Pets',         weight: 700, radius: 28, parent: 2 },
-      { label: 'Tinkering',    weight: 700, radius: 30, parent: 2 }
+      { label: 'Placeholder_1', weight: 700, radius: 30, parent: 2 },
+      { label: 'Placeholder_2',         weight: 700, radius: 28, parent: 2 },
+      { label: 'Placeholder_3',    weight: 700, radius: 30, parent: 2 }
     ];
 
     const state = {
