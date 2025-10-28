@@ -225,6 +225,63 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Mobile dock navigation (app-like bottom nav)
+  // ---------------------------------------------------------------------------
+
+  function initMobileDock() {
+    const dock = select('.mobile-dock');
+    if (!dock) return;
+
+    const links = selectAll('.mobile-dock__link', dock);
+    if (!links.length) return;
+
+    const sections = links
+      .map(link => {
+        const hash = link.hash || '';
+        if (!hash || !hash.startsWith('#')) return null;
+        const section = select(hash);
+        if (!section) return null;
+        return { link, hash, section };
+      })
+      .filter(Boolean);
+
+    const setActive = hash => {
+      links.forEach(link => {
+        if (link.hash === hash) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    };
+
+    if (sections.length && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        entries => {
+          const visible = entries
+            .filter(entry => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          if (!visible.length) return;
+          const top = visible[0];
+          const match = sections.find(item => item.section === top.target);
+          if (match) setActive(match.hash);
+        },
+        { rootMargin: '-35% 0px -45%', threshold: [0.25, 0.5, 0.65] }
+      );
+
+      sections.forEach(item => observer.observe(item.section));
+    }
+
+    links.forEach(link => {
+      if (link.hash && link.hash.startsWith('#')) {
+        link.addEventListener('click', () => setActive(link.hash));
+      }
+    });
+
+    setActive('#intro');
+  }
+
+  // ---------------------------------------------------------------------------
   // Background particles with soft exclusions
   // ---------------------------------------------------------------------------
 
@@ -930,6 +987,7 @@
     initNavFade();
     initDrawer();
     initReveals();
+    initMobileDock();
     initParticleFields();
     initSkillsNetwork();
   });
