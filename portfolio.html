@@ -69,7 +69,7 @@
             <span class="stat-label">Automotive builds</span>
           </div>
           <div class="stat" data-stat="cad">
-            <span class="stat-value">6</span>
+            <span class="stat-value">7</span>
             <span class="stat-label">CAD studies</span>
           </div>
           <div class="stat" data-stat="electrical">
@@ -187,6 +187,26 @@
                 </div>
               </article>
 
+              <article class="project-card" data-project-id="cad-spindle-assembly">
+                <div class="project-media project-media--viewer">
+                  <model-viewer
+                    src="assets/models/spindle_assembly.glb"
+                    poster="images/placeholders/cad-default.svg"
+                    alt="Interactive preview of the spindle assembly"
+                    camera-controls
+                    touch-action="pan-y"
+                    auto-rotate
+                    rotation-per-second="13deg"
+                    shadow-intensity="0.85"
+                  ></model-viewer>
+                </div>
+                <div class="project-body">
+                  <span class="project-kicker">Spindle Assembly Stack-Up</span>
+                  <p class="project-summary">Review the full spindle stack-up with its bearings, collar, and base ready for fabrication.</p>
+                  <button class="project-action" type="button" data-project="cad-spindle-assembly">View full gallery<span aria-hidden="true"> →</span></button>
+                </div>
+              </article>
+              
               <article class="project-card" data-project-id="cad-1">
                 <div class="project-media project-media--viewer">
                   <model-viewer
