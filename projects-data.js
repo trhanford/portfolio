@@ -169,7 +169,7 @@
         alt: 'Interactive preview of the utility cart assembly',
         poster: 'images/placeholders/cad-default.svg',
         autoRotate: true,
-        rotationPerSecond: '12deg',
+        rotationPerSecond: '12deg 0deg 0deg',
         shadowIntensity: '0.85',
         exposure: '1.05',
         message: 'Place Cart_assembly.glb and each supporting component listed below in assets/models to enable the gallery viewers.'
