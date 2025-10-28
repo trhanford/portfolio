@@ -25,6 +25,50 @@
     };
   })();
 
+  const SLATE_TINT = [112 / 255, 128 / 255, 144 / 255, 1];
+  const WHITE_THRESHOLD = 0.9;
+
+  function whenModelViewerReady(){
+    if (typeof window === 'undefined' || typeof customElements === 'undefined' || typeof customElements.whenDefined !== 'function'){
+      return Promise.resolve();
+    }
+    try {
+      return customElements.whenDefined('model-viewer');
+    } catch (error){
+      return Promise.resolve();
+    }
+  }
+
+  function registerSlateTint(viewer){
+    if (!(viewer instanceof HTMLElement) || viewer.__slateTintReady) return;
+    viewer.__slateTintReady = true;
+
+    const tintMaterials = () => {
+      const model = viewer.model;
+      if (!model || !model.materials || !model.materials.length) return;
+
+      Array.from(model.materials).forEach(material => {
+        const pbr = material?.pbrMetallicRoughness;
+        if (!pbr || typeof pbr.setBaseColorFactor !== 'function') return;
+        if (pbr.baseColorTexture) return;
+
+        const baseColor = pbr.baseColorFactor ? Array.from(pbr.baseColorFactor) : [1, 1, 1, 1];
+
+        const [r = 1, g = 1, b = 1, a = 1] = baseColor;
+        if (r >= WHITE_THRESHOLD && g >= WHITE_THRESHOLD && b >= WHITE_THRESHOLD){
+          pbr.setBaseColorFactor([SLATE_TINT[0], SLATE_TINT[1], SLATE_TINT[2], a]);
+        }
+      });
+    };
+
+    viewer.addEventListener('load', tintMaterials);
+    if (viewer.model) tintMaterials();
+  }
+
+  function tintExistingModelViewers(root = document){
+    selectAll('model-viewer', root).forEach(registerSlateTint);
+  }
+  
   if (document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -38,6 +82,7 @@
     const modal = createModal();
     setupRails(modal);
     setupProjectButtons(modal);
+    whenModelViewerReady().then(() => tintExistingModelViewers());
   }
 
   function ensureModelViewer(){
@@ -452,6 +497,8 @@
       wrapper.appendChild(placeholder);
     }, { once: true });
 
+    registerSlateTint(viewer);
+    
     wrapper.appendChild(viewer);
     return wrapper;
   }
