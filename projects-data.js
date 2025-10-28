@@ -136,6 +136,30 @@
       showGalleryCTA: true,
       note: 'Upload each supporting GLB part listed here into assets/models/ so the mini viewers can render in the gallery overlay.'
     },
+    'cad-spindle-assembly': {
+      title: 'Spindle Assembly',
+      category: 'CAD',
+      summary: 'Review the full spindle stack-up with its bearings, collar, and base ready for fabrication.',
+      model: {
+        src: 'assets/models/spindle_assembly.glb',
+        alt: 'Interactive preview of the spindle assembly',
+        poster: 'images/placeholders/cad-default.svg',
+        autoRotate: true,
+        rotationPerSecond: '12deg',
+        shadowIntensity: '0.85',
+        exposure: '1.04',
+        message: 'Store spindle_assembly.glb in assets/models with the supporting part exports so the viewer can load every piece.'
+      },
+      gallery: [
+        { type: 'model', src: 'assets/models/spindle_base.glb', alt: 'Spindle base component of the assembly', caption: 'Spindle base' },
+        { type: 'model', src: 'assets/models/spindle_bearing.glb', alt: 'Spindle bearing used in the assembly', caption: 'Spindle bearing' },
+        { type: 'model', src: 'assets/models/spindle_collar.glb', alt: 'Collar component from the spindle assembly', caption: 'Spindle collar' },
+        { type: 'model', src: 'assets/models/spindle_pin.glb', alt: 'Locking pin for the spindle assembly', caption: 'Spindle pin' },
+        { type: 'model', src: 'assets/models/spindle_shaft.glb', alt: 'Shaft component for the spindle assembly', caption: 'Spindle shaft' }
+      ],
+      showGalleryCTA: true,
+      note: 'Add each spindle part GLB listed above into assets/models/ to activate the mini previews within the gallery overlay.'
+    },
     'cad-cart-assembly': {
       title: 'Utility Cart Assembly',
       category: 'CAD',
