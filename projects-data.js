@@ -136,6 +136,42 @@
       showGalleryCTA: true,
       note: 'Upload each supporting GLB part listed here into assets/models/ so the mini viewers can render in the gallery overlay.'
     },
+    'cad-cart-assembly': {
+      title: 'Utility Cart Assembly',
+      category: 'CAD',
+      summary: 'Explore the complete utility cart build with modular casters, bumpers, and removable handle hardware.',
+      model: {
+        src: 'assets/models/Cart_assembly.glb',
+        alt: 'Interactive preview of the utility cart assembly',
+        poster: 'images/placeholders/cad-default.svg',
+        autoRotate: true,
+        rotationPerSecond: '12deg',
+        shadowIntensity: '0.85',
+        exposure: '1.05',
+        message: 'Place Cart_assembly.glb and each supporting component listed below in assets/models to enable the gallery viewers.'
+      },
+      gallery: [
+        { type: 'model', src: 'assets/models/Cart_assembly.glb', alt: 'Complete utility cart assembly', caption: 'Cart assembly' },
+        { type: 'model', src: 'assets/models/bumper.glb', alt: 'Protective bumper for the utility cart', caption: 'Bumper' },
+        { type: 'model', src: 'assets/models/caste_axle_bushing.glb', alt: 'Caster axle bushing for the utility cart', caption: 'Caster axle bushing' },
+        { type: 'model', src: 'assets/models/caster_axle_nut.glb', alt: 'Caster axle nut for the utility cart', caption: 'Caster axle nut' },
+        { type: 'model', src: 'assets/models/caster_axle_washer.glb', alt: 'Caster axle washer for the utility cart', caption: 'Caster axle washer' },
+        { type: 'model', src: 'assets/models/caster_wheel_frame.glb', alt: 'Caster wheel frame for the utility cart', caption: 'Caster wheel frame' },
+        { type: 'model', src: 'assets/models/caster_wheel_subassembly.glb', alt: 'Caster wheel subassembly for the utility cart', caption: 'Caster wheel subassembly' },
+        { type: 'model', src: 'assets/models/caster_wheel.glb', alt: 'Caster wheel for the utility cart', caption: 'Caster wheel' },
+        { type: 'model', src: 'assets/models/frame_subassembly.glb', alt: 'Frame subassembly for the utility cart', caption: 'Frame subassembly' },
+        { type: 'model', src: 'assets/models/frame.glb', alt: 'Main frame for the utility cart', caption: 'Frame' },
+        { type: 'model', src: 'assets/models/handle_carrier.glb', alt: 'Handle carrier component for the utility cart', caption: 'Handle carrier' },
+        { type: 'model', src: 'assets/models/handle_cart.glb', alt: 'Handle for the utility cart', caption: 'Handle' },
+        { type: 'model', src: 'assets/models/handle_subassembly.glb', alt: 'Handle subassembly for the utility cart', caption: 'Handle subassembly' },
+        { type: 'model', src: 'assets/models/mounting_nut.glb', alt: 'Mounting nut for the utility cart assembly', caption: 'Mounting nut' },
+        { type: 'model', src: 'assets/models/platform.glb', alt: 'Platform deck for the utility cart', caption: 'Platform' },
+        { type: 'model', src: 'assets/models/swivel_caster_frame.glb', alt: 'Swivel caster frame for the utility cart', caption: 'Swivel caster frame' },
+        { type: 'model', src: 'assets/models/swivel_caster_wheel.glb', alt: 'Swivel caster wheel for the utility cart', caption: 'Swivel caster wheel' }
+      ],
+      showGalleryCTA: true,
+      note: 'Upload Cart_assembly.glb plus each component listed to assets/models/ so every part renders within the gallery overlay viewers.'
+    },
     'cad-1': {
       title: 'Custom Horn Assembly',
       category: 'CAD',
