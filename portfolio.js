@@ -303,7 +303,7 @@
   }
 
   function setupProjectButtons(modal){
-    const buttons = document.querySelectorAll('.project-action');
+    const buttons = document.querySelectorAll('button.project-action[data-project]');
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const id = button.dataset.project;
