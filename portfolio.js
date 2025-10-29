@@ -358,8 +358,21 @@
           if (hasGallery){
             body.appendChild(renderGallery(project.gallery, project.title));
           }
+          if (Array.isArray(project.description) && project.description.length){
+            const description = renderDescription(project.description);
+            if (description) body.appendChild(description);
+          }
+          const actionLinks = [];
+          const reportLink = renderReportCTA(project);
+          if (reportLink) actionLinks.push(reportLink);
           if (hasGallery && shouldShowGalleryCTA(project)){
-            body.appendChild(renderGalleryCTA(project));
+            actionLinks.push(renderGalleryCTA(project));
+          }
+          if (actionLinks.length){
+            const actionsWrapper = document.createElement('div');
+            actionsWrapper.className = 'modal-actions';
+            actionLinks.forEach(link => actionsWrapper.appendChild(link));
+            body.appendChild(actionsWrapper);
           }
           if (project.model){
             body.appendChild(renderModel(project));
@@ -439,16 +452,39 @@
     return wrapper;
   }
 
-  function renderGalleryCTA(project){
+  function renderDescription(paragraphs){
     const wrapper = document.createElement('div');
-    wrapper.className = 'modal-actions';
+    wrapper.className = 'modal-description';
+    paragraphs.forEach(copy => {
+      if (!copy) return;
+      const paragraph = document.createElement('p');
+      paragraph.textContent = copy;
+      wrapper.appendChild(paragraph);
+    });
+    return wrapper.childElementCount ? wrapper : null;
+  }
+
+  function renderGalleryCTA(project){
     const link = document.createElement('a');
     link.className = 'btn-primary modal-gallery-link';
     link.href = `gallery.html?id=${encodeURIComponent(project.id)}`;
     link.textContent = 'View full gallery';
     link.setAttribute('aria-label', `View the full gallery for ${project.title}`);
-    wrapper.appendChild(link);
-    return wrapper;
+    return link;
+  }
+
+  function renderReportCTA(project){
+    const spec = project?.report;
+    if (!spec || !spec.href) return null;
+    const link = document.createElement('a');
+    link.className = 'btn-primary modal-report-link';
+    link.href = spec.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = spec.label || 'View full report';
+    const label = spec.label || 'View full report';
+    link.setAttribute('aria-label', `${label} for ${project.title}`);
+    return link;
   }
 
   function shouldShowGalleryCTA(project){
