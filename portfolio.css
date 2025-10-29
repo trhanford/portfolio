@@ -554,7 +554,7 @@ body.modal-open{overflow:hidden;}
 .portfolio-modal__body::-webkit-scrollbar{width:12px;}
 .portfolio-modal__body::-webkit-scrollbar-thumb{background:rgba(43,47,51,.25);border-radius:999px;}
 
-.modal-gallery{
+.modal-gallery{ 
   display:flex;
   gap:18px;
   overflow-x:auto;
@@ -572,6 +572,19 @@ body.modal-open{overflow:hidden;}
 
 .modal-gallery img{width:100%;height:100%;object-fit:cover;display:block;}
 
+.modal-description{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  color:rgba(43,47,51,.82);
+  font-size:1rem;
+  line-height:1.7;
+}
+
+.modal-description p{
+  margin:0;
+}
+
 .modal-actions{
   display:flex;
   flex-wrap:wrap;
@@ -579,6 +592,11 @@ body.modal-open{overflow:hidden;}
 }
 
 .modal-gallery-link{
+  justify-content:center;
+  padding-inline:clamp(24px, 6vw, 38px);
+}
+
+.modal-report-link{
   justify-content:center;
   padding-inline:clamp(24px, 6vw, 38px);
 }
