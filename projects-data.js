@@ -374,8 +374,20 @@
       category: 'Computer & Electrical',
       summary: 'Classic timing IC driving alternating beacons with adjustable pulse widths.',
       gallery: [
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder art for the 555 timer police light circuit board.' },
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder showing the alternating light output of the 555 timer build.' }
+        { src: 'assets/reports/Oscilloscope Measurment of Police Lights Astable Dual Circuit.png', alt: 'Oscilloscope capture of the dual LMC555 astable police light circuit.' },
+        { src: 'assets/reports/Astable Configuration General Operation Diagram.png', alt: 'General operation diagram for the astable 555 timer configuration.' },
+        { src: 'assets/reports/Astable Internal Circuit Diagram.png', alt: 'Internal schematic illustrating the astable LMC555 timer circuit.' },
+        { src: 'assets/reports/LTSpice Circuit Schematic of Police & Emergency Light Flasher’s Astable Circuit.png', alt: 'LTSpice schematic for the police and emergency light flasher astable circuit.' },
+        { src: 'assets/reports/LTSpice Simulation of Astable LMC555 Circuit 1 sec 75 percent dc.png', alt: 'LTSpice waveform of the astable LMC555 circuit with a 1 second period at 75 percent duty cycle.' },
+        { src: 'assets/reports/LTSpice Simulation of Monostable LMC555 Circuit 3 sec 75 percent dc.png', alt: 'LTSpice results for the monostable LMC555 circuit producing a 3 second pulse at 75 percent duty cycle.' },
+        { src: 'assets/reports/LTSpice Simulation of Police Lights Astable Dual Circuit.png', alt: 'LTSpice dual astable simulation of the alternating police light circuit.' },
+        { src: 'assets/reports/Monostable Configuration General Operation Diagram.png', alt: 'General operation diagram for the monostable 555 timer configuration.' },
+        { src: 'assets/reports/Oscilloscope Measurment of Astable LMC555 Circuit 1 sec 60 percent dc.png', alt: 'Oscilloscope capture of the astable LMC555 circuit at a 1 second period and 60 percent duty cycle.' },
+        { src: 'assets/reports/Oscilloscope Measurment of Monostable LMC555 Circuit with 3 Second Pulse.png', alt: 'Oscilloscope capture of the monostable LMC555 circuit delivering a 3 second pulse.' },
+        { src: 'assets/reports/Police Lights LED Flasher Circuit Diagram from Elonics.org.png', alt: 'Reference LED flasher schematic for the police light circuit from Elonics.org.' },
+        { src: 'assets/reports/Timing Circuit Schematic for Astable LMC555.png', alt: 'Timing circuit schematic detailing the astable LMC555 configuration.' },
+        { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 1 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 1 second pulse.' },
+        { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 3 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 3 second pulse.' }
       ],
       note: 'Show schematic captures, breadboard iterations, and final enclosure shots for extra clarity.'
     },
