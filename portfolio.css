@@ -360,6 +360,16 @@ body.portfolio-page main{
   transition:transform .25s ease, background-color .25s ease, color .25s ease;
 }
 
+.project-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.project-action--link{
+  text-decoration:none;
+}
+
 .project-action span[aria-hidden="true"]{transition:transform .25s ease;}
 
 .project-action:hover{
