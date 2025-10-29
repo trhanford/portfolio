@@ -339,6 +339,36 @@
       },
       note: 'Document alternative bin layouts or FDM print settings in the gallery to showcase modularity and ease of fabrication.'
     },
+    'timer-analysis': {
+      title: '555 Timer Circuit Analysis and Applications',
+      category: 'Computer & Electrical',
+      summary: 'Design, simulate, and validate LMC555 monostable and astable configurations across precise duty cycles.',
+      description: [
+        'This project explored the design, simulation, and implementation of monostable and astable 555 timer configurations using the LMC555 IC.',
+        'Timing constants and RC networks were calculated to dial in 3-second monostable pulses alongside 2-second and 1-second astable oscillators at 60% and 75% duty cycles, respectively, with results confirmed in LTSpice and on the bench.',
+        'A dual-timer “police light” flasher further demonstrated waveform generation, reinforcing real-world verification of integrated circuit theory.'
+      ],
+      report: {
+        href: 'assets/reports/555_Timer.pdf',
+        label: 'View Full Report'
+      },
+      note: 'Swap in oscilloscope captures, LTSpice plots, and breadboard images to complement the written analysis.'
+    },
+    'audio-eq': {
+      title: '3-Band Audio Equalizer and Power Amplifier',
+      category: 'Computer & Electrical',
+      summary: 'Shape bass, mids, and treble with LM324 filters before delivering over 400 mW through an LM386 output stage.',
+      description: [
+        'This project designed and built a fully functional 3-band audio equalizer and power amplifier capable of driving an 8Ω speaker.',
+        'Low-, band-, and high-pass filters isolate frequency ranges with LM324 op-amps providing individual gain control, while a master volume feeds an LM386 power amplifier for clean output.',
+        'Frequency response sweeps and RMS power measurements verified the -3 dB targets and showcased the system’s adjustable tone balancing.'
+      ],
+      report: {
+        href: 'assets/reports/Final_Report.pdf',
+        label: 'View Full Report'
+      },
+      note: 'Add enclosure photos, filter response plots, and wiring close-ups to illustrate tuning decisions.'
+    },
     'timer-police': {
       title: '555 Timer Police Light Circuit',
       category: 'Computer & Electrical',
