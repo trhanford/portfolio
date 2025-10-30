@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Report — Tristan Hanford</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="report.css" />
+  <script src="script.js" defer></script>
+  <script src="projects-data.js" defer></script>
+  <script src="report.js" defer></script>
+</head>
+<body class="report-page">
+  <nav id="mainNav" class="navbar nav-active" aria-label="Primary" data-instant>
+    <div class="nav-inner container">
+      <div id="navTitle" class="nav-title">Project Report</div>
+      <ul class="nav-links" role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/index.html#about">About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
+      </ul>
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">☰</button>
+    </div>
+    <div id="drawer" class="drawer" aria-hidden="true">
+      <ul role="list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/index.html#about">About Me</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/resume.html">Digital Résumé</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <header class="report-hero" data-field-surface>
+      <div class="container">
+        <nav class="report-breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a id="reportBreadcrumbLink" href="portfolio.html">Portfolio</a></li>
+            <li id="reportCrumb" aria-current="page">Project Report</li>
+          </ol>
+        </nav>
+        <p id="reportCategory" class="report-kicker"></p>
+        <h1 id="reportTitle">Project Report</h1>
+        <p id="reportSummary" class="report-summary"></p>
+        <div class="report-actions">
+          <a id="reportBackLink" class="btn-outline" href="portfolio.html">← Back to portfolio</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="report-viewer-section">
+      <div class="container">
+        <div id="reportStatus" class="report-status" role="status" aria-live="polite"></div>
+        <div class="report-viewer" data-empty="true">
+          <iframe id="reportFrame" title="Project report" loading="lazy" src="" allowfullscreen></iframe>
+          <div class="report-controls" aria-live="polite">
+            <a id="reportDownload" class="btn-outline report-download" href="#" download>Download report</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="site-connections" aria-label="Stay connected">
+    <div class="site-connections__inner container">
+      <span class="site-connections__line" aria-hidden="true"></span>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <span class="dot" aria-hidden="true">•</span>
+      <a href="mailto:tristan@example.com">Email</a>
+      <span class="dot" aria-hidden="true">•</span>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <span class="site-connections__line" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner container">
+      <small>© <span id="year"></span> Tristan Hanford. All rights reserved.</small>
+      <small class="made">Built with care.</small>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript container">Enable JavaScript to view project reports.</div>
+  </noscript>
+</body>
+</html>
