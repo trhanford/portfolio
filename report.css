@@ -11,6 +11,18 @@
   color: var(--slate);
 }
 
+/* Match portfolio page background */
+body.report-page{
+  background-color:#f6f2e9;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(228,221,204,.85), rgba(228,221,204,.32) 42%, rgba(228,221,204,0) 72%),
+    linear-gradient(180deg, #f8f6f1 0%, #f4f0e8 38%, #f9f6ef 72%, #ffffff 100%);
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  color:var(--slate);
+  min-height:100vh;
+}
+
 .report-hero {
   position: relative;
   padding: 4.5rem 0 3.5rem;
@@ -97,7 +109,7 @@
   display: none;
 }
 
-report-viewer[data-empty="true"] .report-controls {
+.report-viewer[data-empty="true"] .report-controls {
   display: none;
 }
 
