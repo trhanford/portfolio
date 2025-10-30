@@ -188,21 +188,48 @@
           </section>
 
           <!-- Bubble Network -->
-          <section class="bubble-panel">
-            <h3 class="block-title">Core Skills & Interests</h3>
-            <canvas id="skillsGraph" width="600" height="420" aria-label="Skills bubble network"></canvas>
-            <!-- Fallback list for no-canvas browsers -->
-            <ul class="bubble-fallback">
-              <li>CAD (NX / Creo)</li>
-              <li>Automotive</li>
-              <li>Wiring & PDM</li>
-              <li>Cooling & Thermals</li>
-              <li>Testing & Docs</li>
-              <li>MATLAB / Python</li>
-              <li>Snowboarding</li>
-              <li>Pets</li>
-              <li>Tinkering</li>
-            </ul>
+          <section class="skills-panel" aria-labelledby="coreSkills">
+            <div class="skills-panel__group">
+              <h3 id="coreSkills" class="block-title">Core Skills</h3>
+              <div class="skill-grid" role="list">
+                <article class="info-card" role="listitem">
+                  <h4>Systems Integration</h4>
+                  <p>Orchestrate mechanical, electrical, and controls interfaces so complex builds ship as a cohesive system.</p>
+                </article>
+                <article class="info-card" role="listitem">
+                  <h4>CAD &amp; Packaging</h4>
+                  <p>Model in NX and Creo with a focus on manufacturability, service access, and tidy packaging that respects real constraints.</p>
+                </article>
+                <article class="info-card" role="listitem">
+                  <h4>Wire Harnessing</h4>
+                  <p>Design looms, spec connectors, and build clean PDM layouts that make troubleshooting fast and reliable.</p>
+                </article>
+                <article class="info-card" role="listitem">
+                  <h4>Thermals &amp; Fluids</h4>
+                  <p>Size pumps, radiators, and routing for track duty while monitoring data so the system stays predictable.</p>
+                </article>
+                <article class="info-card" role="listitem">
+                  <h4>Prototype Operations</h4>
+                  <p>Stand up fabrication plans, coordinate suppliers, and keep builds moving with clear documentation at every gate.</p>
+                </article>
+                <article class="info-card" role="listitem">
+                  <h4>Testing &amp; Validation</h4>
+                  <p>Instrument rigs, capture performance metrics, and translate findings into actionable revisions and reports.</p>
+                </article>
+              </div>
+            </div>
+
+            <div class="skills-panel__group">
+              <h3 class="block-title" id="interestsTitle">Interests</h3>
+              <div class="interest-grid" role="list" aria-labelledby="interestsTitle">
+                <span class="interest-chip" role="listitem">Track cars &amp; endurance racing</span>
+                <span class="interest-chip" role="listitem">Snowboarding</span>
+                <span class="interest-chip" role="listitem">Toolmaking &amp; fabrication</span>
+                <span class="interest-chip" role="listitem">Backcountry travel</span>
+                <span class="interest-chip" role="listitem">Analog synthesizers</span>
+                <span class="interest-chip" role="listitem">Dog adventures</span>
+              </div>
+            </div>
           </section>
         </div>
       </div>
