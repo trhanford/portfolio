@@ -153,12 +153,6 @@ body.report-page{
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .report-page {
-    background: #0f172a;
-    color: rgba(226, 232, 240, 0.92);
-  }
-
   .report-hero {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.75));
     border-bottom-color: rgba(148, 163, 184, 0.18);
