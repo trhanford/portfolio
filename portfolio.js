@@ -478,9 +478,7 @@
     if (!spec || !spec.href) return null;
     const link = document.createElement('a');
     link.className = 'btn-primary modal-report-link';
-    link.href = spec.href;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+    link.href = `report.html?id=${encodeURIComponent(project.id)}`;
     link.textContent = spec.label || 'View full report';
     const label = spec.label || 'View full report';
     link.setAttribute('aria-label', `${label} for ${project.title}`);
