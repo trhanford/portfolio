@@ -294,15 +294,34 @@
       category: 'CAD',
       summary: 'View suspension pickup points, battery placement, and aero details for a performance RC platform.',
       model: {
-        src: 'assets/models/rc_car.glb',
-        alt: 'Interactive preview of the RC car chassis concept',
+        src: 'assets/models/car_final.glb',
+        alt: 'Interactive preview of the finalized RC car assembly',
         poster: 'images/placeholders/cad-default.svg',
         autoRotate: true,
         rotationPerSecond: '14deg',
         shadowIntensity: '0.7',
         exposure: '1.0',
-        message: 'Copy rc_car.glb into assets/models. If your export references textures, keep them in the same folder for seamless loading.'
+        message: 'Copy car_final.glb into assets/models. If your export references textures, keep them in the same folder for seamless loading.'
       },
+      gallery: [
+        { type: 'model', src: 'assets/models/bearing608-2rs.glb', alt: '608-2RS wheel bearing used in the RC car assembly', caption: '608-2RS bearing' },
+        { type: 'model', src: 'assets/models/breadboard.glb', alt: 'Electronics breadboard layout for the RC car electronics', caption: 'Breadboard layout' },
+        { type: 'model', src: 'assets/models/breadboard_platform.glb', alt: 'Mounting platform that supports the electronics breadboard', caption: 'Breadboard platform' },
+        { type: 'model', src: 'assets/models/chass_copy_for_hood.glb', alt: 'Chassis hood subassembly for bodywork fitment', caption: 'Chassis hood section' },
+        { type: 'model', src: 'assets/models/chassis_v1.glb', alt: 'Initial chassis revision for the RC car concept', caption: 'Chassis v1' },
+        { type: 'model', src: 'assets/models/drive_motor.glb', alt: 'Drive motor package for the RC car', caption: 'Drive motor' },
+        { type: 'model', src: 'assets/models/esp32s.glb', alt: 'ESP32S controller used for vehicle electronics', caption: 'ESP32S controller' },
+        { type: 'model', src: 'assets/models/front_axle.glb', alt: 'Front axle assembly for the RC car', caption: 'Front axle' },
+        { type: 'model', src: 'assets/models/front_wheelhub_sub-assembly_fd.glb', alt: 'Front wheel hub sub-assembly with steering knuckle', caption: 'Front wheel hub' },
+        { type: 'model', src: 'assets/models/knuckle_fp.glb', alt: 'Front knuckle component for steering geometry', caption: 'Steering knuckle (FP)' },
+        { type: 'model', src: 'assets/models/kuckle_fd.glb', alt: 'Rear knuckle variant supporting drivetrain packaging', caption: 'Steering knuckle (FD)' },
+        { type: 'model', src: 'assets/models/lipobattery.glb', alt: 'LiPo battery pack model for energy storage', caption: 'LiPo battery' },
+        { type: 'model', src: 'assets/models/rim_65mm.glb', alt: '65 mm wheel rim design for the RC car', caption: '65 mm rim' },
+        { type: 'model', src: 'assets/models/sg90_hub1.glb', alt: 'SG90 servo horn hub adapter', caption: 'SG90 hub' },
+        { type: 'model', src: 'assets/models/tb6612fng.glb', alt: 'TB6612FNG motor driver board', caption: 'TB6612FNG driver' },
+        { type: 'model', src: 'assets/models/tie_rod.glb', alt: 'Steering tie rod connecting the knuckles', caption: 'Tie rod' },
+        { type: 'model', src: 'assets/models/tire_65mm.glb', alt: '65 mm tire matching the rim design', caption: '65 mm tire' }
+      ],
       note: 'Consider appending suspension detail shots or annotated callouts via the gallery array to explain tuning decisions.'
     },
     'cad-4': {
