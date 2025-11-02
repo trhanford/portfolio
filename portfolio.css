@@ -344,6 +344,27 @@ body.portfolio-page main{
   line-height:1.6;
 }
 
+#automotive .project-summary{
+  max-height:132px;
+  overflow-y:auto;
+  padding:14px 16px;
+  border-radius:18px;
+  background:linear-gradient(145deg, rgba(244,241,235,.86), rgba(255,255,255,.72));
+  border:1px solid rgba(43,47,51,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  scroll-behavior:smooth;
+  overscroll-behavior:contain;
+}
+
+#automotive .project-summary::-webkit-scrollbar{
+  width:8px;
+}
+
+#automotive .project-summary::-webkit-scrollbar-thumb{
+  background:rgba(43,47,51,.25);
+  border-radius:999px;
+}
+
 .project-action{
   align-self:flex-start;
   display:inline-flex;
