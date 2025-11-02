@@ -30,7 +30,6 @@
         { src: 'images/placeholders/bb21.JPG', alt: 'Photo bb21 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb22.JPG', alt: 'Photo bb22 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb23.JPG', alt: 'Photo bb23 from the 1968 Ford Bronco 289 project.' },
-        { src: 'images/placeholders/bb24.JPG', alt: 'Photo bb24 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb25.JPG', alt: 'Photo bb25 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb26.JPG', alt: 'Photo bb26 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb27.JPG', alt: 'Photo bb27 from the 1968 Ford Bronco 289 project.' },
@@ -57,19 +56,10 @@
       category: 'Automotive',
       summary: 'Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.',
       gallery: [
-        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' }
+        { src: 'images/placeholders/Bronco_coyote.jpg', alt: 'Placeholder artwork representing the Coyote-swapped Bronco exterior.' },
+        { src: 'images/placeholders/bronco_coy_1.jpg', alt: 'Placeholder illustration highlighting the Coyote Bronco engine bay.' },
+        { src: 'images/placeholders/Bronco_coyote.jpg', alt: 'Placeholder artwork focusing on the interior upgrades of the Coyote Bronco.' },
+        { src: 'images/placeholders/bronco_coy_1.jpg', alt: 'Placeholder illustration showing wiring and integration details on the Coyote Bronco.' }
       ],
       note: 'Drop high-resolution images into an appropriate folder (for example images/bronco-coyote/) and update the entries in projects-data.js to point to them.'
     },
@@ -78,32 +68,21 @@
       category: 'Automotive',
       summary: 'Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.',
       gallery: [
-        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
-        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
-        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
-        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' }
+        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder photo of the Jeep CJ5 exterior stance.' },
+        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder photo showing Jeep CJ5 wiring and plumbing updates.' },
+        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder photo of the Jeep CJ5 body refinements.' },
+        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder photo highlighting the Jeep CJ5 suspension work.' },
+        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder photo focusing on the Jeep CJ5 wiring harness routing.' },
+        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder photo showing the Jeep CJ5 engine bay.' },
+        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder photo of Jeep CJ5 interior updates.' },
+        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder photo documenting Jeep CJ5 trail-ready prep.' },
+        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder photo of the Jeep CJ5 on oversized tires.' },
+        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder photo capturing Jeep CJ5 chassis details.' },
+        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder photo of Jeep CJ5 wiring clean-up.' },
+        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder photo showing Jeep CJ5 paint and trim touches.' },
+        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder photo of the Jeep CJ5 ready for off-road use.' }
       ],
       note: 'Add fabrication and trail-testing photos here to emphasize durability upgrades.'
-    },
-    'nissan-350z': {
-      title: '2003 Nissan 350Z — VQ35',
-      category: 'Automotive',
-      summary: 'Street-tuned coupe with aero tweaks, suspension refresh, and track-ready instrumentation.',
-      gallery: [
-        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image for the Nissan 350Z exterior refinements.' },
-        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image showing the VQ35 engine bay updates.' },
-        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image representing the 350Z suspension tuning.' }
-      ],
-      note: 'Replace with track-day shots, detail photos, and instrumentation close-ups to tell the full story.'
     },
     'cad-butterfly-valve': {
       title: 'Butterfly Valve Assembly',
