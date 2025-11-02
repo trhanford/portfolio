@@ -52,7 +52,59 @@
       ],
       note: 'Gallery updated with build photos provided for the 1968 Bronco 289 restoration. Additional shots can be appended as needed; the viewer will accommodate them in the scrollable row.'
     },
-    
+    'bronco-coyote': {
+      title: '1968 Ford Bronco — 5.0L Gen 4x Coyote',
+      category: 'Automotive',
+      summary: 'Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.',
+      gallery: [
+        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' }
+      ],
+      note: 'Drop high-resolution images into an appropriate folder (for example images/bronco-coyote/) and update the entries in projects-data.js to point to them.'
+    },
+    'jeep-cj5': {
+      title: '1974 Jeep CJ5 — 304 CID',
+      category: 'Automotive',
+      summary: 'Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.',
+      gallery: [
+        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' },
+        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder image for wiring harness routing in the Coyote Bronco build.' },
+        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder image for the finished Bronco exterior.' },
+        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder artwork representing the 5.0L Coyote-swapped Bronco.' }
+      ],
+      note: 'Add fabrication and trail-testing photos here to emphasize durability upgrades.'
+    },
+    'nissan-350z': {
+      title: '2003 Nissan 350Z — VQ35',
+      category: 'Automotive',
+      summary: 'Street-tuned coupe with aero tweaks, suspension refresh, and track-ready instrumentation.',
+      gallery: [
+        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image for the Nissan 350Z exterior refinements.' },
+        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image showing the VQ35 engine bay updates.' },
+        { src: 'images/placeholders/automotive-default.svg', alt: 'Placeholder image representing the 350Z suspension tuning.' }
+      ],
+      note: 'Replace with track-day shots, detail photos, and instrumentation close-ups to tell the full story.'
+    },
     'cad-butterfly-valve': {
       title: 'Butterfly Valve Assembly',
       category: 'CAD',
@@ -362,6 +414,26 @@
       ],
       note: 'Show schematic captures, breadboard iterations, and final enclosure shots for extra clarity.'
     },
+    'smart-mirror': {
+      title: 'Alexa Integrated Smart Mirror',
+      category: 'Computer & Electrical',
+      summary: 'Voice-enabled display with embedded LEDs, microphone array, and responsive UI.',
+      gallery: [
+        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the smart mirror front panel.' },
+        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image representing the electronics tray behind the mirror.' }
+      ],
+      note: 'Swap in UI states and wiring photos to highlight the Alexa integration and light diffusion.'
+    },
+    'led-eq': {
+      title: 'Sound Reactive LED Equalizer',
+      category: 'Computer & Electrical',
+      summary: 'FFT-driven light bar that maps audio frequencies to cascading color bands.',
+      gallery: [
+        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the sound reactive LED equalizer in action.' },
+        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image showing the controller enclosure for the LED equalizer.' }
+      ],
+      note: 'Include short clips or sequential stills to demonstrate the FFT response once assets are available.'
+    }
   };
 
   window.ProjectData = Object.freeze(data);
