@@ -340,22 +340,6 @@
       },
       note: 'Supplement with photos of the sand mold or finished casting by extending the gallery array for this entry.'
     },
-    'cad-5': {
-      title: 'Can Stamper Mechanism',
-      category: 'CAD',
-      summary: 'Follow the linkage-driven head that embosses beverage cans with a custom brand mark.',
-      model: {
-        src: 'assets/models/can_stamper.glb',
-        alt: 'Interactive preview of the can stamper mechanism',
-        poster: 'images/placeholders/cad-default.svg',
-        autoRotate: true,
-        rotationPerSecond: '11deg',
-        shadowIntensity: '0.8',
-        exposure: '1.08',
-        message: 'Add can_stamper.glb to assets/models to animate the punch head and linkage in the viewer.'
-      },
-      note: 'Use the gallery to contrast exploded linkage positions or prototype photos that inspired the mechanism.'
-    },
     'cad-6': {
       title: 'Modular Organizer System',
       category: 'CAD',
