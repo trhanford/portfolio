@@ -386,9 +386,32 @@
         label: 'View Full Report'
       },
       gallery: [
-        { src: 'bb27.JPG', alt: 'Uploaded project photo bb27 showing the equalizer build in progress.' },
-        { src: 'bb28.JPG', alt: 'Uploaded project photo bb28 highlighting detail from the equalizer project.' },
-        { src: 'bb29.JPG', alt: 'Uploaded project photo bb29 featuring the completed equalizer assembly.' }
+        { src: 'assets/reports/320mV_input_maxVolume.png', alt: 'Oscilloscope capture showing the equalizer handling a 320 mV input at maximum volume.' },
+        { src: 'assets/reports/320mV_input_Mid_Volume.png', alt: 'Oscilloscope capture of the 320 mV input at mid volume output level.' },
+        { src: 'assets/reports/320mV_input_Min_Volume.png', alt: 'Oscilloscope capture of the 320 mV input running through the equalizer at minimum volume.' },
+        { src: 'assets/reports/AC_RMS_output_MidVolume.png', alt: 'True RMS AC output measurement while the equalizer operates at mid volume.' },
+        { src: 'assets/reports/amp_output_schematic.png', alt: 'Amplifier output schematic detailing the LM386 stage.' },
+        { src: 'assets/reports/BPF_frequencyResponseAnalysis.png', alt: 'Band-pass filter frequency response analysis plot.' },
+        { src: 'assets/reports/BPF_schematic.png', alt: 'Band-pass filter schematic used in the equalizer.' },
+        { src: 'assets/reports/equalizer_schematic.png', alt: 'Overall schematic of the three-band equalizer signal chain.' },
+        { src: 'assets/reports/gain_adjustment_schematic.png', alt: 'Gain adjustment circuit schematic for the equalizer filters.' },
+        { src: 'assets/reports/HPF_frequencyResponseAnalysis.png', alt: 'High-pass filter frequency response analysis plot.' },
+        { src: 'assets/reports/HPF_schematic.png', alt: 'High-pass filter schematic showing component values.' },
+        { src: 'assets/reports/LPF_frequencyResponseAnalysis.png', alt: 'Low-pass filter frequency response analysis plot.' },
+        { src: 'assets/reports/LPF_schematic.png', alt: 'Low-pass filter schematic with component references.' },
+        { src: 'assets/reports/LF356_pinout.png', alt: 'LF356 op-amp pinout reference used during design.' },
+        { src: 'assets/reports/LM334_pinout.png', alt: 'LM334 pinout diagram supporting the bias network.' },
+        { src: 'assets/reports/LM386_pinout.png', alt: 'LM386 power amplifier pinout reference.' },
+        { src: 'assets/reports/LM386_schematic.png', alt: 'LM386 amplifier schematic for the power stage.' },
+        { src: 'assets/reports/Max_gain_AC_Output_100Hz.png', alt: 'Maximum gain AC output measurement at 100 Hz.' },
+        { src: 'assets/reports/Max_gain_AC_Output_1000Hz.png', alt: 'Maximum gain AC output measurement at 1 kHz.' },
+        { src: 'assets/reports/Max_gain_AC_Output_10000Hz.png', alt: 'Maximum gain AC output measurement at 10 kHz.' },
+        { src: 'assets/reports/Min_gain_AC_Output_100Hz.png', alt: 'Minimum gain AC output measurement at 100 Hz.' },
+        { src: 'assets/reports/Min_gain_AC_Output_1000Hz.png', alt: 'Minimum gain AC output measurement at 1 kHz.' },
+        { src: 'assets/reports/Min_gain_AC_Output_10000Hz.png', alt: 'Minimum gain AC output measurement at 10 kHz.' },
+        { src: 'assets/reports/Signal_RMS_100Hz.png', alt: 'Signal RMS measurement taken at 100 Hz.' },
+        { src: 'assets/reports/Signal_RMS_768Hz.png', alt: 'Signal RMS measurement taken at 768 Hz.' },
+        { src: 'assets/reports/Signal_summer_schematic.png', alt: 'Signal summer schematic combining the three bands.' }
       ],
       note: 'Add enclosure photos, filter response plots, and wiring close-ups to illustrate tuning decisions.'
     },
@@ -412,7 +435,7 @@
         { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 1 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 1 second pulse.' },
         { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 3 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 3 second pulse.' }
       ],
-      note: 'Show schematic captures, breadboard iterations, and final enclosure shots for extra clarity.'
+      note: 'Gallery now includes measurement plots, schematics, and oscilloscope captures that document the equalizer build.'
     },
     'smart-mirror': {
       title: 'Alexa Integrated Smart Mirror',
