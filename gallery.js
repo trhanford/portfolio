@@ -201,7 +201,58 @@
       overlayApi.open({ item, project, trigger: figure, index });
     };
 
-    figure.addEventListener('click', openViewer);
+    const DRAG_THRESHOLD = 6;
+    let pointerActive = false;
+    let dragBlocked = false;
+    let startX = 0;
+    let startY = 0;
+
+    const resetPointerState = () => {
+      pointerActive = false;
+      startX = 0;
+      startY = 0;
+    };
+
+    figure.addEventListener('pointerdown', event => {
+      pointerActive = true;
+      dragBlocked = false;
+      startX = event.clientX;
+      startY = event.clientY;
+    });
+
+    figure.addEventListener('pointermove', event => {
+      if (!pointerActive || dragBlocked) return;
+      const dx = Math.abs(event.clientX - startX);
+      const dy = Math.abs(event.clientY - startY);
+      if (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD){
+        dragBlocked = true;
+      }
+    });
+
+    figure.addEventListener('pointerup', () => {
+      resetPointerState();
+    });
+
+    figure.addEventListener('pointerleave', () => {
+      if (pointerActive){
+        dragBlocked = true;
+      }
+    });
+
+    figure.addEventListener('pointercancel', () => {
+      dragBlocked = true;
+      resetPointerState();
+    });
+
+    figure.addEventListener('click', event => {
+      if (dragBlocked){
+        event.preventDefault();
+        event.stopPropagation();
+        dragBlocked = false;
+        return;
+      }
+      openViewer(event);
+    });
     figure.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' '){
         event.preventDefault();
