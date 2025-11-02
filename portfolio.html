@@ -147,6 +147,29 @@
         <div class="project-rail" data-project-rail data-rail-label="CAD projects">
           <div class="rail-window">
             <div class="rail-track">
+              <article class="project-card" data-project-id="cad-3">
+                <div class="project-media project-media--viewer">
+                  <model-viewer
+                    src="assets/models/car_final.glb"
+                    poster="images/placeholders/cad-default.svg"
+                    alt="Interactive preview of the finalized RC car assembly"
+                    loading="eager"
+                    reveal="auto"
+                    interaction-prompt="auto"
+                    camera-controls
+                    touch-action="pan-y"
+                    auto-rotate
+                    rotation-per-second="14deg"
+                    shadow-intensity="0.7"
+                  ></model-viewer>
+                </div>
+                <div class="project-body">
+                  <span class="project-kicker">RC Car Chassis Study</span>
+                  <p class="project-summary">View suspension pickup points, battery placement, and aero details for a performance RC platform.</p>
+                  <button class="project-action" type="button" data-project="cad-3">See more<span aria-hidden="true"> →</span></button>
+                </div>
+              </article>
+
               <article class="project-card" data-project-id="cad-butterfly-valve">
                 <div class="project-media project-media--viewer">
                   <model-viewer
@@ -259,29 +282,6 @@
                   <span class="project-kicker">Custom Horn Assembly</span>
                   <p class="project-summary">Orbit the in-progress horn assembly concept directly within the carousel.</p>
                   <button class="project-action" type="button" data-project="cad-1">See more<span aria-hidden="true"> →</span></button>
-                </div>
-              </article>
-
-              <article class="project-card" data-project-id="cad-2">
-                <div class="project-media project-media--viewer">
-                  <model-viewer
-                    src="assets/models/a6_assembly_thanfor_asm.glb"
-                    poster="images/placeholders/cad-default.svg"
-                    alt="Interactive preview of a precision bench vice assembly"
-                    loading="eager"
-                    reveal="auto"
-                    interaction-prompt="auto"
-                    camera-controls
-                    touch-action="pan-y"
-                    auto-rotate
-                    rotation-per-second="12deg"
-                    shadow-intensity="0.9"
-                  ></model-viewer>
-                </div>
-                <div class="project-body">
-                  <span class="project-kicker">Precision Bench Vice</span>
-                  <p class="project-summary">Explore the multi-part jaw assembly, screw drive, and mounting hardware ready for machining.</p>
-                  <button class="project-action" type="button" data-project="cad-2">See more<span aria-hidden="true"> →</span></button>
                 </div>
               </article>
 
