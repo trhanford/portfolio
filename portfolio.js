@@ -489,7 +489,7 @@
     if (!project) return false;
     if (project.showGalleryCTA === false) return false;
     if (project.showGalleryCTA === true) return true;
-    return project.category === 'Automotive';
+    return Array.isArray(project.gallery) && project.gallery.length > 0;
   }
   
   function renderModel(project){
