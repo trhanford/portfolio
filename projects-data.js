@@ -264,15 +264,29 @@
       category: 'CAD',
       summary: 'Explore the multi-part jaw assembly, screw drive, and mounting hardware ready for machining.',
       model: {
-        src: 'assets/models/bench_vice.glb',
+        src: 'assets/models/a6_assembly_thanfor_asm.glb',
         alt: 'Interactive preview of the precision bench vice assembly',
         poster: 'images/placeholders/cad-default.svg',
         autoRotate: true,
         rotationPerSecond: '12deg',
         shadowIntensity: '0.9',
         exposure: '1.05',
-        message: 'Place bench_vice.glb in assets/models. Include any separate texture files or .bin companions alongside the GLB if exported as GLTF.'
+        message: 'Place a6_assembly_thanfor_asm.glb in assets/models along with each companion component listed in the gallery. Include any separate texture files or .bin companions alongside the GLB if exported as GLTF.'
       },
+      gallery: [
+        { type: 'model', src: 'assets/models/a6_assembly_thanfor_asm.glb', alt: 'Complete bench vice assembly overview', caption: 'Full assembly' },
+        { type: 'model', src: 'assets/models/base.glb', alt: 'Base plate component of the bench vice', caption: 'Base' },
+        { type: 'model', src: 'assets/models/jaw_plate.glb', alt: 'Jaw plate detail for the bench vice', caption: 'Jaw plate' },
+        { type: 'model', src: 'assets/models/lock_screw.glb', alt: 'Lock screw component of the bench vice', caption: 'Lock screw' },
+        { type: 'model', src: 'assets/models/moving_jaw_thanfor_asm.glb', alt: 'Moving jaw subassembly with hardware', caption: 'Moving jaw subassembly' },
+        { type: 'model', src: 'assets/models/moving_jaw.glb', alt: 'Moving jaw component of the bench vice', caption: 'Moving jaw' },
+        { type: 'model', src: 'assets/models/pin.glb', alt: 'Alignment pin used within the bench vice', caption: 'Pin' },
+        { type: 'model', src: 'assets/models/ring.glb', alt: 'Retaining ring component for the bench vice', caption: 'Retaining ring' },
+        { type: 'model', src: 'assets/models/screw_collar.glb', alt: 'Screw collar detail of the bench vice', caption: 'Screw collar' },
+        { type: 'model', src: 'assets/models/screw_rod.glb', alt: 'Lead screw rod for actuating the bench vice jaws', caption: 'Screw rod' },
+        { type: 'model', src: 'assets/models/washer_a.glb', alt: 'Washer A from the bench vice assembly', caption: 'Washer A' },
+        { type: 'model', src: 'assets/models/washer_b.glb', alt: 'Washer B from the bench vice assembly', caption: 'Washer B' }
+      ],
       note: 'Highlight jaw inserts, guide rails, or stress relieved components by adding still renders to the gallery array if desired.'
     },
     'cad-3': {
