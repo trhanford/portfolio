@@ -28,6 +28,15 @@
   const SLATE_TINT = [112 / 255, 128 / 255, 144 / 255, 1];
   const WHITE_THRESHOLD = 0.9;
 
+  function toCategorySlug(value){
+    if (typeof value !== 'string') return '';
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+  
   function whenModelViewerReady(){
     if (typeof window === 'undefined' || typeof customElements === 'undefined' || typeof customElements.whenDefined !== 'function'){
       return Promise.resolve();
@@ -352,6 +361,12 @@
         if (title) title.textContent = project.title;
         if (summary) summary.textContent = project.summary || '';
         if (category) category.textContent = project.category || '';
+        const categorySlug = toCategorySlug(project.category);
+        if (categorySlug){
+          root.dataset.category = categorySlug;
+        } else {
+          delete root.dataset.category;
+        }
         if (body){
           body.innerHTML = '';
           const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
@@ -416,6 +431,7 @@
         root.classList.remove('open');
         root.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('modal-open');
+        delete root.dataset.category;
         if (focusTrapHandler){
           document.removeEventListener('keydown', focusTrapHandler);
           focusTrapHandler = null;
