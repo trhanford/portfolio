@@ -5,7 +5,13 @@
     'bronco-289': {
       title: '1968 Ford Bronco — 289 CID',
       category: 'Automotive',
-      summary: 'Baseline restoration with period-correct power, refreshed drivetrain, and safety upgrades.',
+      summary: 'Ground-up restomod blending vintage Bronco character with modern drivability and serviceable systems.',
+      description: [
+        'This 1968 Ford Bronco was transformed from a bare frame into a fully modernized classic — a ground-up rebuild that blends vintage character with 21st-century engineering. Every system was redesigned for performance, reliability, and refinement while preserving the unmistakable spirit of the original truck.',
+        'Under the hood, the factory 289 V8 was retained but upgraded with Edelbrock\'s Pro-Flo 4 electronic fuel injection system for seamless cold starts, self-tuning fuel maps, and improved throttle response. A custom stainless-steel fuel system, high-flow in-tank pump, 10-micron filtration, and adjustable regulator keep the engine supplied with precise pressure under any load.',
+        'The front accessory drive was re-engineered using a CVF Racing serpentine system with integrated A/C, power steering, and alternator — packaged around a compact short water pump for optimal clearance. Cooling is handled by a 2-core aluminum radiator paired with a 4000 CFM electric fan triggered by the ECU. The wiring architecture, battery isolator circuit, and relay network were designed from scratch to handle modern electrical loads with OEM-level reliability.',
+        'From the hydroboost braking system to the dual-battery layout, every detail was built to function flawlessly and look intentional. The result is a Bronco that starts, drives, and performs like a modern vehicle — yet feels every bit as raw, mechanical, and iconic as it did in 1968.'
+      ],
       gallery: [
         { src: 'images/placeholders/bb1.JPG', alt: 'Photo bb1 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb2.JPG', alt: 'Photo bb2 from the 1968 Ford Bronco 289 project.' },
@@ -66,7 +72,14 @@
     'jeep-cj5': {
       title: '1974 Jeep CJ5 — 304 CID',
       category: 'Automotive',
-      summary: 'Frame-off rebuild focused on off-road reliability, cooling, and clean packaging.',
+      summary: 'Purpose-built CJ-5 rebuild focused on reliable V8 power, simplified electrics, and trail-ready serviceability.',
+      description: [
+        'This Jeep CJ-5 build began as a raw, character-filled classic and was transformed into a purpose-built off-road machine that preserves the simplicity of the original while elevating its reliability and performance. Every mechanical system was re-engineered, refined, and tuned by hand to create a rig that\'s as tough as it is responsive.',
+        'Power comes from an AMC 304 V8 fitted with a high-output HEI ignition, long-tube headers, and Cherry Bomb exhausts that give it a deep, unmistakable tone. The entire ignition and fuel system were redesigned for consistency and easy serviceability — replacing the outdated points ignition with a modern, high-voltage system gapped and timed for crisp throttle response.',
+        'Electrical reliability was a priority. The charging system was rebuilt with a new alternator, dual-battery architecture, and improved grounding to eliminate voltage noise and gauge interference. A custom-wired Intellitronix digital cluster provides modern monitoring while maintaining the CJ\'s analog charm.',
+        'Cooling, vacuum routing, and accessory systems were simplified and optimized — from a custom sensor layout in the intake manifold to the removal of unnecessary CTO circuits. The result is a clean, functional engine bay where every wire, hose, and fastener serves a purpose.',
+        'Built to be driven and worked on, this CJ-5 strikes the balance between classic Jeep authenticity and modern dependability — raw, mechanical, and built by hand from the ground up.'
+      ],
       gallery: [
         { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder photo of the Jeep CJ5 exterior stance.' },
         { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder photo showing Jeep CJ5 wiring and plumbing updates.' },
@@ -410,28 +423,6 @@
         { src: 'assets/reports/Signal_summer_schematic.png', alt: 'Signal summer schematic combining the three bands.' }
       ],
       note: 'Add enclosure photos, filter response plots, and wiring close-ups to illustrate tuning decisions.'
-    },
-    'timer-police': {
-      title: '555 Timer Police Light Circuit',
-      category: 'Computer & Electrical',
-      summary: 'Classic timing IC driving alternating beacons with adjustable pulse widths.',
-      gallery: [
-        { src: 'assets/reports/Oscilloscope Measurment of Police Lights Astable Dual Circuit.png', alt: 'Oscilloscope capture of the dual LMC555 astable police light circuit.' },
-        { src: 'assets/reports/Astable Configuration General Operation Diagram.png', alt: 'General operation diagram for the astable 555 timer configuration.' },
-        { src: 'assets/reports/Astable Internal Circuit Diagram.png', alt: 'Internal schematic illustrating the astable LMC555 timer circuit.' },
-        { src: 'assets/reports/LTSpice Circuit Schematic of Police & Emergency Light Flasher’s Astable Circuit.png', alt: 'LTSpice schematic for the police and emergency light flasher astable circuit.' },
-        { src: 'assets/reports/LTSpice Simulation of Astable LMC555 Circuit 1 sec 75 percent dc.png', alt: 'LTSpice waveform of the astable LMC555 circuit with a 1 second period at 75 percent duty cycle.' },
-        { src: 'assets/reports/LTSpice Simulation of Monostable LMC555 Circuit 3 sec 75 percent dc.png', alt: 'LTSpice results for the monostable LMC555 circuit producing a 3 second pulse at 75 percent duty cycle.' },
-        { src: 'assets/reports/LTSpice Simulation of Police Lights Astable Dual Circuit.png', alt: 'LTSpice dual astable simulation of the alternating police light circuit.' },
-        { src: 'assets/reports/Monostable Configuration General Operation Diagram.png', alt: 'General operation diagram for the monostable 555 timer configuration.' },
-        { src: 'assets/reports/Oscilloscope Measurment of Astable LMC555 Circuit 1 sec 60 percent dc.png', alt: 'Oscilloscope capture of the astable LMC555 circuit at a 1 second period and 60 percent duty cycle.' },
-        { src: 'assets/reports/Oscilloscope Measurment of Monostable LMC555 Circuit with 3 Second Pulse.png', alt: 'Oscilloscope capture of the monostable LMC555 circuit delivering a 3 second pulse.' },
-        { src: 'assets/reports/Police Lights LED Flasher Circuit Diagram from Elonics.org.png', alt: 'Reference LED flasher schematic for the police light circuit from Elonics.org.' },
-        { src: 'assets/reports/Timing Circuit Schematic for Astable LMC555.png', alt: 'Timing circuit schematic detailing the astable LMC555 configuration.' },
-        { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 1 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 1 second pulse.' },
-        { src: 'assets/reports/Timing Circuit Schematic for Monostable LMC555 with 3 Second Time Period.png', alt: 'Timing circuit schematic for the monostable LMC555 producing a 3 second pulse.' }
-      ],
-      note: 'Gallery now includes measurement plots, schematics, and oscilloscope captures that document the equalizer build.'
     },
     'smart-mirror': {
       title: 'Alexa Integrated Smart Mirror',
