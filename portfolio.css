@@ -568,14 +568,14 @@ body.modal-open{overflow:hidden;}
   display:flex;
   gap:18px;
   overflow-x:auto;
-  padding-bottom:12px;
+  padding-bottom:14px;
   align-items:center;
 }
 
 .modal-gallery figure{
   margin:0;
   flex:0 0 auto;
-  max-width:clamp(240px, 72vw, 960px);
+  max-width:clamp(280px, 84vw, 1100px);
   border-radius:20px;
   overflow:hidden;
   background:#fff;
@@ -588,7 +588,7 @@ body.modal-open{overflow:hidden;}
 .modal-gallery img{
   display:block;
   height:auto;
-  max-height:clamp(220px, 60vh, 520px);
+  max-height:clamp(260px, 68vh, 640px);
   width:auto;
   max-width:100%;
 }
