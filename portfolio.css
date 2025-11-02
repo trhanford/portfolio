@@ -573,15 +573,20 @@ body.modal-open{overflow:hidden;}
 
 .modal-gallery figure{
   margin:0;
-  min-width:min(320px, 75vw);
+  flex:0 0 clamp(320px, 72vw, 960px);
+  width:clamp(320px, 72vw, 960px);
+  max-width:100%;
   border-radius:20px;
   overflow:hidden;
   background:#fff;
   box-shadow:0 18px 32px rgba(0,0,0,.16);
 }
 
-.modal-gallery img{width:100%;height:100%;object-fit:cover;display:block;}
-
+.modal-gallery img{
+  display:block;
+  width:100%;
+  height:auto;
+}
 .modal-description{
   display:flex;
   flex-direction:column;
