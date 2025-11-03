@@ -369,14 +369,30 @@
         }
         if (body){
           body.innerHTML = '';
-          const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
+          const categorySlug = toCategorySlug(project.category);
+          const hasGallery = categorySlug !== 'cad' && Array.isArray(project.gallery) && project.gallery.length > 0;
+          if (hasGallery){
+            body.dataset.hasGallery = 'true';
+          } else {
+            body.dataset.hasGallery = 'false';
+          }
+
+          const cards = [];
+
           if (hasGallery){
             const gallery = renderGallery(project.gallery, project.title);
-            if (gallery) body.appendChild(gallery);
+            if (gallery) cards.push(gallery);
           }
+
+          const prioritizeModel = categorySlug === 'cad' && project.model;
+          if (prioritizeModel){
+            const prioritizedModel = renderModel(project);
+            if (prioritizedModel) cards.push(prioritizedModel);
+          }
+
           if (Array.isArray(project.description) && project.description.length){
             const description = renderDescription(project.description);
-            if (description) body.appendChild(description);
+            if (description) cards.push(description);
           }
           const actionLinks = [];
           const reportLink = renderReportCTA(project);
@@ -387,16 +403,20 @@
           }
           if (actionLinks.length){
             const actionsCard = renderActionsCard(actionLinks);
-            if (actionsCard) body.appendChild(actionsCard);
+            if (actionsCard) cards.push(actionsCard);
           }
-          if (project.model){
+          
+          if (project.model && !prioritizeModel){
             const modelCard = renderModel(project);
-            if (modelCard) body.appendChild(modelCard);
+            if (modelCard) cards.push(modelCard);
           }
+          
           if (context.collection && context.collection.length > 1){
             const collectionCard = renderCollectionNav(context.collection, project.id, api);
-            if (collectionCard) body.appendChild(collectionCard);
+            if (collectionCard) cards.push(collectionCard);
           }
+
+          cards.forEach(card => body.appendChild(card));
         }
 
         const focusable = getFocusableElements(root);
@@ -428,6 +448,9 @@
         root.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('modal-open');
         delete root.dataset.category;
+        if (body){
+          delete body.dataset.hasGallery;
+        }
         if (focusTrapHandler){
           document.removeEventListener('keydown', focusTrapHandler);
           focusTrapHandler = null;
@@ -496,6 +519,7 @@
     });
     const rail = document.createElement('div');
     rail.className = 'modal-gallery__rail';
+    const slides = [];
     items.forEach(item => {
       if (!item || !item.src) return;
       const figure = document.createElement('figure');
@@ -507,9 +531,37 @@
       img.loading = 'lazy';
       figure.appendChild(img);
       rail.appendChild(figure);
+      slides.push(figure);
     });
     if (!rail.childElementCount) return null;
     card.appendChild(rail);
+
+    if (slides.length > 1){
+      let index = 0;
+      const scrollToIndex = newIndex => {
+        index = (newIndex + slides.length) % slides.length;
+        const target = slides[index];
+        target?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      };
+
+      const createControl = (direction, label, symbol) => {
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.className = `modal-gallery__control modal-gallery__control--${direction}`;
+        control.setAttribute('aria-label', label);
+        control.textContent = symbol;
+        control.addEventListener('click', () => {
+          const delta = direction === 'prev' ? -1 : 1;
+          scrollToIndex(index + delta);
+        });
+        return control;
+      };
+
+      const prev = createControl('prev', 'View previous highlight', '‹');
+      const next = createControl('next', 'View next highlight', '›');
+
+      card.append(prev, next);
+    }
     return card;
   }
 
@@ -636,8 +688,8 @@
     if (!Array.isArray(collection)) return null;
     const card = createModalCard({
       modifier: 'modal-collection',
-      label: 'More from this set',
-      title: 'Related projects'
+      label: 'More from this build',
+      title: 'More from this build'
     });
     const list = document.createElement('div');
     list.className = 'modal-collection__list';
