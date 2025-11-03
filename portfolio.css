@@ -495,17 +495,21 @@ body.portfolio-page main{
 
 /* ============================= Modal ============================= */
 
-body.modal-open{overflow:hidden;}
+body.modal-open{
+  overflow:hidden;
+}
 
 .portfolio-modal{
   position:fixed;
   inset:0;
   display:grid;
   place-items:center;
-  background:rgba(23,26,29,.55);
+  background:rgba(10,14,18,.72);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   opacity:0;
   pointer-events:none;
-  transition:opacity .3s ease;
+  transition:opacity .35s ease;
   z-index:120;
 }
 
@@ -521,246 +525,488 @@ body.modal-open{overflow:hidden;}
 
 .portfolio-modal__dialog{
   position:relative;
-  max-width:min(960px, 92vw);
-  max-height:min(88vh, 960px);
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  background:#fff;
-  border-radius:28px;
+  width:min(1080px, 92vw);
+  max-height:min(92vh, 960px);
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  background:linear-gradient(180deg, #ffffff 0%, #f7f4ed 100%);
+  border-radius:32px;
   overflow:hidden;
-  box-shadow:0 30px 80px rgba(0,0,0,.35);
-  transform:translateY(24px);
-  transition:transform .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 32px 80px rgba(8,12,20,.45);
+  transform:translateY(32px) scale(.98);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
 }
 
-.portfolio-modal.open .portfolio-modal__dialog{transform:translateY(0);}
+.portfolio-modal.open .portfolio-modal__dialog{
+  transform:translateY(0) scale(1);
+}
 
 .portfolio-modal__close{
   position:absolute;
-  top:20px;
-  right:22px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
+  top:22px;
+  right:24px;
+  width:44px;
+  height:44px;
   border:0;
-  background:rgba(43,47,51,.08);
-  color:var(--slate-strong);
-  font-size:1.4rem;
-  cursor:pointer;
+  border-radius:50%;
+  background:rgba(24,28,34,.08);
+  color:rgba(24,28,34,.8);
+  font-size:1.5rem;
+  line-height:1;
   display:grid;
   place-items:center;
-  transition:background .25s ease, color .25s ease, transform .25s ease;
+  cursor:pointer;
+  transition:background .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease;
 }
 
-.portfolio-modal__close:hover{
-  background:var(--slate-strong);
+.portfolio-modal__close:hover,
+.portfolio-modal__close:focus-visible{
+  background:var(--slate-strong, #2b2f33);
   color:#fff;
-  transform:scale(1.05);
+  transform:translateY(-1px);
+  box-shadow:0 18px 36px rgba(12,17,24,.25);
+  outline:0;
 }
 
 .portfolio-modal__header{
-  padding:48px clamp(28px, 6vw, 48px) 24px;
-  background:linear-gradient(140deg, rgba(228,221,204,.6), rgba(255,255,255,.9));
+  padding:clamp(32px, 6vw, 48px);
+  padding-bottom:clamp(24px, 5vw, 32px);
+  background:linear-gradient(135deg, rgba(240,235,224,.95), rgba(255,255,255,.9));
+  border-bottom:1px solid rgba(24,28,34,.08);
 }
 
 .portfolio-modal__kicker{
   margin:0;
+  font-size:.78rem;
   letter-spacing:.28em;
-  font-size:.76rem;
   text-transform:uppercase;
-  color:rgba(43,47,51,.6);
+  color:rgba(24,28,34,.52);
 }
 
 .portfolio-modal__header h2{
-  margin:12px 0 18px;
+  margin:14px 0 12px;
   font-family:'Playfair Display', Georgia, serif;
-  font-size:clamp(2rem, 4vw, 3rem);
-  color:var(--slate-strong);
+  font-size:clamp(2rem, 4vw, 3.2rem);
+  line-height:1.12;
+  color:var(--slate-strong, #2b2f33);
 }
 
 .portfolio-modal__summary{
   margin:0;
   font-size:1.05rem;
-  color:rgba(43,47,51,.72);
+  line-height:1.6;
+  color:rgba(24,28,34,.72);
   max-width:65ch;
 }
 
 .portfolio-modal__body{
   position:relative;
-  flex:1;
   overflow-y:auto;
-  padding:28px clamp(28px, 6vw, 48px) 40px;
+  padding:clamp(24px, 5vw, 40px);
+  background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(245,242,235,.92) 100%);
   display:flex;
   flex-direction:column;
-  gap:28px;
-  background:linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(244,241,234,1) 100%);
+  gap:clamp(20px, 4vw, 36px);
+  scroll-padding:clamp(24px, 5vw, 40px);
 }
 
-.portfolio-modal__body::-webkit-scrollbar{width:12px;}
-.portfolio-modal__body::-webkit-scrollbar-thumb{background:rgba(43,47,51,.25);border-radius:999px;}
+.portfolio-modal__body::-webkit-scrollbar{
+  width:12px;
+}
+.portfolio-modal__body::-webkit-scrollbar-thumb{
+  background:rgba(36,42,50,.25);
+  border-radius:999px;
+}
+
+.modal-card{
+  position:relative;
+  background:#fff;
+  border-radius:28px;
+  padding:clamp(22px, 3vw, 32px);
+  box-shadow:0 24px 52px rgba(12,18,26,.16);
+  border:1px solid rgba(24,28,34,.06);
+  display:flex;
+  flex-direction:column;
+  gap:clamp(16px, 3vw, 24px);
+  overflow:hidden;
+}
+
+.modal-card__header{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.modal-card__label{
+  margin:0;
+  font-size:.72rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(24,28,34,.5);
+}
+
+.modal-card__title{
+  margin:0;
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:clamp(1.3rem, 2.8vw, 1.9rem);
+  line-height:1.25;
+  color:var(--slate-strong, #2b2f33);
+}
+
+.modal-card__intro{
+  margin:0;
+  font-size:.95rem;
+  line-height:1.6;
+  color:rgba(24,28,34,.64);
+}
 
 .modal-gallery{
-  display:flex;
-  gap:18px;
-  overflow-x:auto;
-  padding-bottom:14px;
-  align-items:center;
-}
-
-.modal-gallery figure{
-  margin:0;
-  flex:0 0 auto;
-  max-height:clamp(220px, min(60vh, calc(100vh - 220px)), 560px);
-  max-width:clamp(280px, 84vw, 1100px);
-  border-radius:20px;
+  background:linear-gradient(140deg, rgba(255,255,255,.96), rgba(234,229,218,.9));
   overflow:hidden;
-  background:#fff;
-  box-shadow:0 18px 32px rgba(0,0,0,.16);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position:relative;
 }
 
-.modal-gallery img{
-  display:block;
-  width:auto;
-  height:auto;
-  max-width:100%;
-  max-height:clamp(220px, min(60vh, calc(100vh - 220px)), 560px);
-  object-fit:contain;
+.modal-gallery::before,
+.modal-gallery::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:72px;
+  pointer-events:none;
+  z-index:1;
 }
-.modal-description{
+
+.modal-gallery::before{
+  left:0;
+  background:linear-gradient(90deg, rgba(255,255,255,.92), rgba(255,255,255,0));
+}
+
+.modal-gallery::after{
+  right:0;
+  background:linear-gradient(270deg, rgba(255,255,255,.92), rgba(255,255,255,0));
+}
+
+.modal-gallery__rail{
+  position:relative;
+  z-index:0;
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(240px, min(70vw, 460px));
+  gap:clamp(16px, 3vw, 24px);
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding-inline:clamp(12px, 3vw, 24px);
+  padding-bottom:4px;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(36,42,50,.35) transparent;
+}
+
+.modal-gallery__rail::-webkit-scrollbar{
+  height:10px;
+}
+
+.modal-gallery__rail::-webkit-scrollbar-thumb{
+  background:rgba(36,42,50,.3);
+  border-radius:999px;
+}
+
+.modal-gallery__item{
+  margin:0;
+  position:relative;
+  border-radius:24px;
+  overflow:hidden;
+  scroll-snap-align:center;
+  aspect-ratio:3 / 2;
+  min-height:clamp(220px, 36vw, 420px);
+  box-shadow:0 22px 48px rgba(10,16,24,.22);
+  display:flex;
+  transition:transform .4s ease, box-shadow .4s ease;
+}
+
+.modal-gallery__image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .4s ease;
+}
+
+.modal-gallery__item:hover{
+  transform:translateY(-6px);
+  box-shadow:0 30px 58px rgba(8,12,20,.28);
+}
+
+.modal-gallery__item:hover .modal-gallery__image{
+  transform:scale(1.03);
+}
+
+.modal-description__content{
   display:flex;
   flex-direction:column;
-  gap:16px;
-  color:rgba(43,47,51,.82);
+  gap:1.1rem;
   font-size:1rem;
+  color:rgba(24,28,34,.78);
   line-height:1.7;
 }
 
-.modal-description p{
+.modal-description{
+  background:linear-gradient(165deg, rgba(255,255,255,.98), rgba(244,241,232,.9));
+}
+
+.modal-description__content p{
   margin:0;
 }
 
 .modal-actions{
+   background:linear-gradient(145deg, rgba(255,255,255,.98), rgba(240,237,228,.88));
+}
+
+.modal-actions__list{
   display:flex;
   flex-wrap:wrap;
-  gap:14px;
+  gap:16px;
+  align-items:stretch;
 }
 
-.modal-gallery-link{
+.modal-actions__list .btn-primary{
+  flex:1 1 200px;
+  min-width:160px;
+  display:inline-flex;
+  align-items:center;
   justify-content:center;
-  padding-inline:clamp(24px, 6vw, 38px);
+  padding:14px clamp(24px, 5vw, 32px);
+  border-radius:999px;
+  box-shadow:0 16px 34px rgba(12,18,26,.2);
+  transition:transform .25s ease, box-shadow .25s ease;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:700;
 }
 
-.modal-report-link{
-  justify-content:center;
-  padding-inline:clamp(24px, 6vw, 38px);
+.modal-actions__list .btn-primary:hover,
+.modal-actions__list .btn-primary:focus-visible{
+  transform:translateY(-2px);
+  box-shadow:0 22px 46px rgba(12,18,26,.26);
+  outline:0;
 }
 
 .modal-collection{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  align-items:center;
+  background:linear-gradient(150deg, rgba(255,255,255,.97), rgba(238,235,226,.9));
 }
 
-.modal-collection__label{
-  font-weight:700;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:.74rem;
-  color:rgba(43,47,51,.55);
+.modal-collection__list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 16px;
+  align-items:flex-start;
+  justify-content:flex-start;
 }
 
 .modal-collection__btn{
-  border:1px solid rgba(43,47,51,.16);
-  background:rgba(255,255,255,.92);
+  border:1px solid rgba(24,28,34,.18);
   border-radius:999px;
-  padding:8px 16px;
-  font-size:.85rem;
-  font-weight:700;
+  padding:10px 20px;
+  background:rgba(255,255,255,.86);
+  color:var(--slate-strong, #2b2f33);
+  font-size:.9rem;
+  font-weight:600;
   letter-spacing:.02em;
   cursor:pointer;
-  transition:transform .2s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
 }
 
-.modal-collection__btn:hover{
-  transform:translateY(-2px);
-  background:var(--slate-strong);
+.modal-collection__btn::after{
+  content:'\2192';
+  font-size:1rem;
+  transition:transform .25s ease;
+}
+
+.modal-collection__btn:hover,
+.modal-collection__btn:focus-visible{
+  background:var(--slate-strong, #2b2f33);
   color:#fff;
-  box-shadow:0 10px 22px rgba(0,0,0,.14);
+  transform:translateY(-2px);
+  box-shadow:0 18px 36px rgba(12,18,26,.22);
+  outline:0;
 }
 
-/* Override: give the viewer a real box */
-.modal-viewer {
-  height: min(65vh, 560px);
-  min-height: 360px; /* keep your floor */
+.modal-collection__btn:hover::after,
+.modal-collection__btn:focus-visible::after{
+  transform:translateX(4px);
 }
-.modal-viewer model-viewer { width:100%; height:100%; background:var(--viewer-bg, var(--viewer-bg-solid, #5f6b78)); border-radius:18px; }
+
+.modal-viewer{
+  background:linear-gradient(160deg, rgba(32,38,48,.96), rgba(18,24,34,.9));
+  color:#fff;
+}
+
+.modal-viewer .modal-card__label{
+  color:rgba(255,255,255,.6);
+}
+
+.modal-viewer .modal-card__title{
+  color:#fff;
+}
+
+.modal-viewer__stage{
+  flex:1;
+  min-height:clamp(320px, 45vh, 520px);
+  display:flex;
+  align-items:stretch;
+  padding:clamp(12px, 2.2vw, 18px);
+  background:linear-gradient(150deg, rgba(255,255,255,.12), rgba(10,16,26,.45));
+  border-radius:24px;
+}
+
+.modal-viewer model-viewer,
+.modal-viewer .viewer-placeholder{
+  width:100%;
+  border-radius:18px;
+}
+
+.modal-viewer model-viewer{
+  background:var(--viewer-bg, rgba(255,255,255,.08));
+}
 
 .viewer-placeholder{
-  padding:40px 32px;
+  padding:clamp(32px, 4vw, 48px);
   text-align:center;
   display:flex;
   flex-direction:column;
   gap:18px;
   align-items:center;
-  color:rgba(43,47,51,.7);
+  justify-content:center;
+  color:rgba(255,255,255,.8);
 }
 
-.viewer-placeholder strong{font-size:1.3rem;color:var(--slate-strong);}
+.viewer-placeholder strong{
+  font-size:1.3rem;
+  color:#fff;
+}
 
-.viewer-placeholder__status{margin:0;font-size:.95rem;line-height:1.5;color:rgba(43,47,51,.7);}
+.viewer-placeholder__status{
+  margin:0;
+  font-size:.95rem;
+  line-height:1.6;
+}
 
-.viewer-placeholder__refs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-family:"JetBrains Mono", "Courier New", monospace;font-size:.85rem;}
-.viewer-placeholder__ref-status{font-weight:700;margin-left:4px;text-transform:uppercase;}
-.viewer-placeholder__ref-status[data-status="missing"]{color:#b94a4a;}
-.viewer-placeholder__ref-status[data-status="found"]{color:#2a7b4f;}
+.viewer-placeholder__refs{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  font-family:"JetBrains Mono","Courier New",monospace;
+  font-size:.85rem;
+}
+
+.viewer-placeholder__ref-status{
+  font-weight:700;
+  margin-left:4px;
+  text-transform:uppercase;
+}
+.viewer-placeholder__ref-status[data-status="missing"]{color:#ffb3b3;}
+.viewer-placeholder__ref-status[data-status="found"]{color:#85f0c7;}
 .viewer-placeholder__ref-status[data-status="check manually"],
-.viewer-placeholder__ref-status[data-status="unknown"]{color:#b07f2a;}
+.viewer-placeholder__ref-status[data-status="unknown"]{color:#ffd591;}
+
+@media (min-width:900px){
+  .portfolio-modal__body{
+    display:grid;
+    grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    grid-auto-rows:min-content;
+    align-items:start;
+  }
+
+  .modal-gallery,
+  .modal-viewer{
+    grid-column:1;
+  }
+
+  .modal-description,
+  .modal-actions,
+  .modal-collection{
+    grid-column:2;
+  }
+}
+
+@media (max-width:900px){
+  .modal-actions__list{
+    flex-direction:column;
+  }
+
+  .modal-actions__list .btn-primary{
+    width:100%;
+  }
+}
 
 @media (max-width:720px){
-  .portfolio-modal__dialog{border-radius:0;max-width:100%;max-height:100vh;}
-  .portfolio-modal__header{padding-top:72px;}
+  .portfolio-modal__dialog{
+    width:100vw;
+    max-width:100vw;
+    height:100vh;
+    max-height:100vh;
+    border-radius:0;
+  }
+  .portfolio-modal__header{
+    padding-top:72px;
+  }
+}
+
+@media (max-width:600px){
+  .modal-gallery__rail{
+    grid-auto-columns:minmax(220px, 82vw);
+  }
+
+.modal-gallery__item{
+    min-height:clamp(200px, 60vw, 360px);
+  }
+
+  .modal-gallery::before,
+  .modal-gallery::after{
+    width:48px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .portfolio-modal{
+    transition:none;
+  }
+  .portfolio-modal__dialog{
+    transform:none;
+    transition:none;
+  }
+  .modal-gallery__image,
+  .modal-actions__list .btn-primary,
+  .modal-collection__btn{
+    transition:none;
+  }
 }
 
 .project-action { cursor: pointer; }
 
-/* Hide the horizontal scrollbar UI but preserve scrolling */
 .rail-window{
-  scrollbar-width: none;         /* Firefox */
-  -ms-overflow-style: none;      /* old Edge/IE */
-  padding-bottom: 20px;          /* room for card shadows */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 20px;
 }
-.rail-window::-webkit-scrollbar{ height: 0; }   /* Chrome/Safari */
+.rail-window::-webkit-scrollbar{ height: 0; }
 
-/* Softer, tighter card shadow */
-.project-card{
-  /* replace the big, far-reaching shadow */
-  box-shadow:
-    0 6px 14px rgba(0,0,0,.10),
-    0 2px 6px rgba(0,0,0,.06);   /* subtle second layer for realism */
-}
-
-/* Keep hover gentle (no huge lift) */
-.project-card:hover{
-  transform: translateY(-2px);
-  box-shadow:
-    0 10px 20px rgba(0,0,0,.12),
-    0 3px 8px rgba(0,0,0,.07);
-}
-
-/* ===================== Rail card shadow — softer ===================== */
-/* Base (not hovered): very soft, close-to-card */
 .project-card{
   box-shadow:
     0 4px 12px rgba(0,0,0,.08),
     0 1px 4px rgba(0,0,0,.05);
 }
 
-/* Hover: a touch stronger but still feathered */
 .project-card:hover{
   transform: translateY(-2px);
   box-shadow:
@@ -768,20 +1014,17 @@ body.modal-open{overflow:hidden;}
     0 2px 6px rgba(0,0,0,.06);
 }
 
-/* The top-to-bottom overlay was a bit strong; ease it back */
 .project-card::after{
-  /* was 55%/100% with .12 alpha — soften and lower contrast */
   background: linear-gradient(180deg, rgba(0,0,0,0) 68%, rgba(0,0,0,.08) 100%);
   border-radius: inherit;
 }
 
-/* ===================== Rail arrows — bigger + brand red ===================== */
 .rail-buttons button{
-  width: 52px;                   /* was 44px */
+  width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 0;                     /* remove thin grey border */
-  background: var(--accent-soft, #b45858);  /* brand red fallback */
+  border: 0;
+  background: var(--accent-soft, #b45858);
   color: #fff;
   box-shadow: 0 16px 28px rgba(0,0,0,.16);
   font-size: 1.2rem;
@@ -789,7 +1032,7 @@ body.modal-open{overflow:hidden;}
 
 .rail-buttons button:hover{
   transform: translateY(-2px);
-  background: color-mix(in oklab, var(--accent-soft, #b45858) 88%, black); /* subtle darken */
+  background: color-mix(in oklab, var(--accent-soft, #b45858) 88%, black);
   box-shadow: 0 20px 36px rgba(0,0,0,.18);
   color: #fff;
 }
@@ -806,187 +1049,4 @@ body.modal-open{overflow:hidden;}
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
-
-/* --- Lightbox (modal) — make inner shadows tighter + avoid clipping --- */
-
-/* Give more air at the bottom so shadows don't hit the rounded corner */
-.portfolio-modal__body{
-  padding-bottom: 64px; /* was 40px */
-}
-
-/* The gallery cards inside the modal: smaller, darker-but-tighter shadow */
-.modal-gallery figure{
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.14),
-    0 2px 6px  rgba(0,0,0,.08);
-}
-
-/* Slightly stronger on hover, but still compact */
-.modal-gallery figure:hover{
-  box-shadow:
-    0 12px 22px rgba(0,0,0,.16),
-    0 3px 8px  rgba(0,0,0,.10);
-}
-
-/* If any rail cards still feel heavy on the main page, dial them back one more step */
-.project-card{
-  box-shadow:
-    0 4px 10px rgba(0,0,0,.08),
-    0 1px 4px rgba(0,0,0,.05);
-}
-.project-card:hover{
-  box-shadow:
-    0 8px 16px rgba(0,0,0,.10),
-    0 2px 6px rgba(0,0,0,.06);
-}
-
-/* === Lightbox card shadows — force reverse with higher specificity === */
-
-/* 1) Neutralize earlier shadows so we start clean */
-.portfolio-modal .modal-gallery figure,
-.portfolio-modal .modal-gallery figure:hover{
-  box-shadow: none;
-}
-
-/* 2) Baseline = inward (previous hover look) */
-.portfolio-modal .modal-gallery figure{
-  /* tight, controlled inset so it won't clip the modal corners */
-  box-shadow:
-    0 10px 20px rgba(0,0,0,.14),
-    0 3px 8px  rgba(0,0,0,.08);
-  transform: translateY(0);
-}
-
-/* 3) Hover = outward (previous base look) */
-.portfolio-modal .modal-gallery figure:hover{
-  box-shadow:
-    inset 0 8px 18px rgba(0,0,0,.14),
-    inset 0 2px 6px  rgba(0,0,0,.08);
-  transform: translateY(-2px);
-  transition: box-shadow .18s ease, transform .18s ease;
-}
-
-
-/* ==== Modal gallery — images at native ratio, no side gutters ==== */
-/* ==== Modal gallery — images at native ratio, no side gutters ==== */
-/* ==== Modal gallery — images at native ratio, no side gutters ==== */
-
-/* Rail: horizontal only */
-.modal-gallery{
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  align-items: center;
-  padding-bottom: 12px;
-}
-
-/* Each slide should shrink-wrap the image width */
-.modal-gallery figure{
-  margin: 0;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Let width be only as wide as the image (no giant max-width box) */
-  width: max-content;
-
-  /* Round corners & shadow are optional; keep if you like the card look */
-  border-radius: 18px;
-  box-shadow: 0 10px 20px rgba(0,0,0,.14), 0 3px 8px rgba(0,0,0,.08);
-  background: #fff;
-  overflow: hidden;
-}
-
-/* Image: fill by height, keep aspect, fully visible on any screen */
-.modal-gallery img{
-  display: block;
-  height: clamp(220px, 60dvh, 560px); /* viewport-based cap */
-  width: auto;                        /* preserves native aspect ratio */
-  max-width: 90vw;                    /* safety on very wide landscape shots */
-  object-fit: contain;                /* never crop */
-}
-
-/* --- Modal gallery: smaller images that always fit the viewport --- */
-
-/* Horizontal rail only */
-.modal-gallery{
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  align-items: center;
-  padding-bottom: 12px;
-}
-
-/* Let the figure hug the image (no oversized white gutters) */
-.modal-gallery figure{
-  margin: 0;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;
-  border-radius: 18px;
-  background: #fff;
-  overflow: hidden;
-}
-
-/* Image: smaller height cap so it never gets cut off */
-.modal-gallery img{
-  display: block;
-  height: clamp(200px, 48svh, 520px);  /* ↓ from ~60vh to 48svh */
-  width: auto;                         /* preserve native aspect ratio */
-  max-width: min(92vw, 1100px);        /* safety on very wide landscape shots */
-  object-fit: contain;                  /* never crop */
-}
-
-/* On very small phones, shrink a bit more so header/summary still fit */
-@media (max-width: 480px){
-  .modal-gallery img{ height: clamp(180px, 44svh, 480px); }
-}
-
-/* ===== Modal gallery: predictable, smaller images that always fit ===== */
-
-/* Horizontal-only rail */
-.portfolio-modal .modal-gallery{
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  align-items: center;
-  padding-bottom: 12px;
-}
-
-/* Shrink-wrap each slide to the image; no oversized figure boxes */
-.portfolio-modal .modal-gallery figure{
-  margin: 0;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;                  /* hug the image width */
-  max-width: 92vw;                     /* never exceed viewport width */
-  max-height: clamp(160px, 40svh, 420px);   /* ↓ smaller than before */
-  border-radius: 18px;
-  background: #fff;
-  overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,.14), 0 3px 8px rgba(0,0,0,.08);
-}
-
-/* Image sizing: native aspect ratio, fully visible, never cropped */
-.portfolio-modal .modal-gallery figure > img{
-  display: block;
-  height: clamp(160px, 40svh, 420px);  /* same cap as figure for perfect fit */
-  width: auto;                         /* preserve native aspect ratio */
-  max-width: 92vw;                     /* safety for very wide shots */
-  object-fit: contain;                 /* never crop */
-}
-@media (max-width: 480px){
-  .portfolio-modal .modal-gallery figure,
-  .portfolio-modal .modal-gallery figure > img{
-    max-height: clamp(150px, 36svh, 380px); /* a bit smaller on small phones */
-  }
 }
