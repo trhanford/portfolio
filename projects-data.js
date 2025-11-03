@@ -55,7 +55,6 @@
         { src: 'images/placeholders/bb41.JPG', alt: 'Photo bb41 from the 1968 Ford Bronco 289 project.' },
         { src: 'images/placeholders/bb42.JPG', alt: 'Photo bb42 from the 1968 Ford Bronco 289 project.' }
       ],
-      note: 'Gallery updated with build photos provided for the 1968 Bronco 289 restoration. Additional shots can be appended as needed; the viewer will accommodate them in the scrollable row.'
     },
     'bronco-coyote': {
       title: '1968 Ford Bronco — 5.0L Gen 4x Coyote',
@@ -67,7 +66,6 @@
         { src: 'images/placeholders/Bronco_coyote.jpg', alt: 'Placeholder artwork focusing on the interior upgrades of the Coyote Bronco.' },
         { src: 'images/placeholders/bronco_coy_1.jpg', alt: 'Placeholder illustration showing wiring and integration details on the Coyote Bronco.' }
       ],
-      note: 'Drop high-resolution images into an appropriate folder (for example images/bronco-coyote/) and update the entries in projects-data.js to point to them.'
     },
     'jeep-cj5': {
       title: '1974 Jeep CJ5 — 304 CID',
@@ -95,7 +93,6 @@
         { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder photo showing Jeep CJ5 paint and trim touches.' },
         { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder photo of the Jeep CJ5 ready for off-road use.' }
       ],
-      note: 'Add fabrication and trail-testing photos here to emphasize durability upgrades.'
     },
     'cad-butterfly-valve': {
       title: 'Butterfly Valve Assembly',
@@ -126,7 +123,6 @@
         { type: 'model', src: 'assets/models/Woodruff_key.glb', alt: 'Woodruff key for the butterfly valve assembly', caption: 'Woodruff key' }
       ],
       showGalleryCTA: true,
-      note: 'Upload each supporting GLB part listed here into assets/models/ so the mini viewers can render in the gallery overlay.'
     },
     'cad-spindle-assembly': {
       title: 'Spindle Assembly',
@@ -150,7 +146,6 @@
         { type: 'model', src: 'assets/models/spindle_shaft.glb', alt: 'Shaft component for the spindle assembly', caption: 'Spindle shaft' }
       ],
       showGalleryCTA: true,
-      note: 'Add each spindle part GLB listed above into assets/models/ to activate the mini previews within the gallery overlay.'
     },
     'cad-cart-assembly': {
       title: 'Utility Cart Assembly',
@@ -186,7 +181,6 @@
         { type: 'model', src: 'assets/models/swivel_caster_wheel.glb', alt: 'Swivel caster wheel for the utility cart', caption: 'Swivel caster wheel' }
       ],
       showGalleryCTA: true,
-      note: 'Upload Cart_assembly.glb plus each component listed to assets/models/ so every part renders within the gallery overlay viewers.'
     },
     'cad-engine-tla': {
       title: 'TLA Engine Assembly',
@@ -233,7 +227,6 @@
         { type: 'model', src: 'assets/models/wrist_pin.glb', alt: 'Wrist pin component for the TLA engine', caption: 'Wrist pin' }
       ],
       showGalleryCTA: true,
-      note: 'Upload Engine_TLA_assembly.glb with the listed companion parts into assets/models/ so each piece renders within the gallery overlay viewers.'
     },
     'cad-1': {
       title: 'Custom Horn Assembly',
@@ -249,7 +242,6 @@
         exposure: '1.1',
         message: 'Keep horn.glb and its exported companions together in assets/models so the viewer can load the CAD preview.'
       },
-      note: 'Model exported as GLB for use with the <model-viewer> component. Additional exploded views can be added as separate entries if needed.'
     },
     'cad-2': {
       title: 'Precision Bench Vice',
@@ -279,7 +271,6 @@
         { type: 'model', src: 'assets/models/washer_a.glb', alt: 'Washer A from the bench vice assembly', caption: 'Washer A' },
         { type: 'model', src: 'assets/models/washer_b.glb', alt: 'Washer B from the bench vice assembly', caption: 'Washer B' }
       ],
-      note: 'Highlight jaw inserts, guide rails, or stress relieved components by adding still renders to the gallery array if desired.'
     },
     'cad-3': {
       title: 'RC Car Chassis Study',
@@ -314,7 +305,6 @@
         { type: 'model', src: 'assets/models/tie_rod.glb', alt: 'Steering tie rod connecting the knuckles', caption: 'Tie rod' },
         { type: 'model', src: 'assets/models/tire_65mm.glb', alt: '65 mm tire matching the rim design', caption: '65 mm tire' }
       ],
-      note: 'Consider appending suspension detail shots or annotated callouts via the gallery array to explain tuning decisions.'
     },
     'cad-4': {
       title: 'Cow Bell Casting Pattern',
@@ -330,7 +320,6 @@
         exposure: '1.05',
         message: 'Drop cowbell.glb into assets/models. Pair halves, cores, and gating as needed; <model-viewer> reads a single GLB bundle.'
       },
-      note: 'Supplement with photos of the sand mold or finished casting by extending the gallery array for this entry.'
     },
     'cad-6': {
       title: 'Modular Organizer System',
@@ -346,7 +335,6 @@
         exposure: '1.04',
         message: 'Save organizer.glb in assets/models. Keep any additional textures beside it so inserts display correctly.'
       },
-      note: 'Document alternative bin layouts or FDM print settings in the gallery to showcase modularity and ease of fabrication.'
     },
     'timer-analysis': {
       title: '555 Timer Circuit Analysis and Applications',
@@ -379,7 +367,6 @@
         { src: 'assets/reports/Oscilloscope Measurment of Police Lights Astable Dual Circuit.png', alt: 'Oscilloscope capture of the alternating police light dual astable circuit.' },
         { src: 'assets/reports/Police Lights LED Flasher Circuit Diagram from Elonics. Org.png', alt: 'Reference LED flasher circuit diagram from Elonics.org used for comparison.' }
       ],
-      note: 'Swap in oscilloscope captures, LTSpice plots, and breadboard images to complement the written analysis.'
     },
     'audio-eq': {
       title: '3-Band Audio Equalizer and Power Amplifier',
@@ -422,7 +409,6 @@
         { src: 'assets/reports/Signal_RMS_768Hz.png', alt: 'Signal RMS measurement taken at 768 Hz.' },
         { src: 'assets/reports/Signal_summer_schematic.png', alt: 'Signal summer schematic combining the three bands.' }
       ],
-      note: 'Add enclosure photos, filter response plots, and wiring close-ups to illustrate tuning decisions.'
     },
     'smart-mirror': {
       title: 'Alexa Integrated Smart Mirror',
@@ -432,7 +418,6 @@
         { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the smart mirror front panel.' },
         { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image representing the electronics tray behind the mirror.' }
       ],
-      note: 'Swap in UI states and wiring photos to highlight the Alexa integration and light diffusion.'
     },
     'led-eq': {
       title: 'Sound Reactive LED Equalizer',
@@ -442,7 +427,6 @@
         { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the sound reactive LED equalizer in action.' },
         { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image showing the controller enclosure for the LED equalizer.' }
       ],
-      note: 'Include short clips or sequential stills to demonstrate the FFT response once assets are available.'
     }
   };
 
