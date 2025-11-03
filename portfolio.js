@@ -392,12 +392,6 @@
           if (project.model){
             body.appendChild(renderModel(project));
           }
-          if (project.note){
-            const note = document.createElement('div');
-            note.className = 'modal-note';
-            note.textContent = project.note;
-            body.appendChild(note);
-          }
           if (context.collection && context.collection.length > 1){
             body.appendChild(renderCollectionNav(context.collection, project.id, api));
           }
