@@ -371,9 +371,9 @@
           body.innerHTML = '';
           const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
 
-          if (gallery) body.appendChild(gallery);
-            const gallery = renderGallery(project.gallery, project.title);
-            if (gallery) cards.push(gallery);
+          if (hasGallery){
+            const galleryCard = renderGallery(project.gallery, project.title);
+            if (galleryCard) body.appendChild(galleryCard);
           }
 
           if (Array.isArray(project.description) && project.description.length){
