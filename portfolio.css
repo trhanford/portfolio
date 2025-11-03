@@ -867,4 +867,47 @@ body.modal-open{overflow:hidden;}
   transition: box-shadow .18s ease, transform .18s ease;
 }
 
+/* ==== Modal gallery: keep photos fully visible on all screens ==== */
+
+/* 1) Give the gallery a fixed viewing lane and kill vertical scroll */
+.portfolio-modal__body .modal-gallery{
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;            /* <-- prevents vertical scroll in the rail */
+  align-items: center;
+  padding-bottom: 14px;
+}
+
+/* 2) Make each slide a stable viewport-based box */
+.portfolio-modal__body .modal-gallery figure{
+  margin: 0;
+  flex: 0 0 auto;
+  /* height never exceeds the available viewport “window” */
+  height: min(62dvh, 560px);     /* dvh handles mobile browser chrome correctly */
+  max-height: calc(100dvh - 260px);  /* header + padding safety */
+  width: min(90vw, 1100px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  overflow: hidden;              /* masks any residual overflow */
+}
+
+/* 3) Contain the photo inside the figure without distortion */
+.portfolio-modal__body .modal-gallery img{
+  width: auto;
+  height: 100%;                  /* fill the figure’s height */
+  max-width: 100%;
+  object-fit: contain;           /* keep the entire photo visible */
+  display: block;
+}
+
+/* 4) On very small phones, relax the height slightly for titles/CTA */
+@media (max-width: 420px){
+  .portfolio-modal__body .modal-gallery figure{
+    height: min(56dvh, 480px);
+  }
+}
 
