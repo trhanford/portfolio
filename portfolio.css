@@ -371,21 +371,6 @@ body.portfolio-page main{
   overscroll-behavior:contain;
 }
 
-.portfolio-modal[data-category="electrical"] .portfolio-modal__summary,
-.portfolio-modal[data-category="electrical"] .modal-description{
-  padding:18px 22px;
-  border-radius:18px;
-  background:linear-gradient(145deg, rgba(244,241,235,.86), rgba(255,255,255,.72));
-  border:1px solid rgba(43,47,51,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
-}
-
-.portfolio-modal[data-category="electrical"] .modal-description{
-  overflow-y:auto;
-  max-height:clamp(280px, 48vh, 520px);
-  overscroll-behavior:contain;
-}
-
 #automotive .project-summary::-webkit-scrollbar{
   width:8px;
 }
@@ -707,9 +692,9 @@ body.modal-open{
 .modal-gallery__rail{
   position:relative;
   z-index:0;
-  display:flex;
-  flex-wrap:nowrap;
-  align-items:stretch;
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(240px, min(70vw, 460px));
   gap:clamp(16px, 3vw, 24px);
   overflow-x:auto;
   overflow-y:hidden;
@@ -737,8 +722,6 @@ body.modal-open{
   scroll-snap-align:center;
   aspect-ratio:3 / 2;
   min-height:clamp(220px, 36vw, 420px);
-  width:clamp(240px, 52vw, 460px);
-  flex:0 0 clamp(240px, 52vw, 460px);
   box-shadow:0 22px 48px rgba(10,16,24,.22);
   display:flex;
   transition:transform .4s ease, box-shadow .4s ease;
@@ -760,38 +743,6 @@ body.modal-open{
 .modal-gallery__item:hover .modal-gallery__image{
   transform:scale(1.03);
 }
-
-.modal-gallery__control{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  border:0;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg, #ff6666, #c70000);
-  color:#fff;
-  font-size:1.6rem;
-  line-height:1;
-  cursor:pointer;
-  z-index:2;
-  box-shadow:0 16px 36px rgba(199,0,0,.35);
-  transition:transform .25s ease, box-shadow .25s ease, background .25s ease, opacity .25s ease;
-}
-
-.modal-gallery__control:hover,
-.modal-gallery__control:focus-visible{
-  transform:translateY(-50%) scale(1.05);
-  box-shadow:0 22px 44px rgba(199,0,0,.45);
-  background:linear-gradient(135deg, #ff4d4d, #b00000);
-  outline:0;
-}
-
-.modal-gallery__control--prev{left:clamp(12px, 3vw, 24px);}
-.modal-gallery__control--next{right:clamp(12px, 3vw, 24px);}
 
 .modal-description__content{
   display:flex;
@@ -907,10 +858,10 @@ body.modal-open{
 
 .modal-viewer__stage{
   flex:1;
-  min-height:clamp(340px, 50vh, 560px);
+  min-height:clamp(320px, 45vh, 520px);
   display:flex;
   align-items:stretch;
-  padding:clamp(8px, 1.8vw, 16px);
+  padding:clamp(12px, 2.2vw, 18px);
   background:linear-gradient(150deg, rgba(255,255,255,.12), rgba(10,16,26,.45));
   border-radius:24px;
 }
@@ -923,8 +874,6 @@ body.modal-open{
 
 .modal-viewer model-viewer{
   background:var(--viewer-bg, rgba(255,255,255,.08));
-  flex:1 1 auto;
-  min-height:clamp(320px, 48vh, 540px);
 }
 
 .viewer-placeholder{
@@ -974,29 +923,20 @@ body.modal-open{
   .portfolio-modal__body{
     display:grid;
     grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    grid-auto-rows:min-content;
     align-items:start;
   }
 
-  .portfolio-modal__body[data-has-gallery="true"]{
-    grid-template-areas:
-      "gallery description"
-      "gallery actions"
-      "viewer viewer"
-      "collection collection";
+  .modal-gallery,
+  .modal-viewer{
+    grid-column:1;
   }
 
-  .portfolio-modal__body[data-has-gallery="false"]{
-    grid-template-areas:
-      "viewer description"
-      "viewer actions"
-      "collection collection";
+  .modal-description,
+  .modal-actions,
+  .modal-collection{
+    grid-column:2;
   }
-   
-  .modal-gallery{grid-area:gallery;}
-  .modal-description{grid-area:description;}
-  .modal-actions{grid-area:actions;}
-  .modal-viewer{grid-area:viewer;}
-  .modal-collection{grid-area:collection;}
 }
 
 @media (max-width:900px){
@@ -1110,39 +1050,3 @@ body.modal-open{
   transform: none;
   box-shadow: none;
 }
-
-/* make the right side line up with the tall gallery */
-@media (min-width: 900px) {
-  .portfolio-modal__body[data-has-gallery="true"] {
-    /* 4 rows:
-       1) gallery + description
-       2) gallery + actions (this one flexes to match gallery)
-       3) viewer full width
-       4) collection full width
-    */
-    grid-template-rows: auto 1fr auto auto;
-    align-items: stretch;
-  }
-
-  /* make the actions card fill its grid row and push the button down */
-  .portfolio-modal__body[data-has-gallery="true"] .modal-actions {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-}
-
-@media (min-width: 900px) {
-  /* keep the 2-column / 4-row layout */
-  .portfolio-modal__body[data-has-gallery="true"] {
-    grid-template-rows: auto 1fr auto auto; /* gallery row, actions row, viewer, collection */
-  }
-
-  /* but DON'T stretch the actions card — let it be its normal size */
-  .portfolio-modal__body[data-has-gallery="true"] .modal-actions {
-    height: auto;
-    display: block;
-  }
-}
-
