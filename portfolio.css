@@ -619,9 +619,10 @@ body.modal-open{
   overflow-y:auto;
   padding:clamp(24px, 5vw, 40px);
   background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(245,242,235,.92) 100%);
+  --modal-section-gap:clamp(20px, 4vw, 36px);
   display:flex;
   flex-direction:column;
-  gap:clamp(20px, 4vw, 36px);
+  gap:var(--modal-section-gap);
   scroll-padding:clamp(24px, 5vw, 40px);
 }
 
@@ -974,6 +975,8 @@ body.modal-open{
   .portfolio-modal__body{
     display:grid;
     grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    column-gap:var(--modal-section-gap);
+    row-gap:var(--modal-section-gap);
     align-items:start;
   }
 
@@ -985,13 +988,28 @@ body.modal-open{
       "collection collection";
   }
 
- .portfolio-modal__body[data-has-gallery="false"]{
+  .portfolio-modal__body[data-has-gallery="false"]{
     grid-template-areas:
       "viewer description"
       "viewer actions"
       "collection collection";
   }
 
+  .portfolio-modal[data-category="automotive"] .portfolio-modal__body,
+  .portfolio-modal[data-category="electrical"] .portfolio-modal__body{
+    row-gap:0;
+  }
+
+  .portfolio-modal[data-category="automotive"] .modal-actions,
+  .portfolio-modal[data-category="electrical"] .modal-actions{
+    margin-top:var(--modal-section-gap);
+  }
+
+  .portfolio-modal[data-category="automotive"] .modal-collection,
+  .portfolio-modal[data-category="electrical"] .modal-collection{
+    margin-top:var(--modal-section-gap);
+  }
+   
   .modal-gallery{grid-area:gallery;}
   .modal-description{grid-area:description;}
   .modal-actions{grid-area:actions;}
