@@ -431,4 +431,5 @@
   };
 
   window.ProjectData = Object.freeze(data);
+  window.PORTFOLIO_PROJECTS = Object.freeze(Object.values(data));
 })();
