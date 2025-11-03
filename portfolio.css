@@ -1132,3 +1132,17 @@ body.modal-open{
     justify-content: space-between;
   }
 }
+
+@media (min-width: 900px) {
+  /* keep the 2-column / 4-row layout */
+  .portfolio-modal__body[data-has-gallery="true"] {
+    grid-template-rows: auto 1fr auto auto; /* gallery row, actions row, viewer, collection */
+  }
+
+  /* but DON'T stretch the actions card — let it be its normal size */
+  .portfolio-modal__body[data-has-gallery="true"] .modal-actions {
+    height: auto;
+    display: block;
+  }
+}
+
