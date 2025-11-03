@@ -371,7 +371,8 @@
           body.innerHTML = '';
           const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
           if (hasGallery){
-            body.appendChild(renderGallery(project.gallery, project.title));
+            const gallery = renderGallery(project.gallery, project.title);
+            if (gallery) body.appendChild(gallery);
           }
           if (Array.isArray(project.description) && project.description.length){
             const description = renderDescription(project.description);
@@ -381,19 +382,20 @@
           const reportLink = renderReportCTA(project);
           if (reportLink) actionLinks.push(reportLink);
           if (hasGallery && shouldShowGalleryCTA(project)){
-            actionLinks.push(renderGalleryCTA(project));
+            const galleryCTA = renderGalleryCTA(project);
+            if (galleryCTA) actionLinks.push(galleryCTA);
           }
           if (actionLinks.length){
-            const actionsWrapper = document.createElement('div');
-            actionsWrapper.className = 'modal-actions';
-            actionLinks.forEach(link => actionsWrapper.appendChild(link));
-            body.appendChild(actionsWrapper);
+            const actionsCard = renderActionsCard(actionLinks);
+            if (actionsCard) body.appendChild(actionsCard);
           }
           if (project.model){
-            body.appendChild(renderModel(project));
+            const modelCard = renderModel(project);
+            if (modelCard) body.appendChild(modelCard);
           }
           if (context.collection && context.collection.length > 1){
-            body.appendChild(renderCollectionNav(context.collection, project.id, api));
+            const collectionCard = renderCollectionNav(context.collection, project.id, api);
+            if (collectionCard) body.appendChild(collectionCard);
           }
         }
 
@@ -447,31 +449,104 @@
     return api;
   }
 
+  function createModalCard({ modifier = '', label, title, intro } = {}){
+    const classes = ['modal-card'];
+    if (modifier) classes.push(modifier);
+    const card = document.createElement('section');
+    card.className = classes.join(' ');
+
+    if (label || title || intro){
+      const header = document.createElement('header');
+      header.className = 'modal-card__header';
+
+      if (label){
+        const eyebrow = document.createElement('p');
+        eyebrow.className = 'modal-card__label';
+        eyebrow.textContent = label;
+        header.appendChild(eyebrow);
+      }
+
+      if (title){
+        const heading = document.createElement('h3');
+        heading.className = 'modal-card__title';
+        heading.textContent = title;
+        header.appendChild(heading);
+      }
+
+      if (intro){
+        const introCopy = document.createElement('p');
+        introCopy.className = 'modal-card__intro';
+        introCopy.textContent = intro;
+        header.appendChild(introCopy);
+      }
+
+      card.appendChild(header);
+    }
+
+    return card;
+  }
+  
   function renderGallery(items, title){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-gallery';
+    if (!Array.isArray(items) || !items.length) return null;
+    const card = createModalCard({
+      modifier: 'modal-gallery',
+      label: 'Project gallery',
+      title: 'Highlights',
+      intro: 'Swipe or drag to explore hero shots and detail photography.'
+    });
+    const rail = document.createElement('div');
+    rail.className = 'modal-gallery__rail';
     items.forEach(item => {
+      if (!item || !item.src) return;
       const figure = document.createElement('figure');
+      figure.className = 'modal-gallery__item';
       const img = document.createElement('img');
+      img.className = 'modal-gallery__image';
       img.src = item.src;
       img.alt = item.alt || title || '';
       img.loading = 'lazy';
       figure.appendChild(img);
-      wrapper.appendChild(figure);
+      rail.appendChild(figure);
     });
-    return wrapper;
+    if (!rail.childElementCount) return null;
+    card.appendChild(rail);
+    return card;
   }
 
   function renderDescription(paragraphs){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-description';
+    if (!Array.isArray(paragraphs) || !paragraphs.length) return null;
+    const card = createModalCard({
+      modifier: 'modal-description',
+      label: 'Project overview',
+      title: 'In context'
+    });
+    const copyWrapper = document.createElement('div');
+    copyWrapper.className = 'modal-description__content';
     paragraphs.forEach(copy => {
       if (!copy) return;
       const paragraph = document.createElement('p');
       paragraph.textContent = copy;
-      wrapper.appendChild(paragraph);
+      copyWrapper.appendChild(paragraph);
     });
-    return wrapper.childElementCount ? wrapper : null;
+    if (!copyWrapper.childElementCount) return null;
+    card.appendChild(copyWrapper);
+    return card;
+  }
+
+  function renderActionsCard(actions){
+    if (!Array.isArray(actions) || !actions.length) return null;
+    const filtered = actions.filter(Boolean);
+    if (!filtered.length) return null;
+    const card = createModalCard({
+      modifier: 'modal-actions',
+      label: 'Explore more',
+      title: 'Continue the journey'
+    });
+    const list = document.createElement('div');
+    list.className = 'modal-actions__list';
+    filtered.forEach(action => list.appendChild(action));
+    card.appendChild(list);
+    return card;
   }
 
   function renderGalleryCTA(project){
@@ -503,15 +578,24 @@
   }
   
   function renderModel(project){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-viewer';
-    const spec = project.model;
-    if (!spec || !spec.src){
+    const spec = project?.model || null;
+    const hasModel = Boolean(spec?.src);
+    const card = createModalCard({
+      modifier: 'modal-viewer',
+      label: 'Interactive model',
+      title: spec?.label || 'Interactive view',
+      intro: spec?.description || (hasModel ? 'Orbit, pan and zoom to inspect the build from every angle.' : 'A full 3D viewer is on the way. Check back soon for the interactive experience.')
+    });
+    const stage = document.createElement('div');
+    stage.className = 'modal-viewer__stage';
+
+    if (!hasModel){
       const placeholder = document.createElement('div');
       placeholder.className = 'viewer-placeholder';
       placeholder.innerHTML = '<strong>3D model coming soon</strong>';
-      wrapper.appendChild(placeholder);
-      return wrapper;
+      stage.appendChild(placeholder);
+      card.appendChild(stage);
+      return card;
     }
 
     const inlineViewer = project.id ? document.querySelector(`[data-project-id="${project.id}"] model-viewer`) : null;
@@ -537,23 +621,26 @@
       message.className = 'viewer-placeholder__status';
       message.textContent = spec.message || 'Link a .glb or .gltf file to enable the viewer.';
       placeholder.append(headline, message);
-      wrapper.innerHTML = '';
-      wrapper.appendChild(placeholder);
+      stage.innerHTML = '';
+      stage.appendChild(placeholder);
     }, { once: true });
 
     registerSlateTint(viewer);
     
-    wrapper.appendChild(viewer);
-    return wrapper;
+    stage.appendChild(viewer);
+    card.appendChild(stage);
+    return card;
   }
 
   function renderCollectionNav(collection, activeId, modalApi){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'modal-collection';
-    const label = document.createElement('span');
-    label.className = 'modal-collection__label';
-    label.textContent = 'More from this set';
-    wrapper.appendChild(label);
+    if (!Array.isArray(collection)) return null;
+    const card = createModalCard({
+      modifier: 'modal-collection',
+      label: 'More from this set',
+      title: 'Related projects'
+    });
+    const list = document.createElement('div');
+    list.className = 'modal-collection__list';
     collection.forEach(entry => {
       if (!entry || entry.id === activeId || !Projects.has(entry.id)) return;
       const btn = document.createElement('button');
@@ -565,9 +652,11 @@
         if (!project) return;
         modalApi.open(project, { collection });
       });
-      wrapper.appendChild(btn);
+      list.appendChild(btn);
     });
-    return wrapper;
+    if (!list.childElementCount) return null;
+    card.appendChild(list);
+    return card;
   }
 
   function getFocusableElements(root){
