@@ -906,3 +906,42 @@ body.modal-open{overflow:hidden;}
   max-width: 90vw;                    /* safety on very wide landscape shots */
   object-fit: contain;                /* never crop */
 }
+
+/* --- Modal gallery: smaller images that always fit the viewport --- */
+
+/* Horizontal rail only */
+.modal-gallery{
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+/* Let the figure hug the image (no oversized white gutters) */
+.modal-gallery figure{
+  margin: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Image: smaller height cap so it never gets cut off */
+.modal-gallery img{
+  display: block;
+  height: clamp(200px, 48svh, 520px);  /* ↓ from ~60vh to 48svh */
+  width: auto;                         /* preserve native aspect ratio */
+  max-width: min(92vw, 1100px);        /* safety on very wide landscape shots */
+  object-fit: contain;                  /* never crop */
+}
+
+/* On very small phones, shrink a bit more so header/summary still fit */
+@media (max-width: 480px){
+  .modal-gallery img{ height: clamp(180px, 44svh, 480px); }
+}
