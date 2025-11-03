@@ -868,3 +868,41 @@ body.modal-open{overflow:hidden;}
 }
 
 
+/* ==== Modal gallery — images at native ratio, no side gutters ==== */
+
+/* Rail: horizontal only */
+.modal-gallery{
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+/* Each slide should shrink-wrap the image width */
+.modal-gallery figure{
+  margin: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Let width be only as wide as the image (no giant max-width box) */
+  width: max-content;
+
+  /* Round corners & shadow are optional; keep if you like the card look */
+  border-radius: 18px;
+  box-shadow: 0 10px 20px rgba(0,0,0,.14), 0 3px 8px rgba(0,0,0,.08);
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Image: fill by height, keep aspect, fully visible on any screen */
+.modal-gallery img{
+  display: block;
+  height: clamp(220px, 60dvh, 560px); /* viewport-based cap */
+  width: auto;                        /* preserves native aspect ratio */
+  max-width: 90vw;                    /* safety on very wide landscape shots */
+  object-fit: contain;                /* never crop */
+}
