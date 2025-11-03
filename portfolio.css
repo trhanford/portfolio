@@ -611,6 +611,7 @@ body.modal-open{overflow:hidden;}
 .modal-gallery figure{
   margin:0;
   flex:0 0 auto;
+  max-height:clamp(220px, min(60vh, calc(100vh - 220px)), 560px);
   max-width:clamp(280px, 84vw, 1100px);
   border-radius:20px;
   overflow:hidden;
@@ -623,10 +624,11 @@ body.modal-open{overflow:hidden;}
 
 .modal-gallery img{
   display:block;
-  height:auto;
-  max-height:clamp(260px, 68vh, 640px);
   width:auto;
+  height:auto;
   max-width:100%;
+  max-height:clamp(220px, min(60vh, calc(100vh - 220px)), 560px);
+  object-fit:contain;
 }
 .modal-description{
   display:flex;
