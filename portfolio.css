@@ -869,6 +869,8 @@ body.modal-open{overflow:hidden;}
 
 
 /* ==== Modal gallery — images at native ratio, no side gutters ==== */
+/* ==== Modal gallery — images at native ratio, no side gutters ==== */
+/* ==== Modal gallery — images at native ratio, no side gutters ==== */
 
 /* Rail: horizontal only */
 .modal-gallery{
@@ -944,4 +946,47 @@ body.modal-open{overflow:hidden;}
 /* On very small phones, shrink a bit more so header/summary still fit */
 @media (max-width: 480px){
   .modal-gallery img{ height: clamp(180px, 44svh, 480px); }
+}
+
+/* ===== Modal gallery: predictable, smaller images that always fit ===== */
+
+/* Horizontal-only rail */
+.portfolio-modal .modal-gallery{
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+/* Shrink-wrap each slide to the image; no oversized figure boxes */
+.portfolio-modal .modal-gallery figure{
+  margin: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;                  /* hug the image width */
+  max-width: 92vw;                     /* never exceed viewport width */
+  max-height: clamp(160px, 40svh, 420px);   /* ↓ smaller than before */
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,.14), 0 3px 8px rgba(0,0,0,.08);
+}
+
+/* Image sizing: native aspect ratio, fully visible, never cropped */
+.portfolio-modal .modal-gallery figure > img{
+  display: block;
+  height: clamp(160px, 40svh, 420px);  /* same cap as figure for perfect fit */
+  width: auto;                         /* preserve native aspect ratio */
+  max-width: 92vw;                     /* safety for very wide shots */
+  object-fit: contain;                 /* never crop */
+}
+@media (max-width: 480px){
+  .portfolio-modal .modal-gallery figure,
+  .portfolio-modal .modal-gallery figure > img{
+    max-height: clamp(150px, 36svh, 380px); /* a bit smaller on small phones */
+  }
 }
