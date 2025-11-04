@@ -342,7 +342,7 @@
       showGalleryCTA: true,
     },
     'timer-analysis': {
-      title: '555 Timer Circuit Analysis and Applications',
+      title: '555 Timer Emergency Light Circuit & Analysis',
       category: 'Computer & Electrical',
       summary: 'Design, simulate, and validate LMC555 monostable and astable configurations across precise duty cycles.',
       description: [
@@ -420,7 +420,8 @@
       category: 'Computer & Electrical',
       summary: 'Voice-enabled display with embedded LEDs, microphone array, and responsive UI.',
       gallery: [
-        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the smart mirror front panel.' }
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the smart mirror front panel.' },
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder representing the electronics tray behind the mirror.' }
       ],
     },
     'led-eq': {
@@ -428,7 +429,8 @@
       category: 'Computer & Electrical',
       summary: 'FFT-driven light bar that maps audio frequencies to cascading color bands.',
       gallery: [
-        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the sound reactive LED equalizer in action.' }
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the sound reactive LED equalizer in action.' },
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder showing the controller enclosure for the LED equalizer.' }
       ],
     }
   };
