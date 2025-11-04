@@ -420,8 +420,7 @@
       category: 'Computer & Electrical',
       summary: 'Voice-enabled display with embedded LEDs, microphone array, and responsive UI.',
       gallery: [
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the smart mirror front panel.' },
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image representing the electronics tray behind the mirror.' }
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the smart mirror front panel.' }
       ],
     },
     'led-eq': {
@@ -429,8 +428,7 @@
       category: 'Computer & Electrical',
       summary: 'FFT-driven light bar that maps audio frequencies to cascading color bands.',
       gallery: [
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image for the sound reactive LED equalizer in action.' },
-        { src: 'images/placeholders/electrical-default.svg', alt: 'Placeholder image showing the controller enclosure for the LED equalizer.' }
+        { src: 'images/placeholders/coming-soon.svg', alt: 'Animated "Coming Soon" card placeholder for the sound reactive LED equalizer in action.' }
       ],
     }
   };
