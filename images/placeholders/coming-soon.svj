@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-labelledby="title desc">
+  <title id="title">Coming Soon Placeholder</title>
+  <desc id="desc">Animated card reading Coming Soon used as a temporary project image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2933" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="320" fill="url(#bg)" rx="24" ry="24" />
+  <g font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" text-anchor="middle">
+    <text x="240" y="148" font-size="32" fill="#cbd5f5" opacity="0.7">Project Image</text>
+    <text x="240" y="210" font-size="64" fill="#f8fafc" class="pulse">Coming Soon</text>
+  </g>
+  <style>
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.75; }
+    }
+    .pulse {
+      animation: pulse 2.4s ease-in-out infinite;
+      transform-origin: 240px 200px;
+      letter-spacing: 2px;
+    }
+  </style>
+</svg>
