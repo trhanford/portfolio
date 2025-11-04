@@ -814,20 +814,20 @@ body.modal-open{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(135deg, #ff6666, #c70000);
+  background:var(--accent-soft, #b45858);
   color:#fff;
   font-size:1.6rem;
   line-height:1;
   cursor:pointer;
   z-index:2;
-  box-shadow:0 16px 36px rgba(199,0,0,.35);
-  transition:transform .25s ease, box-shadow .25s ease, background .25s ease, opacity .25s ease;
+  box-shadow:0 16px 32px color-mix(in oklab, var(--accent-soft, #b45858) 62%, transparent);
+  transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease, opacity .25s ease;
 }
 .modal-gallery__control:hover,
 .modal-gallery__control:focus-visible{
   transform:translateY(-50%) scale(1.05);
-  box-shadow:0 22px 44px rgba(199,0,0,.45);
-  background:linear-gradient(135deg, #ff4d4d, #b00000);
+  box-shadow:0 22px 42px color-mix(in oklab, var(--accent-soft, #b45858) 72%, transparent);
+  background:color-mix(in oklab, var(--accent-soft, #b45858) 88%, black);
   outline:0;
 }
 .modal-gallery__control--prev{left:clamp(12px, 3vw, 24px);}
@@ -929,6 +929,7 @@ body.modal-open{
 }
 .modal-viewer .modal-card__label{color:rgba(255,255,255,.6);}
 .modal-viewer .modal-card__title{color:#fff;}
+.modal-viewer .modal-card__intro{color:rgba(255,255,255,.88);}
 
 /* expanded stage like you wanted */
 .modal-viewer__stage{
