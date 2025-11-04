@@ -242,6 +242,7 @@
         exposure: '1.1',
         message: 'Keep horn.glb and its exported companions together in assets/models so the viewer can load the CAD preview.'
       },
+      showGalleryCTA: true,
     },
     'cad-2': {
       title: 'Precision Bench Vice',
@@ -271,6 +272,7 @@
         { type: 'model', src: 'assets/models/washer_a.glb', alt: 'Washer A from the bench vice assembly', caption: 'Washer A' },
         { type: 'model', src: 'assets/models/washer_b.glb', alt: 'Washer B from the bench vice assembly', caption: 'Washer B' }
       ],
+      showGalleryCTA: true,
     },
     'cad-3': {
       title: 'RC Car Chassis Study',
@@ -305,6 +307,7 @@
         { type: 'model', src: 'assets/models/tie_rod.glb', alt: 'Steering tie rod connecting the knuckles', caption: 'Tie rod' },
         { type: 'model', src: 'assets/models/tire_65mm.glb', alt: '65 mm tire matching the rim design', caption: '65 mm tire' }
       ],
+      showGalleryCTA: true,
     },
     'cad-4': {
       title: 'Cow Bell Casting Pattern',
@@ -320,6 +323,7 @@
         exposure: '1.05',
         message: 'Drop cowbell.glb into assets/models. Pair halves, cores, and gating as needed; <model-viewer> reads a single GLB bundle.'
       },
+      showGalleryCTA: true,
     },
     'cad-6': {
       title: 'Modular Organizer System',
@@ -335,6 +339,7 @@
         exposure: '1.04',
         message: 'Save organizer.glb in assets/models. Keep any additional textures beside it so inserts display correctly.'
       },
+      showGalleryCTA: true,
     },
     'timer-analysis': {
       title: '555 Timer Circuit Analysis and Applications',
