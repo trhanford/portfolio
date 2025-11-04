@@ -528,7 +528,9 @@
       const type = item.type || 'image';
       const slide = type === 'model'
         ? createModelSlide(item, index, project)
-        : createImageSlide(item, index, project);
+        : type === 'live'
+          ? createLiveSlide(item, index, project)
+          : createImageSlide(item, index, project);
       if (!slide) return;
       rail.appendChild(slide);
       slides.push(slide);
@@ -587,6 +589,44 @@
     return figure;
   }
 
+  function createLiveSlide(item, index, project){
+    if (!item.src) return null;
+    const figure = document.createElement('figure');
+    figure.className = 'modal-gallery__item modal-gallery__item--live';
+
+    const frame = document.createElement('div');
+    frame.className = 'modal-gallery__live-frame';
+    const iframe = document.createElement('iframe');
+    iframe.src = item.src;
+    iframe.loading = item.loading || 'lazy';
+    iframe.title = item.title || (project?.title ? `${project.title} live preview` : 'Interactive preview');
+    iframe.setAttribute('sandbox', item.sandbox || 'allow-scripts allow-same-origin');
+    if (item.allow) iframe.setAttribute('allow', item.allow);
+    if (item.referrerPolicy) iframe.setAttribute('referrerpolicy', item.referrerPolicy);
+    if (item.allowFullscreen) iframe.setAttribute('allowfullscreen', '');
+    frame.appendChild(iframe);
+    figure.appendChild(frame);
+
+    const hint = document.createElement('div');
+    hint.className = 'modal-gallery__live-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('strong');
+    label.textContent = item.badge || 'Live preview';
+    const copy = document.createElement('span');
+    copy.textContent = item.message || 'Interact with the responsive homepage just like the mini viewer.';
+    hint.append(label, copy);
+    figure.appendChild(hint);
+
+    if (item.caption){
+      const caption = document.createElement('figcaption');
+      caption.className = 'modal-gallery__caption';
+      caption.textContent = item.caption;
+      figure.appendChild(caption);
+    }
+
+    return figure;
+  }
+  
   function createModelSlide(item, index, project){
     if (!item.src) return null;
     const figure = document.createElement('figure');
