@@ -412,6 +412,20 @@
         { src: 'assets/reports/Signal_summer_schematic.png', alt: 'Signal summer schematic combining the three bands.' }
       ],
     },
+    'portfolio-site': {
+      title: 'Portfolio Website Experience',
+      category: 'Computer & Electrical',
+      summary: 'Custom-built site to present projects efficiently with immersive galleries and interactive viewers.',
+      description: [
+        'I designed and coded this responsive portfolio from the ground up so my engineering and fabrication work is easy to explore at a glance.',
+        'A data-driven project system powers the modals, galleries, and 3D viewers, ensuring every build can be showcased with the right media without editing the layout.',
+        'Accessibility, performance, and a cohesive visual language were priorities so prospective collaborators can quickly understand the breadth of my capabilities.'
+      ],
+      gallery: [
+        { src: 'images/portfolio-home.png', alt: 'Homepage of the Tristan Hanford portfolio website featuring the hero section and project highlights.', caption: 'Homepage hero introducing the portfolio experience.' }
+      ],
+      showGalleryCTA: false,
+    },
     'smart-mirror': {
       title: 'Alexa Integrated Smart Mirror',
       category: 'Computer & Electrical',
