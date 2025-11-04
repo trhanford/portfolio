@@ -384,7 +384,7 @@
           const actionLinks = [];
           const reportLink = renderReportCTA(project);
           if (reportLink) actionLinks.push(reportLink);
-          if (hasGallery && shouldShowGalleryCTA(project)){
+          if (shouldShowGalleryCTA(project)){
             const galleryCTA = renderGalleryCTA(project);
             if (galleryCTA) actionLinks.push(galleryCTA);
           }
@@ -409,7 +409,7 @@
           }
           
           if (context.collection && context.collection.length > 1){
-            const collectionCard = renderCollectionNav(context.collection, project.id, api);
+            const collectionCard = renderCollectionNav(context.collection, project.id, api, project.category);
             if (collectionCard) body.appendChild(collectionCard);
           }
         }
@@ -689,12 +689,14 @@
     return card;
   }
 
-  function renderCollectionNav(collection, activeId, modalApi){
+  function renderCollectionNav(collection, activeId, modalApi, category){
     if (!Array.isArray(collection)) return null;
+    const categorySlug = toCategorySlug(category);
+    const useSetCopy = categorySlug === 'automotive' || categorySlug === 'computer-electrical';
     const card = createModalCard({
       modifier: 'modal-collection',
-      label: 'More from this build',
-      title: 'More from this build'
+      label: useSetCopy ? 'More from this Set' : 'More from this build',
+      title: useSetCopy ? 'More from this Set' : 'More from this build'
     });
     const list = document.createElement('div');
     list.className = 'modal-collection__list';
