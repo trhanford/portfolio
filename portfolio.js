@@ -377,7 +377,7 @@
           // changed: don't show gallery for CAD
           const hasGallery = categorySlug !== 'cad' && Array.isArray(project.gallery) && project.gallery.length > 0;
 
-          const galleryCard = hasGallery ? renderGallery(project.gallery, project.title) : null;
+          const galleryCard = hasGallery ? renderGallery(project.gallery, project) : null;
           const hasDescriptionCopy = Array.isArray(project.description) && project.description.length;
           const descriptionCard = hasDescriptionCopy ? renderDescription(project.description) : null;
 
@@ -512,7 +512,7 @@
     return card;
   }
   
-  function renderGallery(items, title){
+  function renderGallery(items, project){
     if (!Array.isArray(items) || !items.length) return null;
     const card = createModalCard({
       modifier: 'modal-gallery',
@@ -523,18 +523,15 @@
     const rail = document.createElement('div');
     rail.className = 'modal-gallery__rail';
     const slides = [];
-    items.forEach(item => {
-      if (!item || !item.src) return;
-      const figure = document.createElement('figure');
-      figure.className = 'modal-gallery__item';
-      const img = document.createElement('img');
-      img.className = 'modal-gallery__image';
-      img.src = item.src;
-      img.alt = item.alt || title || '';
-      img.loading = 'lazy';
-      figure.appendChild(img);
-      rail.appendChild(figure);
-      slides.push(figure);
+    items.forEach((item, index) => {
+      if (!item || typeof item !== 'object') return;
+      const type = item.type || 'image';
+      const slide = type === 'model'
+        ? createModelSlide(item, index, project)
+        : createImageSlide(item, index, project);
+      if (!slide) return;
+      rail.appendChild(slide);
+      slides.push(slide);
     });
     if (!rail.childElementCount) return null;
     card.appendChild(rail);
@@ -568,6 +565,87 @@
     }
 
     return card;
+  }
+
+  function createImageSlide(item, index, project){
+    if (!item.src) return null;
+    const figure = document.createElement('figure');
+    figure.className = 'modal-gallery__item';
+    const img = document.createElement('img');
+    img.className = 'modal-gallery__image';
+    img.src = item.src;
+    const fallbackAlt = project?.title ? `${project.title} photo ${index + 1}` : '';
+    img.alt = item.alt || fallbackAlt;
+    img.loading = 'lazy';
+    figure.appendChild(img);
+    if (item.caption){
+      const caption = document.createElement('figcaption');
+      caption.className = 'modal-gallery__caption';
+      caption.textContent = item.caption;
+      figure.appendChild(caption);
+    }
+    return figure;
+  }
+
+  function createModelSlide(item, index, project){
+    if (!item.src) return null;
+    const figure = document.createElement('figure');
+    figure.className = 'modal-gallery__item modal-gallery__item--viewer';
+    const viewer = document.createElement('model-viewer');
+    applyModelAttributes(viewer, item, project, index);
+    viewer.setAttribute('camera-controls', '');
+    viewer.setAttribute('touch-action', 'pan-y');
+    viewer.setAttribute('interaction-prompt', 'auto');
+    viewer.setAttribute('reveal', 'auto');
+    viewer.setAttribute('loading', 'lazy');
+    viewer.addEventListener('error', () => {
+      const fallback = document.createElement('div');
+      fallback.className = 'modal-gallery__viewer-fallback';
+      const title = document.createElement('strong');
+      title.textContent = '3D model unavailable';
+      const message = document.createElement('p');
+      message.textContent = 'Confirm the GLB or GLTF file exists in assets/models to enable this highlight.';
+      fallback.append(title, message);
+      figure.innerHTML = '';
+      figure.appendChild(fallback);
+    }, { once: true });
+    registerSlateTint(viewer);
+    figure.appendChild(viewer);
+    if (item.caption){
+      const caption = document.createElement('figcaption');
+      caption.className = 'modal-gallery__caption';
+      caption.textContent = item.caption;
+      figure.appendChild(caption);
+    }
+    return figure;
+  }
+
+  function applyModelAttributes(viewer, spec, project, index){
+    if (!(viewer instanceof HTMLElement)) return;
+    viewer.setAttribute('src', spec.src);
+    const fallbackAlt = project?.title ? `${project.title} component ${index + 1}` : '3D component';
+    viewer.setAttribute('alt', spec.alt || fallbackAlt);
+    viewer.setAttribute('shadow-intensity', spec.shadowIntensity || project?.model?.shadowIntensity || '0.8');
+    viewer.setAttribute('exposure', spec.exposure || project?.model?.exposure || '1.0');
+    const shouldRotate = spec.autoRotate || (spec.autoRotate === undefined && project?.model?.autoRotate);
+    if (shouldRotate){
+      viewer.setAttribute('auto-rotate', '');
+    } else {
+      viewer.removeAttribute('auto-rotate');
+    }
+    const rotation = spec.rotationPerSecond || project?.model?.rotationPerSecond;
+    if (rotation){
+      viewer.setAttribute('rotation-per-second', rotation);
+    } else {
+      viewer.removeAttribute('rotation-per-second');
+    }
+    if (spec.poster){
+      viewer.setAttribute('poster', spec.poster);
+    } else if (project?.model?.poster){
+      viewer.setAttribute('poster', project.model.poster);
+    } else {
+      viewer.removeAttribute('poster');
+    }
   }
 
   function renderDescription(paragraphs){
