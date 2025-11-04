@@ -422,6 +422,14 @@
         'Accessibility, depth, and a cohesive visual experience were priorities so prospective collaborators can quickly absorb the scope of my abilities.'
       ],
       gallery: [
+        {
+          type: 'live',
+          src: 'index.html?viewport=desktop',
+          title: 'Interactive homepage preview',
+          sandbox: 'allow-scripts allow-same-origin',
+          badge: 'Live preview',
+          message: 'Interact with the responsive homepage hero exactly like the mini viewer.',
+        },
         { src: 'images/portfolio-home.png', alt: 'Homepage of the Tristan Hanford portfolio website featuring the hero section and project highlights.', caption: 'Homepage hero introducing the portfolio experience.' }
       ],
       showGalleryCTA: false,
