@@ -3,6 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get("viewport") === "desktop") {
+        var meta = document.querySelector('meta[name="viewport"]');
+        if (meta) {
+          meta.setAttribute("content", "width=1280");
+        }
+      }
+    })();
+  </script>
   <title>Home — Tristan Hanford</title>
 
   <!-- Fonts (optional) -->
