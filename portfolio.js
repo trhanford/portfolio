@@ -377,15 +377,10 @@
           // changed: don't show gallery for CAD
           const hasGallery = categorySlug !== 'cad' && Array.isArray(project.gallery) && project.gallery.length > 0;
 
-          if (hasGallery){
-            const galleryCard = renderGallery(project.gallery, project.title);
-            if (galleryCard) body.appendChild(galleryCard);
-          }
+          const galleryCard = hasGallery ? renderGallery(project.gallery, project.title) : null;
+          const hasDescriptionCopy = Array.isArray(project.description) && project.description.length;
+          const descriptionCard = hasDescriptionCopy ? renderDescription(project.description) : null;
 
-          if (Array.isArray(project.description) && project.description.length){
-            const description = renderDescription(project.description);
-            if (description) body.appendChild(description);
-          }
           const actionLinks = [];
           const reportLink = renderReportCTA(project);
           if (reportLink) actionLinks.push(reportLink);
@@ -393,8 +388,18 @@
             const galleryCTA = renderGalleryCTA(project);
             if (galleryCTA) actionLinks.push(galleryCTA);
           }
-          if (actionLinks.length){
-            const actionsCard = renderActionsCard(actionLinks);
+          const actionsCard = actionLinks.length ? renderActionsCard(actionLinks) : null;
+
+          const shouldUseColumns = Boolean(galleryCard && (descriptionCard || actionsCard));
+          if (shouldUseColumns){
+            const columns = createModalColumns();
+            if (galleryCard) columns.primary.appendChild(galleryCard);
+            if (descriptionCard) columns.sidebar.appendChild(descriptionCard);
+            if (actionsCard) columns.sidebar.appendChild(actionsCard);
+            body.appendChild(columns.wrapper);
+          } else {
+            if (galleryCard) body.appendChild(galleryCard);
+            if (descriptionCard) body.appendChild(descriptionCard);
             if (actionsCard) body.appendChild(actionsCard);
           }
           
@@ -459,6 +464,17 @@
     return api;
   }
 
+  function createModalColumns(){
+    const wrapper = document.createElement('div');
+    wrapper.className = 'portfolio-modal__columns';
+    const primary = document.createElement('div');
+    primary.className = 'portfolio-modal__column portfolio-modal__column--primary';
+    const sidebar = document.createElement('div');
+    sidebar.className = 'portfolio-modal__column portfolio-modal__column--sidebar';
+    wrapper.append(primary, sidebar);
+    return { wrapper, primary, sidebar };
+  }
+  
   function createModalCard({ modifier = '', label, title, intro } = {}){
     const classes = ['modal-card'];
     if (modifier) classes.push(modifier);
