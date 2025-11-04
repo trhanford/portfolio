@@ -325,11 +325,39 @@ body.portfolio-page main{
   position:relative;
 }
 
+.project-media--live {
+  --live-scale: 0.3;
+  aspect-ratio: 16 / 10;
+}
+
 .project-media--live iframe {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% / var(--live-scale));
+  height: calc(100% / var(--live-scale));
+  transform: scale(var(--live-scale));
+  transform-origin: top left;
   border: 0;
   border-radius: inherit;
+}
+
+@media (max-width: 1080px) {
+  .project-media--live {
+    --live-scale: 0.26;
+  }
+}
+
+@media (max-width: 760px) {
+  .project-media--live {
+    --live-scale: 0.22;
+  }
+}
+
+@media (max-width: 520px) {
+  .project-media--live {
+    --live-scale: 0.18;
+  }
 }
 
 .project-media img,
