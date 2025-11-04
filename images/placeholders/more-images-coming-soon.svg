@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="title desc">
+  <title id="title">More images coming soon</title>
+  <desc id="desc">Animated card reading More images coming soon with a subtle shimmering gradient.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a5568">
+        <animate attributeName="stop-color" values="#4a5568;#5f6b7a;#4a5568" dur="5s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#2c333d">
+        <animate attributeName="stop-color" values="#2c333d;#3a414d;#2c333d" dur="5s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0.55)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" rx="32" fill="url(#bg)" />
+  <g>
+    <rect id="gloss" width="180" height="400" x="-220" fill="url(#shine)" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3.6s" repeatCount="indefinite" />
+      <animate attributeName="x" values="-220;640" dur="3.6s" repeatCount="indefinite" />
+    </rect>
+  </g>
+  <text x="50%" y="50%" fill="#ffffff" font-family="'Inter', 'Segoe UI', sans-serif" font-size="44" font-weight="700" text-anchor="middle" dominant-baseline="middle">
+    More images coming soon
+    <animate attributeName="opacity" values="0.85;1;0.85" dur="2.4s" repeatCount="indefinite" />
+  </text>
+</svg>
