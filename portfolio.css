@@ -645,11 +645,19 @@ body.modal-open{
   scroll-padding:clamp(24px, 5vw, 40px);
 }
 
+.portfolio-modal__body > *{
+  flex:0 0 auto;
+}
+
 .portfolio-modal__columns{
   width:100%;
   display:flex;
   flex-direction:column;
   gap:clamp(20px, 4vw, 36px);
+}
+
+.portfolio-modal__columns > *{
+  flex:0 0 auto;
 }
 
 .portfolio-modal__column{
@@ -919,7 +927,7 @@ body.modal-open{
 
 /* expanded stage like you wanted */
 .modal-viewer__stage{
-  flex:1;
+  flex:0 0 auto;
   min-height:clamp(340px, 50vh, 560px);
   display:flex;
   align-items:stretch;
