@@ -417,9 +417,9 @@
       category: 'Computer & Electrical',
       summary: 'Custom-built site to present projects efficiently with immersive galleries and interactive viewers.',
       description: [
-        'I designed and coded this responsive portfolio from the ground up so my engineering and fabrication work is easy to explore at a glance.',
-        'A data-driven project system powers the modals, galleries, and 3D viewers, ensuring every build can be showcased with the right media without editing the layout.',
-        'Accessibility, performance, and a cohesive visual language were priorities so prospective collaborators can quickly understand the breadth of my capabilities.'
+        'I designed and built this responsive portfolio from the ground up so my engineering and fabrication work is easy to explore at a glance.',
+        'A combination of HTML, CSS, and Javascript drive  and  the modals, galleries, and 3D viewers, ensuring every project can be showcased in its intended format.',
+        'Accessibility, depth, and a cohesive visual experience were priorities so prospective collaborators can quickly absorb the scope of my abilities.'
       ],
       gallery: [
         { src: 'images/portfolio-home.png', alt: 'Homepage of the Tristan Hanford portfolio website featuring the hero section and project highlights.', caption: 'Homepage hero introducing the portfolio experience.' }
