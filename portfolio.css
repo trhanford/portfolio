@@ -333,7 +333,12 @@ body.portfolio-page main{
 }
 .project-media--viewer model-viewer{
   --poster-color:transparent;
+  --model-viewer-interaction-prompt-color:rgba(255,255,255,.92);
   background:var(--viewer-bg, var(--viewer-bg-solid, #5f6b78));
+}
+
+.project-media--viewer model-viewer::part(interaction-prompt){
+  color:rgba(255,255,255,.92);
 }
 
 .project-body{
