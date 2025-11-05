@@ -646,7 +646,13 @@ body.has-reveal .reveal-item.is-visible{
 .info-card h4{margin:0;font-size:1.02rem;font-weight:700;color:var(--slate-strong);}
 .info-card p{margin:0;color:var(--muted);line-height:1.55;}
 
-.interest-grid{display:flex;flex-wrap:wrap;gap:12px 14px;}
+.interest-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 14px;
+  justify-content:center;      /* center the row */
+  text-align:center;           /* optional: center text if they wrap */
+}
 
 .interest-chip{
   display:inline-flex;
