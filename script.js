@@ -53,6 +53,104 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
+  function initMobilePreface() {
+    const preface = select('#mobilePreface');
+    const continueButton = select('#mobilePrefaceContinue');
+    const siteContent = select('#siteContent');
+    if (!preface || !continueButton || !siteContent) return;
+
+    const STORAGE_KEY = 'mobile-preface-dismissed';
+
+    const getDismissed = () => {
+      try {
+        return window.sessionStorage.getItem(STORAGE_KEY) === 'true';
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const storeDismissed = () => {
+      try {
+        window.sessionStorage.setItem(STORAGE_KEY, 'true');
+      } catch (error) {
+        /* no-op */
+      }
+    };
+
+    let dismissed = getDismissed();
+    if (dismissed) {
+      document.body.classList.add('preface-dismissed');
+    }
+
+    const coarseQuery = 'matchMedia' in window ? window.matchMedia('(pointer: coarse)') : null;
+    const widthQuery = 'matchMedia' in window ? window.matchMedia('(max-width: 600px)') : null;
+
+    const isCoarse = () => {
+      if (!coarseQuery) return 'ontouchstart' in window;
+      return coarseQuery.matches;
+    };
+
+    const isSmallWidth = () => {
+      if (!widthQuery) return window.innerWidth <= 600;
+      return widthQuery.matches;
+    };
+
+    const shouldShow = () => !dismissed && isSmallWidth() && isCoarse();
+
+    const show = () => {
+      if (!shouldShow()) return;
+      preface.removeAttribute('hidden');
+      preface.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('preface-active');
+      siteContent.setAttribute('aria-hidden', 'true');
+
+      requestAnimationFrame(() => {
+        if (typeof continueButton.focus === 'function') {
+          continueButton.focus({ preventScroll: true });
+        }
+      });
+    };
+
+    const hide = () => {
+      preface.setAttribute('hidden', '');
+      preface.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('preface-active');
+      siteContent.removeAttribute('aria-hidden');
+    };
+
+    const evaluate = () => {
+      if (shouldShow()) show();
+      else hide();
+    };
+
+    continueButton.addEventListener('click', () => {
+      dismissed = true;
+      document.body.classList.add('preface-dismissed');
+      storeDismissed();
+      hide();
+    });
+
+    preface.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        continueButton.click();
+      }
+    });
+
+    const bindMedia = mediaQuery => {
+      if (!mediaQuery) return;
+      if ('addEventListener' in mediaQuery) {
+        mediaQuery.addEventListener('change', evaluate);
+      } else if ('addListener' in mediaQuery) {
+        mediaQuery.addListener(evaluate);
+      }
+    };
+
+    bindMedia(coarseQuery);
+    bindMedia(widthQuery);
+
+    evaluate();
+  }
+
   async function initTypewriter() {
     const target = select('#typed');
     if (!target) return;
@@ -738,6 +836,7 @@
 
   ready().then(() => {
     setYear();
+    initMobilePreface();
     initTypewriter();
     initSmoothScroll();
     initNavFade();

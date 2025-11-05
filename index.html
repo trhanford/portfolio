@@ -25,6 +25,24 @@
   <script src="script.js" defer></script>
 </head>
 <body>
+  <div
+    id="mobilePreface"
+    class="mobile-preface"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="mobilePrefaceTitle"
+    aria-describedby="mobilePrefaceBody"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="mobile-preface__panel">
+      <h2 id="mobilePrefaceTitle">Welcome!</h2>
+      <p id="mobilePrefaceBody">Hey, happy to have you here. This page is optimized for desktop.</p>
+      <button id="mobilePrefaceContinue" class="mobile-preface__button" type="button">See it anyway?</button>
+    </div>
+  </div>
+
+  <div id="siteContent">
   <!-- ===================== STICKY NAV (appears after intro) ===================== -->
   <nav id="mainNav" class="navbar" aria-label="Primary" hidden>
     <div class="nav-inner container">
@@ -290,6 +308,8 @@
       <span class="mobile-dock__label">Résumé</span>
     </a>
   </nav>
+
+  </div>
 
   <noscript>
     <div class="noscript container">This site uses a small amount of JavaScript for scroll effects and interactions. It will still display, but interactive elements are disabled without JavaScript.</div>
