@@ -600,7 +600,7 @@ body.has-reveal .reveal-item.is-visible{
 }
 .skills-panel__group{display:flex;flex-direction:column;gap:22px;}
 
-.interests-section{margin:clamp(28px,6vw,64px) 0 0;}
+.interests-section{margin:clamp(28px,6vw,64px) 0 clamp(36px,8vw,96px);}
 
 .interests-surface{
   border-radius:28px;
