@@ -398,7 +398,7 @@
         { src: 'assets/reports/LPF_frequencyResponseAnalysis.png', alt: 'Low-pass filter frequency response analysis plot.' },
         { src: 'assets/reports/LPF_schematic.png', alt: 'Low-pass filter schematic with component references.' },
         { src: 'assets/reports/LF356_pinout.png', alt: 'LF356 op-amp pinout reference used during design.' },
-        { src: 'assets/reports/LM334_pinout.png', alt: 'LM334 pinout diagram supporting the bias network.' },
+        { src: 'assets/reports/LM324_pinout.png', alt: 'LM324 pinout diagram supporting the filter stages.' },
         { src: 'assets/reports/LM386_pinout.png', alt: 'LM386 power amplifier pinout reference.' },
         { src: 'assets/reports/LM386_schematic.png', alt: 'LM386 amplifier schematic for the power stage.' },
         { src: 'assets/reports/Max_gain_AC_Output_100Hz.png', alt: 'Maximum gain AC output measurement at 100 Hz.' },
