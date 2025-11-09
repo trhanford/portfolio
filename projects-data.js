@@ -76,19 +76,19 @@
         'Built to be driven and worked on, this CJ-5 strikes the balance between classic Jeep authenticity and modern dependability — raw, mechanical, and built by hand from the ground up.'
       ],
       gallery: [
-        { src: 'images/placeholders/cj5.JPG', alt: 'Placeholder photo of the Jeep CJ5 exterior stance.' },
-        { src: 'images/placeholders/cj52.JPG', alt: 'Placeholder photo showing Jeep CJ5 wiring and plumbing updates.' },
-        { src: 'images/placeholders/cj53.JPG', alt: 'Placeholder photo of the Jeep CJ5 body refinements.' },
-        { src: 'images/placeholders/cj54.JPG', alt: 'Placeholder photo highlighting the Jeep CJ5 suspension work.' },
-        { src: 'images/placeholders/cj55.JPG', alt: 'Placeholder photo focusing on the Jeep CJ5 wiring harness routing.' },
-        { src: 'images/placeholders/cj56.JPG', alt: 'Placeholder photo showing the Jeep CJ5 engine bay.' },
-        { src: 'images/placeholders/cj57.JPG', alt: 'Placeholder photo of Jeep CJ5 interior updates.' },
-        { src: 'images/placeholders/cj58.JPG', alt: 'Placeholder photo documenting Jeep CJ5 trail-ready prep.' },
-        { src: 'images/placeholders/cj59.JPG', alt: 'Placeholder photo of the Jeep CJ5 on oversized tires.' },
-        { src: 'images/placeholders/cj510.JPG', alt: 'Placeholder photo capturing Jeep CJ5 chassis details.' },
-        { src: 'images/placeholders/cj511.JPG', alt: 'Placeholder photo of Jeep CJ5 wiring clean-up.' },
-        { src: 'images/placeholders/cj512.JPG', alt: 'Placeholder photo showing Jeep CJ5 paint and trim touches.' },
-        { src: 'images/placeholders/cj513.JPG', alt: 'Placeholder photo of the Jeep CJ5 ready for off-road use.' }
+        { src: 'images/placeholders/cj5.jpg', alt: 'Placeholder photo of the Jeep CJ5 exterior stance.' },
+        { src: 'images/placeholders/cj52.jpg', alt: 'Placeholder photo showing Jeep CJ5 wiring and plumbing updates.' },
+        { src: 'images/placeholders/cj53.jpg', alt: 'Placeholder photo of the Jeep CJ5 body refinements.' },
+        { src: 'images/placeholders/cj54.jpg', alt: 'Placeholder photo highlighting the Jeep CJ5 suspension work.' },
+        { src: 'images/placeholders/cj55.jpg', alt: 'Placeholder photo focusing on the Jeep CJ5 wiring harness routing.' },
+        { src: 'images/placeholders/cj56.jpg', alt: 'Placeholder photo showing the Jeep CJ5 engine bay.' },
+        { src: 'images/placeholders/cj57.jpg', alt: 'Placeholder photo of Jeep CJ5 interior updates.' },
+        { src: 'images/placeholders/cj58.jpg', alt: 'Placeholder photo documenting Jeep CJ5 trail-ready prep.' },
+        { src: 'images/placeholders/cj59.jpg', alt: 'Placeholder photo of the Jeep CJ5 on oversized tires.' },
+        { src: 'images/placeholders/cj510.jpg', alt: 'Placeholder photo capturing Jeep CJ5 chassis details.' },
+        { src: 'images/placeholders/cj511.jpg', alt: 'Placeholder photo of Jeep CJ5 wiring clean-up.' },
+        { src: 'images/placeholders/cj512.jpg', alt: 'Placeholder photo showing Jeep CJ5 paint and trim touches.' },
+        { src: 'images/placeholders/cj513.jpg', alt: 'Placeholder photo of the Jeep CJ5 ready for off-road use.' }
       ],
     },
     'cad-butterfly-valve': {
