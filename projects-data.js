@@ -10,7 +10,7 @@
         'This 1968 Ford Bronco was transformed from a bare frame into a fully modernized classic — a ground-up rebuild that blends vintage character with 21st-century engineering. Every system was redesigned for performance, reliability, and refinement while preserving the unmistakable spirit of the original truck.',
         'Under the hood, the factory 289 V8 was retained but upgraded with Edelbrock\'s Pro-Flo 4 electronic fuel injection system for seamless cold starts, self-tuning fuel maps, and improved throttle response. A custom stainless-steel fuel system, high-flow in-tank pump, 10-micron filtration, and adjustable regulator keep the engine supplied with precise pressure under any load.',
         'The front accessory drive was re-engineered using a CVF Racing serpentine system with integrated A/C, power steering, and alternator — packaged around a compact short water pump for optimal clearance. Cooling is handled by a 2-core aluminum radiator paired with a 4000 CFM electric fan triggered by the ECU. The wiring architecture, battery isolator circuit, and relay network were designed from scratch to handle modern electrical loads with OEM-level reliability.',
-        'From the hydroboost braking system to the dual-battery layout, every detail was built to function flawlessly and look intentional. The result is a Bronco that starts, drives, and performs like a modern vehicle — yet feels every bit as raw, mechanical, and iconic as it did in 1968.'
+        'From the power disc braking system to the dual-battery layout, every detail was built to function flawlessly and look intentional. The result is a Bronco that starts, drives, and performs like a modern vehicle — yet feels every bit as raw, mechanical, and iconic as it did in 1968.'
       ],
       gallery: [
         { src: 'images/placeholders/bb1.JPG', alt: 'Condenser Installation' },
@@ -59,6 +59,10 @@
       title: '1968 Ford Bronco — 5.0L Gen 4x Coyote',
       category: 'Automotive',
       summary: 'Modernized restomod featuring a late-model Coyote swap, new wiring, and instrumentation.',
+      description: [
+        'A complete re-engineering of the classic Bronco platform, powered by Ford’s Gen 4 5.0L Coyote V8 delivering over 460 horsepower. Every system (mechanical, electrical, and digital), was modernized to match the capability of its powertrain. The build will feature a fully custom wiring harness with OEM-style routing, and all of the same luxury amenities expected out of a supercar.',
+        'Cooling, power distribution, and driveline components have been selected for balanced performance and clean presentation, while maintaining full functionality across all conditions. This includes hydroboosted brembo 6 piston brakes and electronic parking brakes to efficiently handle the vehicles capable speeds. Inside, the cabin was reimagined with high end sound, refined materials, comfort amenities, and digital integration throughout. The result is a Bronco that drives like a modern performance SUV while preserving the raw, analog character that defines the original.'
+      ],
       gallery: [
         { src: 'images/placeholders/bronco_coy_1.jpg', alt: 'Placeholder illustration highlighting the Coyote Bronco engine bay.' },
         { src: 'images/placeholders/more-images-coming-soon.svg', alt: 'Animated graphic stating that more Coyote Bronco images are coming soon.' }
