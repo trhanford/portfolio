@@ -64,7 +64,21 @@
         'Cooling, power distribution, and driveline components have been selected for balanced performance and clean presentation, while maintaining full functionality across all conditions. This includes hydroboosted brembo 6 piston brakes and electronic parking brakes to efficiently handle the vehicles capable speeds. Inside, the cabin was reimagined with high end sound, refined materials, comfort amenities, and digital integration throughout. The result is a Bronco that drives like a modern performance SUV while preserving the raw, analog character that defines the original.'
       ],
       gallery: [
-        { src: 'images/placeholders/bronco_coy_1.jpg', alt: 'Placeholder illustration highlighting the Coyote Bronco engine bay.' },
+        { src: 'images/placeholders/coyote_new_1.jpg', alt: 'Coyote Bronco body mockup from the front three-quarter angle.' },
+        { src: 'images/placeholders/coyote_new_2.jpg', alt: 'Coyote Bronco engine bay showcasing the 5.0L Coyote installation.' },
+        { src: 'images/placeholders/coyote_new_3.jpg', alt: 'Detailed view of the Bronco front suspension and steering components.' },
+        { src: 'images/placeholders/coyote_new_4.jpg', alt: 'Interior layout of the Coyote Bronco during mockup.' },
+        { src: 'images/placeholders/coyote_new_5.jpg', alt: 'Close-up of the Bronco wiring harness integration.' },
+        { src: 'images/placeholders/coyote_new_6.jpg', alt: 'Bronco chassis setup highlighting drivetrain components.' },
+        { src: 'images/placeholders/coyote_new_7.jpg', alt: 'Fabrication work on the Bronco firewall and accessories.' },
+        { src: 'images/placeholders/coyote_new_8.jpg', alt: 'Undercarriage view of the Bronco exhaust and driveline.' },
+        { src: 'images/placeholders/coyote_new_9.jpg', alt: 'Interior electronics and dashboard progress on the Coyote Bronco.' },
+        { src: 'images/placeholders/coyote_new_10.jpg', alt: 'Bronco exterior in primer with body panel alignment in progress.' },
+        { src: 'images/placeholders/coyote_new_11.jpg', alt: 'Custom brake and suspension hardware installed on the Bronco.' },
+        { src: 'images/placeholders/coyote_new_12.jpg', alt: 'Engine bay wiring cleanup around the Coyote powerplant.' },
+        { src: 'images/placeholders/coyote_new_13.jpg', alt: 'Bronco interior trim test fit during the build.' },
+        { src: 'images/placeholders/coyote_new_14.jpg', alt: 'Rear cargo area layout with electrical components staged.' },
+        { src: 'images/placeholders/coyote_new_15.jpg', alt: 'Coyote Bronco stance captured from the rear three-quarter view.' },
         { src: 'images/placeholders/more-images-coming-soon.svg', alt: 'Animated graphic stating that more Coyote Bronco images are coming soon.' }
       ],
     },
