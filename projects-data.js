@@ -15,7 +15,7 @@
       gallery: [
         { src: 'images/placeholders/bb1.JPG', alt: 'Condenser Installation' },
         { src: 'images/placeholders/bb3.JPG', alt: 'Engine Bay Pre-Cooling System' },
-        { src: 'images/placeholders/bb4.JPG', alt: 'Exterrior Post Body Mounting' },
+        { src: 'images/placeholders/bb4.JPG', alt: 'Exterior Post Body Mounting' },
         { src: 'images/placeholders/bb5.JPG', alt: 'Interior Pre-Upholstry' },
         { src: 'images/placeholders/bb6.JPG', alt: 'Interior Post Upholstry & Trim' },
         { src: 'images/placeholders/bb7.JPG', alt: 'Vehicle Badging' },
