@@ -1,9 +1,9 @@
 :root {
   --report-hero-bg: linear-gradient(
     140deg,
-    rgba(255, 255, 255, 0.94) 0%,
-    rgba(163, 210, 255, 0.72) 48%,
-    rgba(255, 220, 239, 0.78) 100%
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(236, 229, 216, 0.75) 48%,
+    rgba(228, 221, 204, 0.88) 100%
   );
 }
 
@@ -13,10 +13,10 @@
 
 /* Match portfolio page background */
 body.report-page{
-  background-color:#edf4ff;
+  background-color:#f6f2e9;
   background-image:
-    radial-gradient(circle at 12% 22%, rgba(255,255,255,.85), rgba(255,255,255,0) 54%),
-    linear-gradient(180deg, #edf4ff 0%, #dbe9ff 38%, #ecfbff 72%, #ffffff 100%);
+    radial-gradient(circle at 10% 20%, rgba(228,221,204,.85), rgba(228,221,204,.32) 42%, rgba(228,221,204,0) 72%),
+    linear-gradient(180deg, #f8f6f1 0%, #f4f0e8 38%, #f9f6ef 72%, #ffffff 100%);
   background-repeat:no-repeat;
   background-attachment:fixed;
   color:var(--slate);
@@ -28,7 +28,7 @@ body.report-page{
   padding: 4.5rem 0 3.5rem;
   background: var(--report-hero-bg);
   overflow: hidden;
-  border-bottom: 1px solid rgba(14, 38, 72, 0.08);
+  border-bottom: 1px solid rgba(43, 47, 51, 0.08);
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.4);
 }
 
@@ -40,7 +40,7 @@ body.report-page{
   margin: 0 0 1.5rem;
   list-style: none;
   font-size: 0.95rem;
-  color: rgba(14, 38, 72, 0.65);
+  color: rgba(43, 47, 51, 0.65);
 }
 
 .report-breadcrumb a {
@@ -57,7 +57,7 @@ body.report-page{
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.85rem;
-  color: rgba(14, 38, 72, 0.58);
+  color: rgba(43, 47, 51, 0.58);
 }
 
 .report-title,
@@ -70,7 +70,7 @@ body.report-page{
   margin: 0 0 1.75rem;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: rgba(14, 38, 72, 0.74);
+  color: rgba(43, 47, 51, 0.74);
 }
 
 .report-actions {
@@ -86,7 +86,7 @@ body.report-page{
 .report-status {
   margin-bottom: 1.25rem;
   font-size: 0.95rem;
-  color: rgba(14, 38, 72, 0.68);
+  color: rgba(43, 47, 51, 0.68);
   letter-spacing: 0.01em;
 }
 
@@ -99,7 +99,7 @@ body.report-page{
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(14px);
   border-radius: var(--radius-xl, 28px);
-  border: 1px solid rgba(14, 38, 72, 0.08);
+  border: 1px solid rgba(43, 47, 51, 0.08);
   box-shadow: var(--shadow-2, 0 18px 46px rgba(0, 0, 0, 0.16));
   min-height: clamp(420px, 60vh, 720px);
   transition: box-shadow 0.35s ease;
@@ -123,7 +123,7 @@ body.report-page{
   border: 0;
   border-radius: calc(var(--radius-lg, 22px) - 4px);
   background: rgba(255, 255, 255, 0.96);
-  box-shadow: inset 0 0 0 1px rgba(14, 38, 72, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(43, 47, 51, 0.06);
 }
 
 .report-controls {
