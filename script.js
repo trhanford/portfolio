@@ -161,7 +161,7 @@
       'Car enthusiast',
       'CAD Specialist',
       'Design Engineer',
-      'Innovator',
+      'Constant Innovator',
       'Problem Solver',
       'Curious Mind',
       'Doer'
