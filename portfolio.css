@@ -3,12 +3,14 @@
    ================================================================== */
 
 body.portfolio-page{
-  background-color:#f6f2e9;
-  background-image:radial-gradient(circle at 10% 20%, rgba(228,221,204,.85), rgba(228,221,204,.32) 42%, rgba(228,221,204,0) 72%),
-                   linear-gradient(180deg, #f8f6f1 0%, #f4f0e8 38%, #f9f6ef 72%, #ffffff 100%);
+  background-color:var(--bg-main);
+  background-image:
+    radial-gradient(circle at 18% 20%, rgba(40,50,58,.45), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(16,22,26,.6), transparent 60%),
+    linear-gradient(180deg, #080b0d 0%, var(--bg-main) 42%, var(--bg-alt) 100%);
   background-repeat:no-repeat;
   background-attachment:fixed;
-  color:var(--slate);
+  color:var(--text-main);
   min-height:100vh;
 }
 
@@ -60,7 +62,7 @@ body.portfolio-page main{
   position:absolute;
   inset:auto -12% -52% -12%;
   height:52%;
-  background:linear-gradient(180deg, rgba(244,239,230,0) 0%, rgba(244,239,230,.8) 46%, rgba(254,252,247,.96) 100%);
+  background:linear-gradient(180deg, rgba(8,12,16,0) 0%, rgba(11,16,20,.8) 46%, rgba(12,16,20,.95) 100%);
   z-index:-1;
 }
 
@@ -111,20 +113,20 @@ body.portfolio-page main{
   text-transform:uppercase;
   font-weight:800;
   letter-spacing:.08em;
-  border:1px solid rgba(31,35,39,.2);
-  background:rgba(255,255,255,.9);
-  color:var(--slate-strong);
-  box-shadow:0 18px 40px rgba(0,0,0,.09);
-  transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
+  border:1px solid var(--border-silver);
+  background:linear-gradient(135deg,#19b57a,#0f8f5b);
+  color:var(--text-main);
+  box-shadow:var(--shadow-soft);
+  transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease;
 }
 
 .hero-button .arrow{transition:transform .25s ease;}
 
 .hero-button:hover{
   transform:translateY(-2px);
-  box-shadow:0 26px 48px rgba(0,0,0,.16);
-  background:var(--slate-strong);
-  color:#fff;
+  box-shadow:0 32px 56px rgba(0,0,0,.5);
+  background:linear-gradient(135deg,#1fca86,#13a26d);
+  color:var(--text-main);
 }
 
 .hero-button:hover .arrow{transform:translateX(4px);}
@@ -134,7 +136,7 @@ body.portfolio-page main{
   align-items:center;
   gap:10px;
   font-size:.9rem;
-  color:rgba(43,47,51,.55);
+  color:var(--text-muted);
   letter-spacing:.08em;
   text-transform:uppercase;
 }
@@ -143,7 +145,7 @@ body.portfolio-page main{
   width:10px;
   height:10px;
   border-radius:50%;
-  background:rgba(43,47,51,.28);
+  background:var(--border-silver);
   position:relative;
   overflow:hidden;
 }
@@ -153,7 +155,7 @@ body.portfolio-page main{
   position:absolute;
   inset:0;
   border-radius:inherit;
-  background:rgba(43,47,51,.8);
+  background:var(--accent-blue);
   animation:pulse 2.6s ease-in-out infinite;
 }
 
@@ -170,8 +172,9 @@ body.portfolio-page main{
   align-content:start;
   padding:26px;
   border-radius:26px;
-  background:rgba(255,255,255,.82);
-  box-shadow:0 20px 40px rgba(0,0,0,.12);
+  background:rgba(10,14,18,.9);
+  box-shadow:var(--shadow-soft);
+  border:1px solid var(--border-silver);
   backdrop-filter:blur(10px);
 }
 
@@ -181,19 +184,20 @@ body.portfolio-page main{
   gap:4px;
   padding:14px 18px;
   border-radius:18px;
-  background:linear-gradient(145deg, rgba(240,236,228,.9), rgba(255,255,255,.55));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+  background:linear-gradient(145deg, rgba(16,22,26,.9), rgba(11,15,18,.85));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.05);
 }
 
 .hero-stats .stat-value{
   font-size:2.2rem;
   font-weight:800;
-  color:var(--slate-strong);
+  color:var(--text-main);
 }
 
 .hero-stats .stat-label{
   font-size:.95rem;
-  color:rgba(43,47,51,.6);
+  color:var(--text-muted);
 }
 
 @media (max-width:1024px){
@@ -218,13 +222,13 @@ body.portfolio-page main{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(255,255,255,.68) 0%, rgba(255,255,255,.34) 58%, rgba(255,255,255,0) 100%);
+  background:linear-gradient(180deg, rgba(8,12,16,.75) 0%, rgba(8,12,16,.4) 58%, rgba(8,12,16,0) 100%);
   opacity:.6;
   pointer-events:none;
 }
 
 .category-block:nth-of-type(even){
-  background:linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(232,225,209,.28) 58%, rgba(255,255,255,.98) 100%);
+  background:linear-gradient(180deg, rgba(15,20,24,.85) 0%, rgba(10,14,18,.65) 58%, rgba(8,10,12,.9) 100%);
 }
 
 .section-heading{
@@ -237,13 +241,13 @@ body.portfolio-page main{
 .section-heading h2{
   font-family:'Playfair Display', Georgia, serif;
   font-size:clamp(2rem, 4vw, 3.1rem);
-  color:var(--slate-strong);
+  color:var(--text-main);
 }
 
 .section-heading p{
   margin:0;
   font-size:1.05rem;
-  color:rgba(43,47,51,.65);
+  color:var(--text-muted);
 }
 
 .project-rail{
@@ -283,15 +287,13 @@ body.portfolio-page main{
   position:relative;
   display:flex;
   flex-direction:column;
-  background:rgba(255,255,255,.82);
+  background:rgba(12,16,20,.9);
   border-radius:28px;
   overflow:hidden;
-  box-shadow:
-    0 4px 12px rgba(0,0,0,.08),
-    0 1px 4px rgba(0,0,0,.05);
+  box-shadow:var(--shadow-soft);
   min-height:100%;
   scroll-snap-align:start;
-  border:1px solid rgba(43,47,51,.08);
+  border:1px solid var(--border-silver);
   transition:transform .35s ease, box-shadow .35s ease;
   will-change:transform;
 }
@@ -300,7 +302,7 @@ body.portfolio-page main{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,0) 68%, rgba(0,0,0,.08) 100%);
+  background:linear-gradient(180deg, rgba(0,0,0,0) 68%, rgba(0,0,0,.35) 100%);
   opacity:0;
   transition:opacity .35s ease;
   pointer-events:none;
@@ -313,14 +315,12 @@ body.portfolio-page main{
 .project-card.is-active,
 .project-card:hover{
   transform:translateY(-2px);
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.12),
-    0 2px 6px rgba(0,0,0,.06);
+  box-shadow:0 34px 56px rgba(0,0,0,.55);
 }
 
 .project-media{
   aspect-ratio:4/3;
-  background:#f4f1eb;
+  background:#101417;
   overflow:hidden;
   position:relative;
 }
@@ -382,18 +382,19 @@ body.portfolio-page main{
   flex-direction:column;
   gap:14px;
   padding:24px 26px 28px;
+  color:var(--text-main);
 }
 
 .project-kicker{
   font-size:1.05rem;
   font-weight:700;
   letter-spacing:.01em;
-  color:var(--slate-strong);
+  color:var(--text-main);
 }
 
 .project-summary{
   margin:0;
-  color:rgba(43,47,51,.68);
+  color:var(--text-muted);
   font-size:.98rem;
   line-height:1.6;
 }
@@ -403,9 +404,9 @@ body.portfolio-page main{
   overflow-y:auto;
   padding:14px 16px;
   border-radius:18px;
-  background:linear-gradient(145deg, rgba(244,241,235,.86), rgba(255,255,255,.72));
-  border:1px solid rgba(43,47,51,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  background:linear-gradient(145deg, rgba(16,22,26,.92), rgba(10,14,18,.82));
+  border:1px solid var(--border-silver);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
   scroll-behavior:smooth;
   overscroll-behavior:contain;
 }
@@ -414,9 +415,9 @@ body.portfolio-page main{
 .portfolio-modal[data-category="automotive"] .modal-description{
   padding:18px 22px;
   border-radius:18px;
-  background:linear-gradient(145deg, rgba(244,241,235,.86), rgba(255,255,255,.72));
-  border:1px solid rgba(43,47,51,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  background:linear-gradient(145deg, rgba(16,22,26,.92), rgba(10,14,18,.86));
+  border:1px solid var(--border-silver);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .portfolio-modal[data-category="automotive"] .modal-description{
@@ -430,9 +431,9 @@ body.portfolio-page main{
 .portfolio-modal[data-category="electrical"] .modal-description{
   padding:18px 22px;
   border-radius:18px;
-  background:linear-gradient(145deg, rgba(244,241,235,.86), rgba(255,255,255,.72));
-  border:1px solid rgba(43,47,51,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  background:linear-gradient(145deg, rgba(16,22,26,.92), rgba(10,14,18,.86));
+  border:1px solid var(--border-silver);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
 }
 .portfolio-modal[data-category="electrical"] .modal-description{
   overflow-y:auto;
@@ -455,13 +456,13 @@ body.portfolio-page main{
   gap:8px;
   padding:12px 20px;
   border-radius:999px;
-  background:rgba(43,47,51,.08);
-  border:1px solid rgba(43,47,51,.12);
+  background:rgba(2,162,163,.18);
+  border:1px solid var(--border-silver);
   font-weight:700;
   letter-spacing:.04em;
   text-transform:uppercase;
-  color:var(--slate-strong);
-  transition:transform .25s ease, background-color .25s ease, color .25s ease;
+  color:var(--text-main);
+  transition:transform .25s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease;
   cursor:pointer;
 }
 
@@ -479,8 +480,9 @@ body.portfolio-page main{
 
 .project-action:hover{
   transform:translateY(-1px);
-  background:var(--slate-strong);
-  color:#fff;
+  background:linear-gradient(135deg,#02a2a3,#046c75);
+  color:var(--text-main);
+  box-shadow:0 28px 48px rgba(0,0,0,.45);
 }
 
 .project-action:hover span[aria-hidden="true"]{transform:translateX(3px);}
@@ -498,7 +500,7 @@ body.portfolio-page main{
   text-transform:uppercase;
   letter-spacing:.16em;
   font-size:.78rem;
-  color:rgba(43,47,51,.55);
+  color:var(--text-muted);
   white-space:nowrap;
 }
 
@@ -511,15 +513,15 @@ body.portfolio-page main{
   width:52px;
   height:52px;
   border-radius:50%;
-  border:0;
-  background:var(--accent-soft, #b45858);
-  color:#fff;
+  border:1px solid var(--border-silver);
+  background:linear-gradient(135deg,#02a2a3,#046c75);
+  color:var(--text-main);
   display:grid;
   place-items:center;
   font-size:1.2rem;
   cursor:pointer;
-  transition:transform .25s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease;
-  box-shadow:0 16px 28px rgba(0,0,0,.16);
+  transition:transform .25s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease, border-color .25s ease;
+  box-shadow:var(--shadow-soft);
 }
 
 .rail-buttons button:hover{
@@ -605,12 +607,13 @@ body.modal-open{
   max-height:min(92vh, 960px);
   display:grid;
   grid-template-rows:auto minmax(0,1fr);
-  background:linear-gradient(180deg, #ffffff 0%, #f7f4ed 100%);
+  background:linear-gradient(180deg, rgba(10,14,18,.98) 0%, rgba(8,12,16,.92) 100%);
   border-radius:32px;
   overflow:hidden;
-  box-shadow:0 32px 80px rgba(8,12,20,.45);
+  box-shadow:0 32px 80px rgba(0,0,0,.65);
   transform:translateY(32px) scale(.98);
   transition:transform .4s cubic-bezier(.16,1,.3,1);
+  border:1px solid var(--border-silver);
 }
 
 .portfolio-modal.open .portfolio-modal__dialog{
@@ -625,8 +628,8 @@ body.modal-open{
   height:44px;
   border:0;
   border-radius:50%;
-  background:rgba(24,28,34,.08);
-  color:rgba(24,28,34,.8);
+  background:rgba(255,255,255,.08);
+  color:var(--text-main);
   font-size:1.5rem;
   line-height:1;
   display:grid;
@@ -637,18 +640,18 @@ body.modal-open{
 
 .portfolio-modal__close:hover,
 .portfolio-modal__close:focus-visible{
-  background:var(--slate-strong, #2b2f33);
-  color:#fff;
+  background:var(--accent-blue);
+  color:#041a1c;
   transform:translateY(-1px);
-  box-shadow:0 18px 36px rgba(12,17,24,.25);
+  box-shadow:0 18px 36px rgba(0,0,0,.45);
   outline:0;
 }
 
 .portfolio-modal__header{
   padding:clamp(32px, 6vw, 48px);
   padding-bottom:clamp(24px, 5vw, 32px);
-  background:linear-gradient(135deg, rgba(240,235,224,.95), rgba(255,255,255,.9));
-  border-bottom:1px solid rgba(24,28,34,.08);
+  background:linear-gradient(135deg, rgba(12,16,20,.98), rgba(10,14,18,.9));
+  border-bottom:1px solid var(--border-silver);
 }
 
 .portfolio-modal__kicker{
@@ -656,7 +659,7 @@ body.modal-open{
   font-size:.78rem;
   letter-spacing:.28em;
   text-transform:uppercase;
-  color:rgba(24,28,34,.52);
+  color:var(--text-muted);
 }
 
 .portfolio-modal__header h2{
@@ -664,14 +667,14 @@ body.modal-open{
   font-family:'Playfair Display', Georgia, serif;
   font-size:clamp(2rem, 4vw, 3.2rem);
   line-height:1.12;
-  color:var(--slate-strong, #2b2f33);
+  color:var(--text-main);
 }
 
 .portfolio-modal__summary{
   margin:0;
   font-size:1.05rem;
   line-height:1.6;
-  color:rgba(24,28,34,.72);
+  color:var(--text-muted);
   max-width:65ch;
 }
 
@@ -679,7 +682,7 @@ body.modal-open{
   position:relative;
   overflow-y:auto;
   padding:clamp(24px, 5vw, 40px);
-  background:linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(245,242,235,.92) 100%);
+  background:linear-gradient(180deg, rgba(8,12,16,.94) 0%, rgba(6,10,14,.9) 100%);
   display:flex;
   flex-direction:column;
   gap:clamp(20px, 4vw, 36px);
@@ -717,11 +720,11 @@ body.modal-open{
 
 .modal-card{
   position:relative;
-  background:#fff;
+  background:rgba(12,16,20,.92);
   border-radius:28px;
   padding:clamp(22px, 3vw, 32px);
-  box-shadow:0 24px 52px rgba(12,18,26,.16);
-  border:1px solid rgba(24,28,34,.06);
+  box-shadow:var(--shadow-soft);
+  border:1px solid var(--border-silver);
   display:flex;
   flex-direction:column;
   gap:clamp(16px, 3vw, 24px);
@@ -741,7 +744,7 @@ body.modal-open{
   font-size:.72rem;
   letter-spacing:.28em;
   text-transform:uppercase;
-  color:rgba(24,28,34,.5);
+  color:var(--text-muted);
 }
 
 .modal-card__title{
@@ -749,19 +752,19 @@ body.modal-open{
   font-family:'Playfair Display', Georgia, serif;
   font-size:clamp(1.3rem, 2.8vw, 1.9rem);
   line-height:1.25;
-  color:var(--slate-strong, #2b2f33);
+  color:var(--text-main);
 }
 
 .modal-card__intro{
   margin:0;
   font-size:.95rem;
   line-height:1.6;
-  color:rgba(24,28,34,.64);
+  color:var(--text-muted);
 }
 
 /* -------- gallery card (Highlights) ---------- */
 .modal-gallery{
-  background:linear-gradient(140deg, rgba(255,255,255,.96), rgba(234,229,218,.9));
+  background:linear-gradient(140deg, rgba(12,16,20,.95), rgba(8,12,16,.85));
   overflow:hidden;
   position:relative;
 }
@@ -778,11 +781,11 @@ body.modal-open{
 }
 .modal-gallery::before{
   left:0;
-  background:linear-gradient(90deg, rgba(255,255,255,.92), rgba(255,255,255,0));
+  background:linear-gradient(90deg, rgba(8,12,16,.9), rgba(8,12,16,0));
 }
 .modal-gallery::after{
   right:0;
-  background:linear-gradient(270deg, rgba(255,255,255,.92), rgba(255,255,255,0));
+  background:linear-gradient(270deg, rgba(8,12,16,.9), rgba(8,12,16,0));
 }
 
 /* upgraded rail (kept horizontal scroll, better cards) */
