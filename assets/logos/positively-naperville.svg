@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" role="img" aria-labelledby="title-pn">
+  <title id="title-pn">Positively Naperville logo</title>
+  <rect width="220" height="60" rx="12" fill="#fef6ec" stroke="#e88a2d" stroke-width="2" />
+  <text
+    x="110"
+    y="36"
+    fill="#c24a00"
+    font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
+    font-size="22"
+    font-weight="600"
+    text-anchor="middle"
+    letter-spacing="0.08em"
+  >Positively Naperville</text>
+</svg>
