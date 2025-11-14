@@ -358,10 +358,26 @@ body.resume-body::after{opacity:.45;}
   box-shadow:0 16px 30px rgba(0,0,0,.16);
 }
 
-.press-mention img{
+.press-mention__logo{
   max-height:46px;
   width:auto;
-  filter:grayscale(1) contrast(1.1);
+  display:block;
+  object-fit:contain;
+  filter:none;
+  transition:transform .2s ease;
+}
+
+.press-mention:focus-visible .press-mention__logo,
+.press-mention:hover .press-mention__logo{
+  transform:scale(1.02);
+}
+
+.press-mention__logo--framed{
+  background:#fff;
+  padding:6px 12px;
+  border-radius:10px;
+  box-shadow:0 10px 26px rgba(0,0,0,.12);
+  border:1px solid rgba(43,47,51,.12);
 }
 
 .skill-column{
