@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" role="img" aria-labelledby="title-ct">
+  <title id="title-ct">Chicago Tribune logo</title>
+  <rect width="220" height="60" rx="12" fill="#0a0a0c" opacity="0.9" />
+  <text
+    x="110"
+    y="38"
+    fill="#f6f2ec"
+    font-family="'Playfair Display', 'Times New Roman', serif"
+    font-size="28"
+    text-anchor="middle"
+    letter-spacing="0.06em"
+  >Chicago Tribune</text>
+</svg>
