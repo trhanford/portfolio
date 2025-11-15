@@ -145,7 +145,7 @@ body.portfolio-page main{
   font-weight:800;
   letter-spacing:.08em;
   border:0;
-  background:linear-gradient(120deg, var(--accent-strong), #e0594d);
+  background:linear-gradient(120deg, var(--accent-strong), #75131c);
   color:#fff;
   box-shadow:0 24px 48px rgba(177,18,43,.28);
   transition:transform .25s ease, box-shadow .25s ease, background-position .35s ease;
@@ -526,7 +526,7 @@ body.portfolio-page main{
   text-transform:uppercase;
   letter-spacing:.16em;
   font-size:.78rem;
-  color:rgba(255,255,255,.6);
+  color:rgba(43,47,51,.75);
   white-space:nowrap;
 }
 

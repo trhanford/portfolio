@@ -17,8 +17,8 @@
   --muted:#707780;
   --line:rgba(15,17,19,.12);
   --focus:#0a6cff;
-  --accent-soft:#a01d3b;    /* richer red accent for typed words */
-  --accent-strong:#b1122b;  /* high-contrast crimson for CTAs */
+  --accent-soft:#7f0f1c;    /* richer crimson accent for typed words */
+  --accent-strong:#8a0d1a;  /* high-contrast crimson for CTAs */
   --surface-bright:#ffffff;
   --surface-strong:rgba(255,255,255,.97);
   --surface-soft:rgba(255,255,255,.9);
