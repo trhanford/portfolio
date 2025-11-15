@@ -111,8 +111,8 @@ body.portfolio-page main{
   text-transform:uppercase;
   font-weight:800;
   letter-spacing:.08em;
-  border:1px solid rgba(31,35,39,.2);
-  background:rgba(255,255,255,.9);
+  border:1px solid var(--card-border);
+  background:var(--surface-bright);
   color:var(--slate-strong);
   box-shadow:0 18px 40px rgba(0,0,0,.09);
   transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
@@ -170,8 +170,9 @@ body.portfolio-page main{
   align-content:start;
   padding:26px;
   border-radius:26px;
-  background:rgba(255,255,255,.82);
-  box-shadow:0 20px 40px rgba(0,0,0,.12);
+  background:var(--surface-strong);
+  border:1px solid var(--card-border);
+  box-shadow:var(--card-shadow);
   backdrop-filter:blur(10px);
 }
 
@@ -283,15 +284,13 @@ body.portfolio-page main{
   position:relative;
   display:flex;
   flex-direction:column;
-  background:rgba(255,255,255,.82);
+  background:var(--surface-strong);
   border-radius:28px;
   overflow:hidden;
-  box-shadow:
-    0 4px 12px rgba(0,0,0,.08),
-    0 1px 4px rgba(0,0,0,.05);
+  box-shadow:var(--card-shadow);
   min-height:100%;
   scroll-snap-align:start;
-  border:1px solid rgba(43,47,51,.08);
+  border:1px solid var(--card-border);
   transition:transform .35s ease, box-shadow .35s ease;
   will-change:transform;
 }
@@ -313,9 +312,7 @@ body.portfolio-page main{
 .project-card.is-active,
 .project-card:hover{
   transform:translateY(-2px);
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.12),
-    0 2px 6px rgba(0,0,0,.06);
+  box-shadow:var(--card-shadow-strong);
 }
 
 .project-media{
