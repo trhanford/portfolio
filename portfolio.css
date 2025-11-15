@@ -83,10 +83,10 @@ body.portfolio-page main{
   margin-top:-60px;
   padding:140px 0 160px;
   background:
-    radial-gradient(circle at 18% 12%, rgba(255,255,255,.08) 0%, transparent 48%),
-    radial-gradient(circle at 80% 0%, rgba(177,18,43,.25) 0%, rgba(177,18,43,0) 45%),
-    linear-gradient(180deg, #0d1016 0%, #0a0d12 55%, #050608 100%);
-  color:#f4f5f7;
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 52%),
+    radial-gradient(circle at 82% 6%, rgba(214,205,187,.65) 0%, rgba(214,205,187,0) 58%),
+    linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(238,232,220,.82) 46%, rgba(228,221,204,.95) 100%);
+  color:var(--slate);
   z-index:1;
 }
 .portfolio-sections::before{
@@ -96,9 +96,9 @@ body.portfolio-page main{
   right:0;
   top:0;
   height:140px;
-  background:linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(13,16,22,0) 100%);
+  background:linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(236,229,216,0) 100%);
   pointer-events:none;
-  opacity:.9;
+  opacity:.85;
 }
 
 .hero-layout{
@@ -284,8 +284,8 @@ body.portfolio-page main{
   color:rgba(43,47,51,.65);
 }
 
-.portfolio-sections .section-heading h2{color:#fff;}
-.portfolio-sections .section-heading p{color:rgba(255,255,255,.78);}
+.portfolio-sections .section-heading h2{color:var(--slate-strong);}
+.portfolio-sections .section-heading p{color:rgba(43,47,51,.7);}
 
 .project-rail{
   position:relative;
