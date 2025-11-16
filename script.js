@@ -661,20 +661,11 @@
           if (distSq < pointerRadiusSq) {
             const dist = Math.sqrt(distSq) || 1;
             const influence = (1 - dist / pointerRadius) * state.pointer.strength;
-            const angle = Math.atan2(dy, dx);
 
-            // Keep movement tighter near the cursor: less swirl, more glide + speed boost
-            const jitter = (reduceMotion ? 22 : 40) * influence;
-            particle.vx += Math.cos(baseTime * 2.2 + particle.pulse * 3.4) * jitter * dt;
-            particle.vy += Math.sin(baseTime * 2.6 + particle.pulse * 3.8) * jitter * dt;
-
-            const accel = pointerForce * influence * 0.18;
-            particle.vx += Math.cos(angle) * accel * dt;
-            particle.vy += Math.sin(angle) * accel * dt;
-
-            const velocityGain = 1 + influence * 1.1;
-            particle.vx *= velocityGain;
-            particle.vy *= velocityGain;
+            // Magnetic pull toward the pointer (with a slight speed boost)
+            const accel = pointerForce * influence * 1.12;
+            particle.vx += (dx / dist) * accel * dt;
+            particle.vy += (dy / dist) * accel * dt;
           }
         }
 
@@ -695,7 +686,7 @@
       }
 
       // Connections
-      const connectionBoost = 1 + state.pointer.strength * 0.8;
+      const connectionBoost = 1 + state.pointer.strength * 0.35;
       const maxDistance = clamp(Math.max(state.width, state.height) * 0.24, 130, 260) * connectionBoost;
       const maxDistanceSq = maxDistance * maxDistance;
       ctx.lineWidth = 0.6;
