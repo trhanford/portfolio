@@ -100,14 +100,36 @@
     <header class="gallery-hero" data-hero-3d>
       <!-- NEW: 3D particle background layer -->
       <div class="hero-3d-layer" data-hero-3d-layer aria-hidden="true"></div>
-  
+
       <div class="container">
         <nav class="gallery-breadcrumb" aria-label="Breadcrumb">
-          <!-- existing breadcrumb markup stays the same -->
+          <ol>
+            <li><a href="/portfolio.html">Portfolio</a></li>
+            <li aria-current="page"><span id="galleryCrumb">Gallery</span></li>
+          </ol>
         </nav>
-  
+
         <div class="gallery-hero-content">
-          <!-- existing kicker, h1, summary, actions, etc. -->
+          <span class="gallery-kicker">Project Gallery</span>
+          <h1 id="galleryTitle">Detailed views from the shop floor</h1>
+          <p id="gallerySummary" class="gallery-summary">
+            Explore expanded imagery, assembly callouts, and interactive models for each build. Use the controls to zoom in on
+            craftsmanship or return to the full portfolio when you are done.
+          </p>
+
+          <div class="gallery-meta" aria-live="polite">
+            <span class="meta-label">Discipline</span>
+            <span id="galleryCategory" class="meta-value">Automotive</span>
+          </div>
+
+          <div class="gallery-actions">
+            <a id="galleryBackLink" class="gallery-action gallery-action--primary" href="/portfolio.html">
+              <span>Return to portfolio</span>
+            </a>
+            <a class="gallery-action gallery-action--ghost" href="#galleryGrid" data-scroll>
+              <span>Jump to gallery</span>
+            </a>
+          </div>
         </div>
       </div>
     </header>
