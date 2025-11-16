@@ -663,19 +663,16 @@
             const influence = (1 - dist / pointerRadius) * state.pointer.strength;
             const angle = Math.atan2(dy, dx);
 
-            // Energize nearby particles with swirling, faster movement instead of magnetism
-            const jitter = (reduceMotion ? 70 : 120) * influence;
-            const swirl = (reduceMotion ? 18 : 32) * influence;
-            particle.vx += Math.cos(baseTime * 3 + particle.pulse * 5) * jitter * dt;
-            particle.vy += Math.sin(baseTime * 3.4 + particle.pulse * 4.6) * jitter * dt;
-            particle.vx += -Math.sin(angle) * swirl * dt;
-            particle.vy += Math.cos(angle) * swirl * dt;
+            // Keep movement tighter near the cursor: less swirl, more glide + speed boost
+            const jitter = (reduceMotion ? 22 : 40) * influence;
+            particle.vx += Math.cos(baseTime * 2.2 + particle.pulse * 3.4) * jitter * dt;
+            particle.vy += Math.sin(baseTime * 2.6 + particle.pulse * 3.8) * jitter * dt;
 
-            const accel = pointerForce * influence * 0.35;
+            const accel = pointerForce * influence * 0.18;
             particle.vx += Math.cos(angle) * accel * dt;
             particle.vy += Math.sin(angle) * accel * dt;
 
-            const velocityGain = 1 + influence * 0.6;
+            const velocityGain = 1 + influence * 1.1;
             particle.vx *= velocityGain;
             particle.vy *= velocityGain;
           }
@@ -698,7 +695,7 @@
       }
 
       // Connections
-      const connectionBoost = 1 + state.pointer.strength * 0.35;
+      const connectionBoost = 1 + state.pointer.strength * 0.8;
       const maxDistance = clamp(Math.max(state.width, state.height) * 0.24, 130, 260) * connectionBoost;
       const maxDistanceSq = maxDistance * maxDistance;
       ctx.lineWidth = 0.6;
