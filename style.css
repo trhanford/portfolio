@@ -281,8 +281,8 @@ body.has-reveal .reveal-item.is-visible{
 
 /* -------------------- Hero -------------------- */
 .hero{position:relative;min-height:100dvh;display:grid;align-items:center;padding:60px 0 80px}
-.hero-bg{position:absolute;inset:0;z-index:-1;overflow:hidden}
-.hero-hyperfield{position:absolute;inset:-14% -10% -8%;pointer-events:none;filter:drop-shadow(0 0 10px rgba(105,140,255,.2));mix-blend-mode:screen;opacity:.86;transition:opacity .8s ease, transform .8s ease}
+.hero-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(circle at 42% 30%, rgba(93,134,255,.16), rgba(93,134,255,0) 48%),radial-gradient(circle at 70% 65%, rgba(255,166,122,.12), rgba(255,166,122,0) 60%)}
+.hero-hyperfield{position:absolute;inset:-14% -10% -8%;pointer-events:none;filter:drop-shadow(0 0 10px rgba(105,140,255,.22));mix-blend-mode:screen;opacity:1;transition:opacity .8s ease, transform .8s ease}
 .hero-hyperfield.is-active{opacity:1;transform:translateZ(0)}
 .hero-hyperfield.is-fallback{animation:hyperfieldGlow 16s ease-in-out infinite alternate}
 .hero-hyperfield::before{content:"";position:absolute;inset:8% 10% 12%;background:radial-gradient(circle at 62% 34%, rgba(105,140,255,.32), rgba(105,140,255,0) 52%),radial-gradient(circle at 30% 64%, rgba(255,176,122,.16), rgba(255,176,122,0) 62%),radial-gradient(circle at 50% 50%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%);filter:blur(6px);z-index:1;animation:hyperfieldDrift 18s ease-in-out infinite}
