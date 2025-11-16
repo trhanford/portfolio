@@ -24,13 +24,26 @@
     window.matchMedia("(max-width: 1024px)").matches;
 
   onReady(() => {
-    if (prefersReducedMotion() || isSmallViewport()) return;
-    if (typeof window.THREE === "undefined") return;
-
     const mount = document.querySelector("[data-hero-hyperfield]");
     if (!mount) return;
 
-    setupHyperfield(mount, window.THREE);
+    if (prefersReducedMotion() || isSmallViewport()) {
+      mount.classList.add("is-fallback");
+      return;
+    }
+
+    if (typeof window.THREE === "undefined") {
+      mount.classList.add("is-fallback");
+      return;
+    }
+
+    try {
+      setupHyperfield(mount, window.THREE);
+      mount.classList.add("is-active");
+    } catch (error) {
+      console.error("Hyperfield failed, falling back to CSS glow", error);
+      mount.classList.add("is-fallback");
+    }
   });
 
   function setupHyperfield(mount, THREE) {
@@ -98,18 +111,22 @@
       targetTiltY: 0,
     };
 
-    mount.addEventListener("pointermove", event => {
+    const handlePointerMove = event => {
       const rect = mount.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
       const nx = (event.clientX - rect.left) / rect.width - 0.5;
       const ny = (event.clientY - rect.top) / rect.height - 0.5;
       state.targetTiltX = nx * 0.8;
       state.targetTiltY = -ny * 0.6;
-    });
+    };
 
-    mount.addEventListener("pointerleave", () => {
+    const resetTilt = () => {
       state.targetTiltX = 0;
       state.targetTiltY = 0;
-    });
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", resetTilt);
 
     function resize() {
       const rect = mount.getBoundingClientRect();
