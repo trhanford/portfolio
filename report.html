@@ -41,6 +41,13 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="report.css" />
 
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+  <script src="hero-particles-3d.js" defer></script>
+  
+  <script src="script.js" defer></script>
+  <script src="projects-data.js" defer></script>
+  <script src="report.js" defer></script>
+  
   <script src="script.js" defer></script>
   <script src="projects-data.js" defer></script>
   <script src="report.js" defer></script>
@@ -89,19 +96,17 @@
   </nav>
 
   <main>
-    <header class="report-hero" data-field-surface>
+    <header class="report-hero" data-field-surface data-hero-3d>
+      <!-- NEW: 3D particle background layer -->
+      <div class="hero-3d-layer" data-hero-3d-layer aria-hidden="true"></div>
+  
       <div class="container">
         <nav class="report-breadcrumb" aria-label="Breadcrumb">
-          <ol>
-            <li><a id="reportBreadcrumbLink" href="portfolio.html">Portfolio</a></li>
-            <li id="reportCrumb" aria-current="page">Project Report</li>
-          </ol>
+          <!-- existing breadcrumb -->
         </nav>
-        <p id="reportCategory" class="report-kicker"></p>
-        <h1 id="reportTitle">Project Report</h1>
-        <p id="reportSummary" class="report-summary"></p>
-        <div class="report-actions">
-          <a id="reportBackLink" class="btn-outline" href="portfolio.html">← Back to portfolio</a>
+  
+        <div class="report-hero-body">
+          <!-- existing title, summary, actions, etc. -->
         </div>
       </div>
     </header>
