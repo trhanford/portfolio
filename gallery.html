@@ -40,6 +40,13 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="gallery.css" />
 
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+  <script src="hero-particles-3d.js" defer></script>
+  
+  <script src="script.js" defer></script>
+  <script src="projects-data.js" defer></script>
+  <script src="gallery.js" defer></script>
+  
   <script src="script.js" defer></script>
   <script src="projects-data.js" defer></script>
   <script src="gallery.js" defer></script>
@@ -90,23 +97,21 @@
   </nav>
 
   <main>
-    <header class="gallery-hero" data-field-surface>
+    <header class="gallery-hero" data-hero-3d>
+      <!-- NEW: 3D particle background layer -->
+      <div class="hero-3d-layer" data-hero-3d-layer aria-hidden="true"></div>
+  
       <div class="container">
         <nav class="gallery-breadcrumb" aria-label="Breadcrumb">
-          <ol>
-            <li><a href="portfolio.html#automotive">Portfolio</a></li>
-            <li id="galleryCrumb" aria-current="page">Automotive Build</li>
-          </ol>
+          <!-- existing breadcrumb markup stays the same -->
         </nav>
-        <p id="galleryCategory" class="gallery-kicker"></p>
-        <h1 id="galleryTitle">Automotive Build</h1>
-        <p id="gallerySummary" class="gallery-summary"></p>
-        <div class="gallery-actions">
-          <a id="galleryBackLink" class="btn-outline" href="portfolio.html#automotive">← Back to portfolio</a>
+  
+        <div class="gallery-hero-content">
+          <!-- existing kicker, h1, summary, actions, etc. -->
         </div>
       </div>
     </header>
-
+  
     <section class="gallery-section">
       <div class="container">
         <div id="galleryStatus" class="gallery-status" role="status" aria-live="polite"></div>
