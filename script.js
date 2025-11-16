@@ -661,9 +661,23 @@
           if (distSq < pointerRadiusSq) {
             const dist = Math.sqrt(distSq) || 1;
             const influence = (1 - dist / pointerRadius) * state.pointer.strength;
-            const accel = pointerForce * influence;
-            particle.vx += (dx / dist) * accel * dt;
-            particle.vy += (dy / dist) * accel * dt;
+            const angle = Math.atan2(dy, dx);
+
+            // Energize nearby particles with swirling, faster movement instead of magnetism
+            const jitter = (reduceMotion ? 70 : 120) * influence;
+            const swirl = (reduceMotion ? 18 : 32) * influence;
+            particle.vx += Math.cos(baseTime * 3 + particle.pulse * 5) * jitter * dt;
+            particle.vy += Math.sin(baseTime * 3.4 + particle.pulse * 4.6) * jitter * dt;
+            particle.vx += -Math.sin(angle) * swirl * dt;
+            particle.vy += Math.cos(angle) * swirl * dt;
+
+            const accel = pointerForce * influence * 0.35;
+            particle.vx += Math.cos(angle) * accel * dt;
+            particle.vy += Math.sin(angle) * accel * dt;
+
+            const velocityGain = 1 + influence * 0.6;
+            particle.vx *= velocityGain;
+            particle.vy *= velocityGain;
           }
         }
 
@@ -684,7 +698,8 @@
       }
 
       // Connections
-      const maxDistance = clamp(Math.max(state.width, state.height) * 0.24, 130, 260);
+      const connectionBoost = 1 + state.pointer.strength * 0.35;
+      const maxDistance = clamp(Math.max(state.width, state.height) * 0.24, 130, 260) * connectionBoost;
       const maxDistanceSq = maxDistance * maxDistance;
       ctx.lineWidth = 0.6;
       ctx.strokeStyle = 'rgba(74,78,84,0.22)';
