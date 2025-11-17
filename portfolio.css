@@ -124,9 +124,9 @@ body.portfolio-page main{
   font-weight:800;
   letter-spacing:.08em;
   border:0;
-  background:linear-gradient(120deg, var(--accent-strong), #75131c);
+  background:var(--accent-sheen);
   color:#fff;
-  box-shadow:0 24px 48px rgba(177,18,43,.28);
+  box-shadow:0 24px 48px var(--accent-halo);
   transition:transform .25s ease, box-shadow .25s ease, background-position .35s ease;
   background-size:140% 140%;
 }
@@ -135,7 +135,7 @@ body.portfolio-page main{
 
 .hero-button:hover{
   transform:translateY(-2px);
-  box-shadow:0 32px 64px rgba(177,18,43,.38);
+  box-shadow:0 32px 64px var(--accent-halo-strong);
   background-position:20% 50%;
 }
 
@@ -461,8 +461,8 @@ body.portfolio-page main{
   gap:8px;
   padding:12px 20px;
   border-radius:999px;
-  background:rgba(177,18,43,.08);
-  border:1px solid rgba(177,18,43,.32);
+  background:color-mix(in srgb, var(--accent-strong) 15%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent-strong) 55%, transparent);
   font-weight:700;
   letter-spacing:.04em;
   text-transform:uppercase;
@@ -485,9 +485,9 @@ body.portfolio-page main{
 
 .project-action:hover{
   transform:translateY(-1px);
-  background:var(--accent-strong);
+  background:var(--accent-sheen);
   color:#fff;
-  box-shadow:0 18px 40px rgba(177,18,43,.35);
+  box-shadow:0 18px 40px var(--accent-halo-strong);
 }
 
 .project-action:hover span[aria-hidden="true"]{transform:translateX(3px);}
@@ -519,7 +519,7 @@ body.portfolio-page main{
   height:52px;
   border-radius:50%;
   border:0;
-  background:var(--accent-soft, #b45858);
+  background:var(--accent-soft, #c0121d);
   color:#fff;
   display:grid;
   place-items:center;
@@ -531,7 +531,7 @@ body.portfolio-page main{
 
 .rail-buttons button:hover{
   transform:translateY(-2px);
-  background:color-mix(in oklab, var(--accent-soft, #b45858) 88%, black);
+  background:color-mix(in oklab, var(--accent-soft, #c0121d) 88%, black);
   box-shadow:0 20px 36px rgba(0,0,0,.18);
   color:#fff;
 }
@@ -540,7 +540,7 @@ body.portfolio-page main{
   outline:0;
   box-shadow:
     0 0 0 3px #fff,
-    0 0 0 6px color-mix(in oklab, var(--accent-soft, #b45858) 70%, white);
+    0 0 0 6px color-mix(in oklab, var(--accent-soft, #c0121d) 70%, white);
 }
 
 .rail-buttons button:disabled{
@@ -987,20 +987,20 @@ body.modal-open{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  background:var(--accent-soft, #b45858);
+  background:var(--accent-soft, #c0121d);
   color:#fff;
   font-size:1.6rem;
   line-height:1;
   cursor:pointer;
   z-index:2;
-  box-shadow:0 16px 32px color-mix(in oklab, var(--accent-soft, #b45858) 62%, transparent);
+  box-shadow:0 16px 32px color-mix(in oklab, var(--accent-soft, #c0121d) 62%, transparent);
   transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease, opacity .25s ease;
 }
 .modal-gallery__control:hover,
 .modal-gallery__control:focus-visible{
   transform:translateY(-50%) scale(1.05);
-  box-shadow:0 22px 42px color-mix(in oklab, var(--accent-soft, #b45858) 72%, transparent);
-  background:color-mix(in oklab, var(--accent-soft, #b45858) 88%, black);
+  box-shadow:0 22px 42px color-mix(in oklab, var(--accent-soft, #c0121d) 72%, transparent);
+  background:color-mix(in oklab, var(--accent-soft, #c0121d) 88%, black);
   outline:0;
 }
 .modal-gallery__control--prev{left:clamp(12px, 3vw, 24px);}
