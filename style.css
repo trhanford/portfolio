@@ -236,18 +236,19 @@ body.has-reveal .reveal-item.is-visible{
 .btn-primary{background:var(--paper);color:var(--slate);border:1px solid rgba(43,47,51,.18);box-shadow:var(--shadow-1)}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:var(--shadow-2);filter:brightness(1.02)}
 .btn-outline{
-  background:var(--accent-halo);
+  background:transparent;
   color:var(--accent-strong);
-  border:2px solid color-mix(in srgb, var(--accent-strong) 60%, transparent);
-  box-shadow:0 12px 28px var(--accent-halo);
-  transition:transform .18s ease, box-shadow .18s ease, background-color .2s ease, color .2s ease;
+  border:3px solid color-mix(in srgb, var(--accent-strong) 65%, transparent);
+  box-shadow:0 10px 26px var(--accent-halo);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .2s ease, color .2s ease;
 }
 .btn-outline:hover,
 .btn-outline:focus-visible{
   transform:translateY(-1px);
   box-shadow:0 18px 38px var(--accent-halo-strong);
-  background:var(--accent-sheen);
-  color:#fff;
+  background:transparent;
+  border-color:color-mix(in srgb, var(--accent-strong) 82%, transparent);
+  color:var(--accent-strong);
 }
 .btn-outline:active{transform:translateY(0);}
 .btn-primary.is-taupe{background:var(--taupe);border-color:rgba(43,47,51,.22)}

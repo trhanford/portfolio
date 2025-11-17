@@ -461,13 +461,14 @@ body.portfolio-page main{
   gap:8px;
   padding:12px 20px;
   border-radius:999px;
-  background:color-mix(in srgb, var(--accent-strong) 15%, transparent);
-  border:1px solid color-mix(in srgb, var(--accent-strong) 55%, transparent);
+  background:transparent;
+  border:2px solid color-mix(in srgb, var(--accent-strong) 65%, transparent);
   font-weight:700;
   letter-spacing:.04em;
   text-transform:uppercase;
   color:var(--accent-strong);
-  transition:transform .25s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease;
+  box-shadow:0 12px 28px var(--accent-halo);
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
   cursor:pointer;
 }
 
@@ -485,8 +486,9 @@ body.portfolio-page main{
 
 .project-action:hover{
   transform:translateY(-1px);
-  background:var(--accent-sheen);
-  color:#fff;
+  background:transparent;
+  color:var(--accent-strong);
+  border-color:color-mix(in srgb, var(--accent-strong) 82%, transparent);
   box-shadow:0 18px 40px var(--accent-halo-strong);
 }
 
