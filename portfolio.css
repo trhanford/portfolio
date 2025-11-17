@@ -468,7 +468,12 @@ body.portfolio-page main{
   text-transform:uppercase;
   color:var(--accent-strong);
   box-shadow:0 12px 28px var(--accent-halo);
-  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease,
+    background-color .25s ease,
+    color .25s ease;
   cursor:pointer;
 }
 
@@ -486,9 +491,9 @@ body.portfolio-page main{
 
 .project-action:hover{
   transform:translateY(-1px);
-  background:transparent;
-  color:var(--accent-strong);
-  border-color:color-mix(in srgb, var(--accent-strong) 82%, transparent);
+  background:var(--accent-strong);
+  color:#fff;
+  border-color:color-mix(in srgb, var(--accent-strong) 88%, white);
   box-shadow:0 18px 40px var(--accent-halo-strong);
 }
 
