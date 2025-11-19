@@ -163,8 +163,7 @@
       'Design Engineer',
       'Constant Innovator',
       'Problem Solver',
-      'Curious Mind',
-      'Doer'
+      'Curious Mind'
       ];
 
     const typeDelay = 70;
