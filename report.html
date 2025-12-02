@@ -99,14 +99,36 @@
     <header class="report-hero" data-field-surface data-hero-3d>
       <!-- NEW: 3D particle background layer -->
       <div class="hero-3d-layer" data-hero-3d-layer aria-hidden="true"></div>
-  
+
       <div class="container">
         <nav class="report-breadcrumb" aria-label="Breadcrumb">
-          <!-- existing breadcrumb -->
+          <ol>
+            <li><a id="reportBreadcrumbLink" href="/portfolio.html">Portfolio</a></li>
+            <li aria-current="page"><span id="reportCrumb">Project report</span></li>
+          </ol>
         </nav>
-  
+
         <div class="report-hero-body">
-          <!-- existing title, summary, actions, etc. -->
+          <p class="report-kicker">Project Report</p>
+          <h1 id="reportTitle" class="report-title">In-depth documentation for every build</h1>
+          <p id="reportSummary" class="report-summary">
+            Read testing notes, schematics, and downloadable PDFs for each project. Use the quick actions to return to the
+            portfolio or jump straight to the embedded report viewer below.
+          </p>
+
+          <div class="report-meta" aria-live="polite">
+            <span class="meta-label">Discipline</span>
+            <span id="reportCategory" class="meta-value">Automotive</span>
+          </div>
+
+          <div class="report-actions">
+            <a id="reportBackLink" class="report-action report-action--primary" href="/portfolio.html">
+              <span>Return to portfolio</span>
+            </a>
+            <a class="report-action report-action--ghost" href="#reportFrame" data-scroll>
+              <span>Jump to report</span>
+            </a>
+          </div>
         </div>
       </div>
     </header>
