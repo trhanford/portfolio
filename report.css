@@ -224,7 +224,6 @@ body.report-page{
     height: clamp(360px, 65vh, 860px);
   }
 }
-}
 /* === 3D Hero Particle Layer (shared) === */
 
 .hero-3d-layer{
@@ -232,6 +231,7 @@ body.report-page{
   inset:0;
   z-index:-1;          /* behind hero content */
   overflow:hidden;
+  pointer-events:none;
 }
 
 .hero-3d-canvas{
