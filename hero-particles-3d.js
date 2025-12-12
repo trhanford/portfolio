@@ -69,20 +69,36 @@
       mouseY: 0,
       targetX: 0,
       targetY: 0,
+      spinVelocity: new THREE.Vector3(),
+      spinTarget: new THREE.Vector3(),
     };
 
-    // Pointer parallax
+    // Pointer parallax + hover spin
     root.addEventListener("pointermove", function (event) {
       const rect = root.getBoundingClientRect();
       const nx = (event.clientX - rect.left) / rect.width - 0.5;
       const ny = (event.clientY - rect.top) / rect.height - 0.5;
       state.targetX = nx * 2;
       state.targetY = ny * 2;
+
+      // guide the spin to feel responsive to the pointer path
+      state.spinTarget.x = ny * 1.4;
+      state.spinTarget.y = 0.8 + Math.abs(nx) * 0.8;
+      state.spinTarget.z = nx * 0.9;
+    });
+
+    root.addEventListener("pointerenter", function () {
+      // kick off a deeper 3D spin when hovering
+      const jitter = () => (Math.random() - 0.5) * 0.5;
+      state.spinTarget.x += jitter();
+      state.spinTarget.y += 0.8 + Math.random() * 0.6;
+      state.spinTarget.z += jitter();
     });
 
     root.addEventListener("pointerleave", function () {
       state.targetX = 0;
       state.targetY = 0;
+      state.spinTarget.set(0, 0, 0);
     });
 
     // Resize handling
@@ -108,8 +124,18 @@
       state.mouseX += (state.targetX - state.mouseX) * 3 * dt;
       state.mouseY += (state.targetY - state.mouseY) * 3 * dt;
 
-      group.rotation.y = state.mouseX * 0.4;
-      group.rotation.x = state.mouseY * 0.25;
+      const spinLerp = Math.max(0.02, Math.min(1, 5 * dt));
+      state.spinVelocity.lerp(state.spinTarget, spinLerp);
+      state.spinVelocity.multiplyScalar(0.995);
+
+      // pointer parallax keeps base tilt, spin adds real 3D orbiting
+      const targetRotX = state.mouseY * 0.25;
+      const targetRotY = state.mouseX * 0.4;
+      group.rotation.x += (targetRotX - group.rotation.x) * 4 * dt;
+      group.rotation.y += (targetRotY - group.rotation.y) * 4 * dt;
+      group.rotation.x += state.spinVelocity.x * dt;
+      group.rotation.y += state.spinVelocity.y * dt;
+      group.rotation.z += state.spinVelocity.z * dt;
 
       // Soft drifting in depth
       advanceParticles(particles, dt);
