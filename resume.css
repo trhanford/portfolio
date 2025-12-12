@@ -81,6 +81,12 @@ body.resume-body::after{opacity:.45;}
   font-weight:600;
 }
 
+.resume-badge{
+  margin-top:18px;
+  display:flex;
+  justify-content:center;
+}
+
 .resume-main{
   padding:48px 0 120px;
 }
