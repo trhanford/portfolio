@@ -51,6 +51,8 @@
 
   <!-- Styles/JS -->
   <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+  <script src="hero-particles-3d.js" defer></script>
   <script src="script.js" defer></script>
 
   <!-- Structured data -->
@@ -149,6 +151,7 @@
 
   <!-- ===================== INTRO / LANDING ===================== -->
   <header id="intro" class="hero" role="banner" aria-label="Landing" data-field-surface data-disable-magnet=".hero-inner, .hero-connections, .hero-connections__line, a, button">
+    <div class="hero-3d-layer" data-hero-3d-layer aria-hidden="true"></div>
     <!-- Subtle background canvas -->
     <div class="hero-bg" aria-hidden="true">
       <canvas

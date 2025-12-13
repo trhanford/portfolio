@@ -16,6 +16,11 @@
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
+    // Stay light on touch/small viewports to match the 2D particle behaviour
+    const isCoarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+    const isNarrow = window.matchMedia && window.matchMedia("(max-width: 1024px)").matches;
+    if (isCoarse || isNarrow) return;
+
     // Bail if Three.js isn't available
     if (typeof window.THREE === "undefined") return;
 
