@@ -86,6 +86,35 @@ body.resume-body::after{opacity:.45;}
   display:flex;
   justify-content:center;
 }
+.resume-badge .badge-base{
+  width:100%;
+  max-width:320px;
+  border-radius:18px;
+  overflow:hidden;
+}
+.resume-badge iframe{
+  width:100% !important;
+  border-radius:18px !important;
+}
+.resume-badge .badge-base__link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(43,47,51,.18);
+  background:rgba(255,255,255,.86);
+  color:var(--slate-strong);
+  font-weight:800;
+  text-decoration:none;
+  text-align:center;
+}
+@supports selector(:has(*)){
+  .resume-badge .badge-base:has(iframe) .badge-base__link{
+    display:none;
+  }
+}
 
 .resume-main{
   padding:48px 0 120px;
