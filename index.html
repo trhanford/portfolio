@@ -51,6 +51,8 @@
 
   <!-- Styles/JS -->
   <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+  <script src="hero-hyperfield.js" defer></script>
   <script src="script.js" defer></script>
 
   <!-- Structured data -->
@@ -151,6 +153,9 @@
   <header id="intro" class="hero" role="banner" aria-label="Landing" data-field-surface data-disable-magnet=".hero-inner, .hero-connections, .hero-connections__line, a, button">
     <!-- Subtle background canvas -->
     <div class="hero-bg" aria-hidden="true">
+      <div id="heroHyperfield" class="hero-hyperfield" data-hero-hyperfield>
+        <div class="hero-hyperfield__veil"></div>
+      </div>
       <canvas
         id="introField"
         class="magnetic-field"
