@@ -54,6 +54,8 @@
   }
 
   function initMobilePreface() {
+    if (document.body && document.body.dataset.mobileOptimized === 'true') return;
+
     const preface = select('#mobilePreface');
     const continueButton = select('#mobilePrefaceContinue');
     const siteContent = select('#siteContent');

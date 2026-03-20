@@ -52,7 +52,7 @@
     const anchorTargets = {
       'Automotive': '#automotive',
       'CAD': '#cad',
-      'Computer & Electrical': '#computer-electrical'
+      'Computer & Electrical': '#electrical'
     };
     const anchor = anchorTargets[project.category] || '#';
     const destination = anchor === '#' ? 'portfolio.html' : `portfolio.html${anchor}`;
